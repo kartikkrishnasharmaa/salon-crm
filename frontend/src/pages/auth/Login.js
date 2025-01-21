@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from '../../api/axiosConfig';
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,6 +26,9 @@ const Login = () => {
       console.log('Login Successful:', response.data);
       localStorage.setItem('token', response.data.token);
       setSuccess(true);
+
+      // Redirect to admin/dashboard after successful login
+      navigate('/admin/dashboard'); // Redirect using useNavigate
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials');
     }
