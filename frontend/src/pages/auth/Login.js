@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import axios from '../../api/axiosConfig';
 
 const Login = () => {
@@ -25,6 +25,7 @@ const Login = () => {
       const response = await axios.post('/auth/login', formData);
       console.log('Login Successful:', response.data);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       setSuccess(true);
 
       // Redirect to admin/dashboard after successful login

@@ -1,11 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+
 import AdminLayout from '../../layouts/AdminLayout';
 
 const Dashboard = () => {
+  const [loginDetails, setLoginDetails] = useState(null);
+
+  useEffect(() => {
+    // Retrieve details from local storage
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    console.log("Token from localStorage:", token);
+    console.log("User from localStorage:", user);
+
+    if (token && user) {
+      setLoginDetails({
+        token,
+        user: JSON.parse(user),
+      });
+
+    }
+  }, []);
   return (
     <AdminLayout>
       <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
       <p>Welcome to the admin panel. Manage all salon activities here.</p>
+      {loginDetails ? (
+        <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
+        <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
+          <span className="text-blue-500">Login Details</span>
+        </h2>
+        <div className="space-y-4">
+          <p className="flex items-center">
+            <strong className="w-1/3 text-gray-600">Name:</strong>
+            <span className="flex-1 text-gray-900 font-medium">{loginDetails.user.name}</span>
+          </p>
+          <p className="flex items-center">
+            <strong className="w-1/3 text-gray-600">Email:</strong>
+            <span className="flex-1 text-gray-900 font-medium">{loginDetails.user.email}</span>
+          </p>
+          <p className="flex items-center">
+            <strong className="w-1/3 text-gray-600">Role:</strong>
+            <span className="flex-1 text-gray-900 font-medium capitalize">{loginDetails.user.role}</span>
+          </p>
+        </div>
+      </div>
+      
+      ) : (
+        <p>Loading login details...</p>
+      )}
     </AdminLayout>
   );
 };

@@ -6,6 +6,7 @@ import Home from '../pages/homepage/home';
 import Dashboard from '../pages/admin/Dashboard';
 import Booking from '../pages/admin/ManageBookings';
 import Clients from '../pages/admin/ManageClients';
+import Alluser from '../pages/admin/Allusers';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -42,6 +43,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Clients />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/all-users"
+          element={
+            <ProtectedRoute>
+              <Alluser />
             </ProtectedRoute>
           }
         />

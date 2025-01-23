@@ -69,6 +69,8 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login Error:', error.message);
+    console.log("Token:", token);
+    console.log("User:", JSON.parse(user));
     res.status(500).json({ message: 'Error during login', error: error.message });
   }
 };
