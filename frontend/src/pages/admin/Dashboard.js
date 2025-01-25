@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import AdminLayout from '../../layouts/AdminLayout';
 
 const Dashboard = () => {
@@ -23,12 +22,8 @@ const Dashboard = () => {
   return (
     <AdminLayout>
       <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
-      <p>Welcome to the admin panel. Manage all salon activities here.</p>
       {loginDetails ? (
-        <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
-          <span className="text-blue-500">Login Details</span>
-        </h2>
+        <div className="bg-white shadow-lg rounded-lg p-6 max-w-md">
         <div className="space-y-4">
           <p className="flex items-center">
             <strong className="w-1/3 text-gray-600">Name:</strong>

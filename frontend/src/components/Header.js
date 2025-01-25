@@ -1,9 +1,33 @@
-import React from 'react';
+import React ,{ useState, useEffect, useRef } from 'react';
 import Logo from './../assests/salon-logo.png';
+import { FaUserCircle } from 'react-icons/fa';
 
 const Header = ({ toggleSidebar }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null); // Reference to the dropdown
+
+  const adminName = 'Admin'; // Replace with actual admin name
+
+  const handleOutsideClick = (event) => {
+    // Check if the click is outside the dropdown or button
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('click', handleOutsideClick);
+    } else {
+      document.removeEventListener('click', handleOutsideClick);
+    }
+
+    // Cleanup event listener on unmount
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [isOpen]);
+
   return (
-    <header className="bg-white text-white flex items-center justify-between p-4 shadow-md">
+    <header className="bg-white flex items-center justify-between p-4 shadow-md">
       {/* Sidebar Toggle Button for Mobile */}
       <button
         className="md:hidden text-black focus:outline-none"
@@ -28,16 +52,48 @@ const Header = ({ toggleSidebar }) => {
       {/* Page Title */}
       <img src={Logo} alt='logo' className='w-40 h-20' />
 
-      {/* Logout Button */}
-      <button
-        className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
-        onClick={() => {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-        }}
-      >
-        Logout
-      </button>
+      <div className="relative" ref={dropdownRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center space-x-2 px-4 py-2 shadow rounded-md shadow-cyan-600 hover:shadow-indigo-700 hover:bg-blue-400"
+        >
+          <FaUserCircle size={24} />
+          <span>admin name</span>
+        </button>
+        {isOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg overflow-hidden animate-fadeIn">
+            <ul className="flex flex-col">
+              <li>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={() => alert('Profile clicked')}
+                >
+                  Profile
+                </button>
+              </li>
+              <li>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={() => alert('Settings clicked')}
+                >
+                  Settings
+                </button>
+              </li>
+              <li>
+                <button
+                  className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+                  onClick={() => {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                  }}
+                >
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
     </header>
   );
 };
