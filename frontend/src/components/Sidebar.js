@@ -30,6 +30,20 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           {/* Manage Clients Link */}
           <li>
             <NavLink
+              to="/admin/salonadmin"
+              className={({ isActive }) =>
+                `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
+                  isActive ? 'bg-blue-400 text-white shadow-lg' : 'hover:bg-blue-500'
+                }`
+              }
+              onClick={toggleSidebar}
+            >
+              <FaUsers className="text-xl" /> {/* Icon */}
+              <span className="text-lg font-medium">Salon Admin Management</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/admin/clients"
               className={({ isActive }) =>
                 `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${

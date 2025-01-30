@@ -7,6 +7,7 @@ import Dashboard from '../pages/admin/Dashboard';
 import Booking from '../pages/admin/ManageBookings';
 import Clients from '../pages/admin/ManageClients';
 import Alluser from '../pages/admin/Allusers';
+import Salonadmin from '../pages/admin/Salonadmin';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -35,6 +36,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/salonadmin"
+          element={
+            <ProtectedRoute>
+              <Salonadmin />
             </ProtectedRoute>
           }
         />
