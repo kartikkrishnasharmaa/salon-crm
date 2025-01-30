@@ -3,8 +3,9 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
+const adminAuthRoutes = require('./routes/authRoutes');
+const salonAdminRoutes = require('./routes/salonAdminRoutes');
+
 
 // Initialize environment variables
 dotenv.config();
@@ -22,8 +23,9 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json());
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/auth', adminAuthRoutes);
+app.use('/api/salon', salonAdminRoutes);
+
 
 // Port configuration
 const PORT = process.env.PORT || 5000;

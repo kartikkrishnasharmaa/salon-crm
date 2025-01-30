@@ -22,7 +22,7 @@ const Signup = () => {
     setSuccess(false);
 
     try {
-      const response = await axios.post("/auth/signup", formData);
+      const response = await axios.post("/auth/sa-signup", formData);
       console.log("Signup Successful:", response.data);
       setSuccess(true);
     } catch (err) {

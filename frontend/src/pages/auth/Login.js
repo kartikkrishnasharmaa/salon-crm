@@ -23,7 +23,7 @@ const Login = () => {
     setSuccess(false);
 
     try {
-      const response = await axios.post('/auth/login', formData);
+      const response = await axios.post('/auth/sa-login', formData);
       console.log('Login Successful:', response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));

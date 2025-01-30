@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const SuperAdmin = require('../models/superAdminAuth');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {
@@ -12,12 +12,12 @@ exports.signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await SuperAdmin.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    const user = new User({ name, email, password, role });
+    const user = new SuperAdmin({ name, email, password, role });
     await user.save();
 
     const token = generateToken(user);
@@ -38,7 +38,7 @@ exports.login = async (req, res) => {
     }
 
     // Find the user
-    const user = await User.findOne({ email });
+    const user = await SuperAdmin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'Invalid email or password' });
     }
@@ -71,7 +71,7 @@ exports.login = async (req, res) => {
     console.error('Login Error:', error.message);
     console.log("Token:", token);
     console.log("User:", JSON.parse(user));
-    res.status(500).json({ message: 'Error during login', error: error.message });
+    res.status(500).json({ message: 'Error during super admin login', error: error.message });
   }
 };
 
