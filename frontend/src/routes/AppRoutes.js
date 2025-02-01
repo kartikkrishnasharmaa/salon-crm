@@ -8,7 +8,7 @@ import Booking from '../pages/admin/ManageBookings';
 import Clients from '../pages/admin/ManageClients';
 import Alluser from '../pages/admin/Allusers';
 import Salonadmin from '../pages/admin/Salonadmin';
-
+import Viewalladmin from '../pages/admin/AllSalonAdmin';
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token'); // Check for token
@@ -29,6 +29,8 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        {/* <Route path="/new" element={<Newpage/>} /> */}
+
 
         {/* Protected Admin Routes */}
         <Route
@@ -44,6 +46,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Salonadmin />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/view-salonadmin"
+          element={
+            <ProtectedRoute>
+              <Viewalladmin />
             </ProtectedRoute>
           }
         />

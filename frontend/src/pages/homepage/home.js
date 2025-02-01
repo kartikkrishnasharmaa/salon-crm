@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../../assests/salon-logo.png";
 
 const Home = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
-      <img src={logo} />
+      <img src={logo} alt="logo h" />
       <div className="ml-20">
       <div>
         <a href="/login"

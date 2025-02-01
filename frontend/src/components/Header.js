@@ -5,8 +5,11 @@ import { FaUserCircle } from 'react-icons/fa';
 const Header = ({ toggleSidebar }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null); // Reference to the dropdown
+  const user = JSON.parse(localStorage.getItem("user") || "{}"); // Parse JSON safely
 
-  const adminName = 'Admin'; // Replace with actual admin name
+
+  // console.log("User aa rha hai:", user);
+  // const adminName = 'Admin'; // Replace with actual admin name
 
   const handleOutsideClick = (event) => {
     // Check if the click is outside the dropdown or button
@@ -16,6 +19,7 @@ const Header = ({ toggleSidebar }) => {
   };
 
   useEffect(() => {
+    
     if (isOpen) {
       document.addEventListener('click', handleOutsideClick);
     } else {
@@ -55,10 +59,11 @@ const Header = ({ toggleSidebar }) => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center space-x-2 px-4 py-2 shadow rounded-md shadow-cyan-600 hover:shadow-indigo-700 hover:bg-blue-400"
+          className="flex items-center space-x-2 px-2 py-2 mt-4 shadow rounded-md shadow-cyan-600 hover:shadow-indigo-700 hover:bg-blue-400"
         >
           <FaUserCircle size={24} />
-          <span>admin name</span>
+          <span>{user.name}</span>
+          
         </button>
         {isOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg overflow-hidden animate-fadeIn">
