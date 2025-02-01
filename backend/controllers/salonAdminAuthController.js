@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 exports.createSalonAdmin = async (req, res) => {
   try {
     // Check if the logged-in user is super admin
-    console.log("Received Data:", req.body);
     if (req.user.role !== "superadmin") {
       return res
         .status(403)
@@ -141,12 +140,36 @@ exports.viewAllSalonAdmins = async (req, res) => {
     if (salonAdmins.length === 0) {
       return res.status(404).json({ message: "No salon admins found" });
     }
-
+ // Get the total count of salon admins
+    const totalSalonAdmins = salonAdmins.length;
     // Return salon admin data
-    res.status(200).json({ salonAdmins });
+    res.status(200).json({ salonAdmins,totalSalonAdmins });
   } catch (error) {
     res
       .status(500)
       .json({ message: "Error retrieving salon admins", error: error.message });
+  }
+};
+
+
+// see total admins counting
+exports.getTotalSalonAdminsCount = async (req, res) => {
+  try {
+    // Check if the logged-in user is a super admin
+    if (req.user.role !== "superadmin") {
+      return res
+        .status(403)
+        .json({ message: "Access denied! Only SuperAdmin can view the count of SalonAdmins" });
+    }
+
+    // Get the total count of salon admins without fetching the full data
+    const totalSalonAdmins = await SalonAdmin.countDocuments();
+
+    // Return the total count of salon admins
+    res.status(200).json({ totalSalonAdmins });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving salon admin count", error: error.message });
   }
 };

@@ -23,14 +23,14 @@ const Login = () => {
     setSuccess(false);
 
     try {
-      const response = await axios.post('/auth/sa-login', formData);
+      const response = await axios.post('/salon/salon-admin-login', formData);
       console.log('Login Successful:', response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setSuccess(true);
 
       // Redirect to admin/dashboard after successful login
-      navigate('/admin/dashboard'); // Redirect using useNavigate
+      navigate('/sadmin/dashboard'); // Redirect using useNavigate
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials');
     }
@@ -44,7 +44,7 @@ const Login = () => {
                 <img src={logo} alt="Salon Logo" className="w-24 mx-auto" />
               </div>
               <h2 className="text-2xl font-semibold text-center mb-6">
-                Super Admin
+                SALON ADMIN
               </h2>
               {error && <p className="text-red-500">{error}</p>}
               {success && <p className="text-green-500">Login Successful!</p>}
@@ -85,9 +85,6 @@ const Login = () => {
               >
                 Login
               </button>
-              <p className="text-center mt-4">
-                Create new Account ? <a href="/signup" className="text-indigo-500">Signup Now</a>
-              </p>
             </div>
           </form>
         </div>

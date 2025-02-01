@@ -2,7 +2,7 @@ import React ,{ useState, useEffect, useRef } from 'react';
 import Logo from './../assests/salon-logo.png';
 import { FaUserCircle } from 'react-icons/fa';
 
-const Header = ({ toggleSidebar }) => {
+const Adminheader = ({ toggleSidebar }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null); // Reference to the dropdown
   const user = JSON.parse(localStorage.getItem("user") || "{}"); // Parse JSON safely
@@ -84,7 +84,7 @@ const Header = ({ toggleSidebar }) => {
                   className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
                   onClick={() => {
                     localStorage.removeItem('token');
-                    window.location.href = '/login';
+                    window.location.href = '/salon-admin/login';
                   }}
                 >
                   Logout
@@ -98,4 +98,4 @@ const Header = ({ toggleSidebar }) => {
   );
 };
 
-export default Header;
+export default Adminheader;

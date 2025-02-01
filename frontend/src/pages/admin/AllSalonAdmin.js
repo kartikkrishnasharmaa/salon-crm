@@ -6,6 +6,7 @@ import AdminLayout from "../../layouts/AdminLayout";
 const SalonAdminTable = () => {
   const [salonAdmins, setSalonAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -16,6 +17,10 @@ const SalonAdminTable = () => {
             headers: { Authorization: token },
         });
         setSalonAdmins(response.data.salonAdmins);
+        setTotalCount(Number(response.data.totalSalonAdmins));
+        // Set the total count here
+        console.log("All Salon Admins List:", response.data.salonAdmins,response.data.totalSalonAdmins);
+
         setLoading(false);
       } catch (error) {
         setError('Failed to load salon admins');
@@ -33,6 +38,9 @@ const SalonAdminTable = () => {
     <AdminLayout>
     <div className="overflow-x-auto">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Salon Admins List</h2>
+      <p className="text-lg mb-4">Total Salon Admins: <strong>{totalCount}</strong></p>
+
+
       <table className="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-blue-500 text-white">
           <tr>

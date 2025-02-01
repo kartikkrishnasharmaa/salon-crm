@@ -57,19 +57,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
-                    to="/admin/view-salonadmin"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">View Salon Admin</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
                     to="/admin/salonadmin"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
@@ -81,6 +68,20 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">Add Salon Admin</span>
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/admin/view-salonadmin"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
+                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      }`
+                    }
+                    onClick={toggleSidebar}
+                  >
+                    <span className="text-lg font-medium">View Salon Admin</span>
+                  </NavLink>
+                </li>
+                
               </ul>
             )}
           </li>
