@@ -12,11 +12,13 @@ import Clients from '../pages/admin/ManageClients';
 import Alluser from '../pages/admin/Allusers';
 import Salonadmin from '../pages/admin/Salonadmin';
 import Viewalladmin from '../pages/admin/AllSalonAdmin';
+import Viewsingleadmin from '../pages/admin/Viewsingleadmin';
 
 
 // salon admin routes
 import SalonadminLogin from '../pages/auth/SALogin';
 import Salondashboard from '../pages/sadmin/dashboard';
+
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -36,11 +38,12 @@ const AppRoutes = () => {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
 
-        {/* super admin routes */}
+        {/* super admin public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
         
-        {/* salon admin route */}
+        {/* salon admin public route */}
         <Route path="/salon-admin/login" element={<SalonadminLogin />} />
       
 
@@ -67,6 +70,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Viewalladmin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/view-single-admin/:adminId"
+          element={
+            <ProtectedRoute>
+              <Viewsingleadmin />
             </ProtectedRoute>
           }
         />

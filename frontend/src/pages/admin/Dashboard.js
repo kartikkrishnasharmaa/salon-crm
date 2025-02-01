@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from '../../layouts/AdminLayout';
-import axios from 'axios';
+import axios from "../../api/axiosConfig";
+
 
 const Dashboard = () => {
   const [loginDetails, setLoginDetails] = useState(null);
@@ -29,7 +30,6 @@ const Dashboard = () => {
           }
         });
         setTotalAdmins(response.data.totalSalonAdmins);
-        console.log(response.data.totalSalonAdmins);
       } catch (err) {
         setError('Failed to fetch total admin count');
       } finally {
@@ -48,30 +48,13 @@ const Dashboard = () => {
       
       {loginDetails ? (
         <div className="space-y-4">
-          <div className="bg-white shadow-lg rounded-lg p-6 max-w-md">
-            <div className="space-y-4">
-              <p className="flex items-center">
-                <strong className="w-1/3 text-gray-600">Name:</strong>
-                <span className="flex-1 text-gray-900 font-medium">{loginDetails.user.name}</span>
-              </p>
-              <p className="flex items-center">
-                <strong className="w-1/3 text-gray-600">Email:</strong>
-                <span className="flex-1 text-gray-900 font-medium">{loginDetails.user.email}</span>
-              </p>
-              <p className="flex items-center">
-                <strong className="w-1/3 text-gray-600">Role:</strong>
-                <span className="flex-1 text-gray-900 font-medium capitalize">{loginDetails.user.role}</span>
-              </p>
-            </div>
-          </div>
-
-          {loading ? (
-            <p>Loading approved admin count...</p>
+                 {loading ? (
+            <p>Loading Admin count...</p>
           ) : error ? (
             <p>{error}</p>
           ) : (
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mt-4">
-              <h3 className="text-lg font-semibold text-gray-800">Total Approved Salon Admins</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Total Salon Admins</h3>
               <div className="mt-2 text-2xl font-bold text-gray-900">{totalAdmins}</div>
             </div>
           )}

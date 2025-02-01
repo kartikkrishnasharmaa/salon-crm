@@ -49,7 +49,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             >
               <div className="flex items-center gap-4">
                 <FaUsers className="text-xl" />
-                <span className="text-lg font-medium">Salon Admin Management</span>
+                <span className="text-lg font-medium">Salon Admin</span>
               </div>
               {isSalonAdminOpen ? <FaChevronUp /> : <FaChevronDown />}
             </div>
@@ -87,7 +87,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           </li>
 
           {/* Clients Management */}
-          <li>
+          {/* <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
               onClick={() => toggleSubCategory('clients')}
@@ -128,10 +128,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
-          </li>
+          </li> */}
 
           {/* Bookings Management */}
-          <li>
+          {/* <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
               onClick={() => toggleSubCategory('bookings')}
@@ -172,7 +172,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
-          </li>
+          </li> */}
         </ul>
       </nav>
     </aside>

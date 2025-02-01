@@ -124,6 +124,7 @@ exports.salonAdminLogin = async (req, res) => {
   }
 };
 
+
 // Get all salon admins
 exports.viewAllSalonAdmins = async (req, res) => {
   try {
@@ -150,6 +151,130 @@ exports.viewAllSalonAdmins = async (req, res) => {
       .json({ message: "Error retrieving salon admins", error: error.message });
   }
 };
+
+// view salon admin by ID
+// Controller for viewing a specific salon admin by ID
+exports.viewSalonAdmin = async (req, res) => {
+  try {
+    // Check if the logged-in user is a super admin
+    if (req.user.role !== "superadmin") {
+      return res
+        .status(403)
+        .json({ message: "Access denied! Only SuperAdmin can view a SalonAdmin" });
+    }
+
+    // Retrieve the salon admin by ID from the request parameters
+    const salonAdmin = await SalonAdmin.findById(req.params.adminId);
+
+    if (!salonAdmin) {
+      return res.status(404).json({ message: "Salon Admin not found" });
+    }
+
+    // Return the specific salon admin data
+    res.status(200).json({ salonAdmin });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving salon admin", error: error.message });
+  }
+};
+
+//update salon admin fields
+exports.updateSalonAdmin = async (req, res) => {
+  try {
+    // Check if the logged-in user is super admin
+    if (req.user.role !== "superadmin") {
+      return res
+        .status(403)
+        .json({
+          message: "Access denied! Only SuperAdmin can update SalonAdmin",
+        });
+    }
+
+    const { id } = req.params;
+    const {
+      ownerName,
+      email,
+      phone,
+      address,
+      salonName,
+      salonType,
+      businessEmail,
+      businessPhone,
+      businessWebsite,
+      establishedYear,
+      servicesOffered,
+      openingHours,
+      priceRange,
+      salonImages,
+      description,
+    } = req.body;
+
+    // Check if salon admin exists
+    const salonAdmin = await SalonAdmin.findById(id);
+    if (!salonAdmin) {
+      return res
+        .status(404)
+        .json({ message: "Salon Admin not found" });
+    }
+
+    // Update fields
+    salonAdmin.ownerName = ownerName || salonAdmin.ownerName;
+    salonAdmin.email = email || salonAdmin.email;
+    salonAdmin.phone = phone || salonAdmin.phone;
+    salonAdmin.address = address || salonAdmin.address;
+    salonAdmin.salonName = salonName || salonAdmin.salonName;
+    salonAdmin.salonType = salonType || salonAdmin.salonType;
+    salonAdmin.businessEmail = businessEmail || salonAdmin.businessEmail;
+    salonAdmin.businessPhone = businessPhone || salonAdmin.businessPhone;
+    salonAdmin.businessWebsite = businessWebsite || salonAdmin.businessWebsite;
+    salonAdmin.establishedYear = establishedYear || salonAdmin.establishedYear;
+    salonAdmin.servicesOffered = servicesOffered || salonAdmin.servicesOffered;
+    salonAdmin.openingHours = openingHours || salonAdmin.openingHours;
+    salonAdmin.priceRange = priceRange || salonAdmin.priceRange;
+    salonAdmin.salonImages = salonImages || salonAdmin.salonImages;
+    salonAdmin.description = description || salonAdmin.description;
+
+    await salonAdmin.save();
+
+    res.status(200).json({ message: "Salon Admin updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating Salon Admin", error: error.message });
+  }
+};
+
+
+// delete salon admin by id
+exports.deleteSalonAdmin = async (req, res) => {
+  try {
+    // Check if the logged-in user is super admin
+    if (req.user.role !== "superadmin") {
+      return res
+        .status(403)
+        .json({
+          message: "Access denied! Only SuperAdmin can delete SalonAdmin",
+        });
+    }
+
+    const { id } = req.params;
+
+    // Check if salon admin exists
+    const salonAdmin = await SalonAdmin.findById(id);
+    if (!salonAdmin) {
+      return res
+        .status(404)
+        .json({ message: "Salon Admin not found" });
+    }
+
+    // Delete the salon admin
+    await salonAdmin.deleteOne();
+
+    res.status(200).json({ message: "Salon Admin deleted permanently" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting Salon Admin", error: error.message });
+  }
+};
+
 
 
 // see total admins counting
