@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import axios from '../../api/axiosConfig';
 import logo from "../../assests/salon-logo.png";
-
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -24,15 +25,16 @@ const Login = () => {
 
     try {
       const response = await axios.post('/auth/sa-login', formData);
-      console.log('Login Successful:', response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setSuccess(true);
-
+      toast.success("Login Successful!");
       // Redirect to admin/dashboard after successful login
       navigate('/admin/dashboard'); // Redirect using useNavigate
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      const errorMessage = err.response?.data?.message || 'Invalid credentials';
+    setError(errorMessage);
+    toast.error(errorMessage); // Show error in toast
     }
   };
 
@@ -54,8 +56,6 @@ const Login = () => {
           <img src={logo} alt="Salon Logo" className="w-24 mx-auto" />
         </div>
         <h2 className="text-2xl font-semibold text-center mb-6">Super Admin</h2>
-        {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">Login Successful!</p>}
         <div className="space-y-9">
           {/* Email Field */}
           <div>
@@ -94,6 +94,11 @@ const Login = () => {
         </button>
       </div>
     </form>
+    <ToastContainer 
+      position="top-right"
+      autoClose={5000}
+      
+      />
   </div>
   
   );
