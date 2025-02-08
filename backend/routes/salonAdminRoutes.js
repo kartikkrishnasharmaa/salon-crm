@@ -7,12 +7,22 @@ const {
   viewSalonAdmin,
   updateSalonAdmin,
   deleteSalonAdmin,
+  loginasSalonAdmin,
+  getSalonAdminProfile
 } = require("../controllers/salonAdminAuthController");
+
 const authMiddleware = require("../middleware/authMiddleware");
+
+const loginasadmin = require("../middleware/loginMiddleware")
+
 const router = express.Router();
 
 // Route to create a salon admin (Only super admin can do this)
 router.post("/create-salon-admin", authMiddleware, createSalonAdmin);
+
+router.post("/login-as-salon-admin/:salonAdminId", loginasadmin, loginasSalonAdmin);
+
+router.get("/salon-admin-profile", authMiddleware, getSalonAdminProfile);
 
 //count all admin API
 router.get(

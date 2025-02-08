@@ -10,8 +10,8 @@ const Login = () => {
     password: '',
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [, setError] = useState('');
+  const [, setSuccess] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {

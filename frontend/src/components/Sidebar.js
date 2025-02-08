@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaUsers, FaCalendarAlt, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaTachometerAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isSalonAdminOpen, setSalonAdminOpen] = useState(false);

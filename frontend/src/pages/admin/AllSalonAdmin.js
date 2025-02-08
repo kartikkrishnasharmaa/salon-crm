@@ -6,7 +6,7 @@ import AdminLayout from "../../layouts/AdminLayout";
 import { ToastContainer, toast } from 'react-toastify'; // For toast notifications
 import 'react-toastify/dist/ReactToastify.css'; // Importing toast styles
 
-const SalonAdminTable = () => {
+const SalonAdminTable = ({superAdminToken}) => {
   const [salonAdmins, setSalonAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -88,6 +88,43 @@ const SalonAdminTable = () => {
     setIsModalOpen(false); // Close the modal without deleting
   };
 
+  const handleLoginAsSalonAdmin = async (salonAdminId) => {
+    try {
+      const token = localStorage.getItem("token"); // Get Super Admin's token
+  
+      if (!token) {
+        alert("No token found! Please log in first.");
+        return;
+      }
+  
+      const response = await axios.post(
+        `/salon/login-as-salon-admin/${salonAdminId}`,
+        {}, // Empty body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send Super Admin's token
+          },
+        }
+      );
+  
+      console.log("Login successful:", response.data);
+  
+      // ✅ Store new Salon Admin Token
+      localStorage.setItem("token", response.data.token);
+  
+      // ✅ Store Salon Admin Details (instead of previous user)
+      localStorage.setItem("salonAdmin", JSON.stringify(response.data.user));
+  
+      // ✅ Redirect to Salon Admin Dashboard
+      navigate("/sadmin/dashboard");
+  
+    } catch (error) {
+      console.error("Error logging in as Salon Admin:", error.response?.data || error);
+      alert(`Error: ${error.response?.data?.message || "Something went wrong!"}`);
+    }
+  };
+  
+  
   // If data is still loading, show loading message
   if (loading) return <p>Loading...</p>;
 
@@ -133,6 +170,11 @@ const SalonAdminTable = () => {
                   <td className="px-6 py-4">{admin.salonName}</td>
                   <td className="px-6 py-4">{admin.salonType}</td>
                   <td className="px-6 py-4">{admin.establishedYear}</td>
+                  <td>
+                <button onClick={() => handleLoginAsSalonAdmin(admin._id)} disabled={loading}>
+                  {loading ? "Logging in..." : "Login as Admin"}
+                </button>
+              </td>
                   <td className="px-6 py-4 flex space-x-4"> {/* Flex to align icons */}
                     <FaEye className="text-blue-500 cursor-pointer" title="View" onClick={() => handleView(admin._id)} />
                     <FaEdit className="text-yellow-500 cursor-pointer" title="Edit" />
