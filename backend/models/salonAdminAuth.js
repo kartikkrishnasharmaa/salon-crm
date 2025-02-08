@@ -9,6 +9,7 @@ const salonAdminSchema = mongoose.Schema(
     password: { type: String, required: true },
     phone: { type: String, unique: true },
     address: {
+      mapaddress: { type: String },
       street: { type: String },
       city: { type: String,  },
       state: { type: String, },
@@ -26,18 +27,6 @@ const salonAdminSchema = mongoose.Schema(
     businessWebsite: { type: String },
     establishedYear: { type: Number }, // Year of establishment
     servicesOffered: [{ type: String }], // List of services
-    openingHours: {
-      monday: { open: String, close: String },
-      tuesday: { open: String, close: String },
-      wednesday: { open: String, close: String },
-      thursday: { open: String, close: String },
-      friday: { open: String, close: String },
-      saturday: { open: String, close: String },
-      sunday: { open: String, close: String },
-    },
-    priceRange: { type: String, enum: ["Low", "Medium", "High"] }, // Pricing level
-    salonImages: [{ type: String }], // Array of image URLs
-    description: { type: String }, // Short description about the salon
     role: { type: String, default: "salonadmin" },
     status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" }, // Approval status by super admin
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "SuperAdmin" }, // SuperAdmin reference

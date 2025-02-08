@@ -1,6 +1,7 @@
 const SalonAdmin = require("../models/salonAdminAuth");
 const jwt = require("jsonwebtoken");
 
+
 // Function to create a salon admin (only super admin can do this)
 exports.createSalonAdmin = async (req, res) => {
   try {
@@ -21,16 +22,11 @@ exports.createSalonAdmin = async (req, res) => {
       address,
       salonName,
       salonType,
+      servicesOffered,
       businessEmail,
       businessPhone,
       businessWebsite,
       establishedYear,
-      servicesOffered,
-      openingHours,
-      priceRange,
-      salonImages,
-      description,
-      createdBy,
     } = req.body;
 
     // Check if salon admin already exists
@@ -51,14 +47,10 @@ exports.createSalonAdmin = async (req, res) => {
       salonName,
       salonType,
       businessEmail,
+      servicesOffered,
       businessPhone,
       businessWebsite,
       establishedYear,
-      servicesOffered,
-      openingHours,
-      priceRange,
-      salonImages,
-      description,
       createdBy: req.user.id, // Linking the salon admin to the super admin
     });
 
@@ -71,6 +63,42 @@ exports.createSalonAdmin = async (req, res) => {
       .json({ message: "Error creating Salon Admin", error: error.message });
   }
 };
+
+// Super Admin logs in as Salon Admin
+exports.loginasSalonAdmin = async (req, res) => {
+  try {
+    console.log("Decoded User from Token:", req.user); // Debugging line
+
+    const { salonAdminId } = req.params;
+
+    // Find the Salon Admin
+    const salonAdmin = await SalonAdmin.findById(salonAdminId).select("-password");
+    if (!salonAdmin) {
+      return res.status(404).json({ message: "Salon Admin not found" });
+    }
+
+
+    // Generate JWT token for Salon Admin
+    const token = jwt.sign(
+      { userId: salonAdmin._id, role: "salonadmin" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      token,
+      user: salonAdmin,
+      message: `Successfully logged in as ${salonAdmin.salonName}`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error logging in as Salon Admin y sms backend se aa rha hai",
+      error: error.message,
+    });
+  }
+};
+
+
 
 // Salon Admin Login
 exports.salonAdminLogin = async (req, res) => {
@@ -121,6 +149,18 @@ exports.salonAdminLogin = async (req, res) => {
         message: "Error during salon admin login",
         error: error.message,
       });
+  }
+};
+
+exports.getSalonAdminProfile = async (req, res) => {
+  try {
+    const salonAdmin = await SalonAdmin.findById(req.user.userId).select("-password");
+    if (!salonAdmin) {
+      return res.status(404).json({ message: "Salon Admin not found" });
+    }
+    res.status(200).json(salonAdmin);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching profile", error: error.message });
   }
 };
 
@@ -203,11 +243,7 @@ exports.updateSalonAdmin = async (req, res) => {
       businessPhone,
       businessWebsite,
       establishedYear,
-      servicesOffered,
-      openingHours,
-      priceRange,
-      salonImages,
-      description,
+      servicesOffered
     } = req.body;
 
     // Check if salon admin exists
@@ -229,12 +265,7 @@ exports.updateSalonAdmin = async (req, res) => {
     salonAdmin.businessPhone = businessPhone || salonAdmin.businessPhone;
     salonAdmin.businessWebsite = businessWebsite || salonAdmin.businessWebsite;
     salonAdmin.establishedYear = establishedYear || salonAdmin.establishedYear;
-    salonAdmin.servicesOffered = servicesOffered || salonAdmin.servicesOffered;
-    salonAdmin.openingHours = openingHours || salonAdmin.openingHours;
-    salonAdmin.priceRange = priceRange || salonAdmin.priceRange;
-    salonAdmin.salonImages = salonImages || salonAdmin.salonImages;
-    salonAdmin.description = description || salonAdmin.description;
-
+    salonAdmin.servicesOffered = servicesOffered || salonAdmin.servicesOffered
     await salonAdmin.save();
 
     res.status(200).json({ message: "Salon Admin updated successfully" });

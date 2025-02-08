@@ -65,13 +65,10 @@ const AdminDetailPage = () => {
                   <p className="text-lg font-medium text-gray-700">
                     <strong>Established Year:</strong> {admin.establishedYear}
                   </p>
-                  <p className="text-lg font-medium text-gray-700">
-                    <strong>Price Range:</strong> {admin.priceRange}
-                  </p>
                 </div>
               </div>
 
-              <div className="space-y-6 mb-8">
+               <div className="space-y-6 mb-8">
                 <h3 className="text-2xl font-semibold text-indigo-600">
                   Services Offered
                 </h3>
@@ -83,7 +80,7 @@ const AdminDetailPage = () => {
                       </li>
                     ))}
                 </ul>
-              </div>
+              </div> 
 
               <div className="space-y-6 mb-8">
                 <h3 className="text-2xl font-semibold text-indigo-600">
@@ -129,12 +126,7 @@ const AdminDetailPage = () => {
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <h3 className="text-2xl font-semibold text-indigo-600">
-                  Description
-                </h3>
-                <p className="text-lg text-gray-700">{admin.description}</p>
-              </div>
+            
 
               <div className="mt-8 text-center">
               {/* Back Button */}

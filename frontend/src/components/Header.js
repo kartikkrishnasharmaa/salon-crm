@@ -84,6 +84,8 @@ const Header = ({ toggleSidebar }) => {
                   className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
                   onClick={() => {
                     localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    // localStorage.removeItem("salonAdmin");
                     window.location.href = '/login';
                   }}
                 >
