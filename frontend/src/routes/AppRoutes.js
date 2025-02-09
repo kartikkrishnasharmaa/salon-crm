@@ -18,6 +18,11 @@ import Viewsingleadmin from '../pages/admin/Viewsingleadmin';
 // salon admin routes
 import SalonadminLogin from '../pages/auth/SALogin';
 import Salondashboard from '../pages/sadmin/dashboard';
+import Salonbooking from '../pages/sadmin/booking/index';
+import Employee from '../pages/sadmin/employee/index';
+import SAreport from '../pages/sadmin/report/index';
+import SASetting from '../pages/sadmin/settings/index';
+
 
 
 // Protected Route Component
@@ -42,10 +47,10 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        
+
         {/* salon admin public route */}
         <Route path="/salon-admin/login" element={<SalonadminLogin />} />
-      
+
 
 
         {/* Protected Admin Routes */}
@@ -65,7 +70,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/admin/view-salonadmin"
           element={
             <ProtectedRoute>
@@ -89,7 +94,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/admin/all-users"
           element={
             <ProtectedRoute>
@@ -108,7 +113,7 @@ const AppRoutes = () => {
 
         {/* // salon admin routes */}
 
- <Route
+        <Route
           path="/sadmin/dashboard"
           element={
             <ProtectedRoute>
@@ -116,8 +121,52 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/sadmin/booking"
+          element={
+            <ProtectedRoute>
+              <Salonbooking />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sadmin/employee"
+          element={
+            <ProtectedRoute>
+              <Employee />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sadmin/report"
+          element={
+            <ProtectedRoute>
+              <SAreport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sadmin/settings"
+          element={
+            <ProtectedRoute>
+              <SASetting />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sadmin/create-booking"
+          element={
+            <ProtectedRoute>
+              <Salonbooking />
+            </ProtectedRoute>
+          }
+        />
+
+
       </Routes>
-    </Router>
+
+    </Router >
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaTachometerAlt, FaCalendarAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isSalonAdminOpen, setSalonAdminOpen] = useState(false);
@@ -19,9 +19,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
   return (
     <aside
-      className={`fixed bg-white inset-y-0 left-0 transform ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0 transition-transform duration-300 ease-in-out w-80 bg-gradient-to-b text-black p-4 z-30 shadow-lg md:relative`}
+      className={`fixed bg-white inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0 transition-transform duration-300 ease-in-out w-80 bg-gradient-to-b text-black p-4 z-30 shadow-lg md:relative`}
     >
       <nav>
         <ul className="space-y-4">
@@ -30,8 +29,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             <NavLink
               to="/admin/dashboard"
               className={({ isActive }) =>
-                `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                  isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                 }`
               }
               onClick={toggleSidebar}
@@ -59,8 +57,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <NavLink
                     to="/admin/salonadmin"
                     className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
@@ -72,8 +69,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <NavLink
                     to="/admin/view-salonadmin"
                     className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
@@ -81,13 +77,13 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">View Salon Admin</span>
                   </NavLink>
                 </li>
-                
+
               </ul>
             )}
           </li>
 
           {/* Clients Management */}
-          {/* <li>
+          <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
               onClick={() => toggleSubCategory('clients')}
@@ -104,8 +100,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <NavLink
                     to="/admin/clients/view"
                     className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
@@ -117,8 +112,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <NavLink
                     to="/admin/clients/add"
                     className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
@@ -128,10 +122,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
-          </li> */}
+          </li>
 
           {/* Bookings Management */}
-          {/* <li>
+          <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
               onClick={() => toggleSubCategory('bookings')}
@@ -148,8 +142,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <NavLink
                     to="/admin/bookings/view"
                     className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
@@ -161,8 +154,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <NavLink
                     to="#"
                     className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
-                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
@@ -172,7 +164,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
-          </li> */}
+          </li>
         </ul>
       </nav>
     </aside>

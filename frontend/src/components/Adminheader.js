@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Logo from './../assests/salon-logo.png';
-import { FaUserCircle,FaPhoneAlt } from 'react-icons/fa';
+import { FaUserCircle, FaPhoneAlt } from 'react-icons/fa';
 import { HiMenu, HiX } from 'react-icons/hi';
 
 const Adminheader = ({ toggleSidebar }) => {
@@ -43,17 +43,17 @@ const Adminheader = ({ toggleSidebar }) => {
 
       {/* Desktop Menu Centered */}
       <nav className="hidden md:flex space-x-6 text-lg font-semibold mx-auto">
-        <a href="#" className="hover:text-blue-600">Dashboard</a>
-        <a href="#" className="hover:text-blue-600">Bookings</a>
-        <a href="#" className="hover:text-blue-600">Employees</a>
-        <a href="#" className="hover:text-blue-600">Reports</a>
-        <a href="#" className="hover:text-blue-600">Settings</a>
+        <a href="/sadmin/dashboard" className="hover:text-blue-600">Dashboard</a>
+        <a href="/sadmin/booking" className="hover:text-blue-600">Bookings</a>
+        <a href="/sadmin/employee" className="hover:text-blue-600">Employees</a>
+        <a href="/sadmin/report" className="hover:text-blue-600">Reports</a>
+        <a href="/sadmin/settings" className="hover:text-blue-600">Settings</a>
         <div className="mr-6">
           <FaPhoneAlt className="text-green-600 text-xl animate-ping absolute" />
           <FaPhoneAlt className="text-green-600 text-xl" />
         </div>
       </nav>
-    
+
       {/* User Dropdown */}
       <div className="relative mr-4" ref={dropdownRef}>
         <button onClick={() => setIsOpen(!isOpen)} className="flex ml-9 items-center space-x-2 px-4 py-2 rounded-md shadow hover:bg-blue-400">
@@ -65,9 +65,9 @@ const Adminheader = ({ toggleSidebar }) => {
               <li><button className="w-full text-left px-4 py-2 hover:bg-gray-100">Profile</button></li>
               <li><button className="w-full text-left px-4 py-2 hover:bg-gray-100">Settings</button></li>
               <li>
-                <button className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100" 
+                <button className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
                   onClick={() => {
-                     localStorage.removeItem('token');
+                    localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     window.location.href = '/salon-admin/login';
                   }}>
