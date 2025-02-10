@@ -2,6 +2,20 @@ const SalonAdmin = require("../models/salonAdminAuth");
 const jwt = require("jsonwebtoken");
 
 
+exports.getSalonBranches = async (req, res) => {
+  try {
+    const { salonAdminId } = req.params;
+
+    const salonAdmin = await SalonAdmin.findById(salonAdminId).populate("branches");
+    if (!salonAdmin) {
+      return res.status(404).json({ message: "Salon Admin not found" });
+    }
+
+    res.status(200).json({ branches: salonAdmin.branches });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // Function to create a salon admin (only super admin can do this)
 exports.createSalonAdmin = async (req, res) => {
   try {

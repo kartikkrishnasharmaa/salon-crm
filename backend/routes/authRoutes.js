@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup, login } = require('../controllers/superAdminAuthController');
+const { signup, login,   } = require('../controllers/superAdminAuthController');
 const router = express.Router();
 
 // POST super admin signup /api/auth/signup

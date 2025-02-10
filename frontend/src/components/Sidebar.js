@@ -77,7 +77,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">View Salon Admin</span>
                   </NavLink>
                 </li>
-
               </ul>
             )}
           </li>

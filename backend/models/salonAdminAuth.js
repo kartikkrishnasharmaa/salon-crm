@@ -29,6 +29,7 @@ const salonAdminSchema = mongoose.Schema(
     servicesOffered: [{ type: String }], // List of services
     role: { type: String, default: "salonadmin" },
     status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" }, // Approval status by super admin
+    branches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Branch" }], // Branches reference
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "SuperAdmin" }, // SuperAdmin reference
     updatedAt: { type: Date, default: Date.now }
   },

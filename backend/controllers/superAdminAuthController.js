@@ -1,4 +1,6 @@
 const SuperAdmin = require('../models/superAdminAuth');
+const SalonAdmin = require('../models/salonAdminAuth');
+const Branch = require('../models/branch');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {
@@ -75,3 +77,4 @@ exports.login = async (req, res) => {
   }
 };
 
+// Super Admin - Add or Update Branch
