@@ -18,10 +18,12 @@ import Viewsingleadmin from '../pages/admin/Viewsingleadmin';
 // salon admin routes
 import SalonadminLogin from '../pages/auth/SALogin';
 import Salondashboard from '../pages/sadmin/dashboard';
-import Salonbooking from '../pages/sadmin/booking/index';
+import Calender from '../pages/sadmin/booking/index';
+import SAViewBooking from '../pages/sadmin/booking/viewbooking';
 import Employee from '../pages/sadmin/employee/index';
 import SAreport from '../pages/sadmin/report/index';
 import SASetting from '../pages/sadmin/settings/index';
+import SAViewSetting from '../pages/sadmin/settings/index';
 
 
 
@@ -121,14 +123,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/sadmin/booking"
           element={
             <ProtectedRoute>
               <Salonbooking />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/sadmin/employee"
@@ -154,14 +156,24 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/sadmin/create-booking"
           element={
             <ProtectedRoute>
-              <Salonbooking />
+              <Calender />
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/sadmin/view-settings"
+          element={
+            <ProtectedRoute>
+              <SAViewBooking />
+            </ProtectedRoute>
+          }
+        />
+
 
 
       </Routes>

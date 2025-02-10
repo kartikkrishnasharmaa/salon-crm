@@ -196,12 +196,12 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     }
                     onClick={toggleSidebar}
                   >
-                    <span className="text-lg font-medium">View Setting</span>
+                    <span className="text-lg font-medium">User Setting</span>
                   </NavLink>
                 </li>
-                <li>
+                {/* <li>
                   <NavLink
-                    to="/admin/view-salonadmin"
+                    to="/sadmin/view-settings"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
@@ -210,7 +210,7 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   >
                     <span className="text-lg font-medium">Create Setting</span>
                   </NavLink>
-                </li>
+                </li> */}
 
 
               </ul>
