@@ -22,8 +22,9 @@ import Calender from '../pages/sadmin/booking/index';
 import SAViewBooking from '../pages/sadmin/booking/viewbooking';
 import Employee from '../pages/sadmin/employee/index';
 import SAreport from '../pages/sadmin/report/index';
+import SAcreatereport from '../pages/sadmin/report/create_report';
 import SASetting from '../pages/sadmin/settings/index';
-import SAViewSetting from '../pages/sadmin/settings/index';
+import SAViewEmployee from '../pages/sadmin/employee/viewEmployee';
 
 
 
@@ -166,14 +167,29 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/sadmin/view-settings"
+          path="/sadmin/view-booking"
           element={
             <ProtectedRoute>
               <SAViewBooking />
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/sadmin/view-employee"
+          element={
+            <ProtectedRoute>
+              <SAViewEmployee />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sadmin/create-report"
+          element={
+            <ProtectedRoute>
+              <SAcreatereport />
+            </ProtectedRoute>
+          }
+        />
 
 
       </Routes>

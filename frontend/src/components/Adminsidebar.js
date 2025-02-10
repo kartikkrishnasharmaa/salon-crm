@@ -58,7 +58,7 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
-                    to="/sadmin/booking"
+                    to="/sadmin/view-booking"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
@@ -103,19 +103,19 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
-                    to="/sadmin/booking"
+                    to="/sadmin/view-employee"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
                   >
-                    <span className="text-lg font-medium">View Employee Manaagement</span>
+                    <span className="text-lg font-medium">Employee Manaagement</span>
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/admin/view-salonadmin"
+                    to="/sadmin/employee"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
@@ -158,7 +158,7 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/admin/view-salonadmin"
+                    to="/sadmin/create-report"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
