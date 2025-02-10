@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
 
-const BranchSchema = new mongoose.Schema({
-    salonAdminId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+const branchSchema = mongoose.Schema(
+  {
+    salonAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin", required: true }, // Connected to a Salon Admin
+    branchName: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
     city: { type: String, required: true },
-    address: { type: String, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "SuperAdmin" }, // SuperAdmin reference
-    updatedAt: { type: Date, default: Date.now }
-}, { timestamps: true });
+    address: { type: String, required: true }
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("Branch", BranchSchema);
+module.exports = mongoose.model("Branch", branchSchema);

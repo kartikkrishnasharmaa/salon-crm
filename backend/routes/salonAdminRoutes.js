@@ -8,7 +8,7 @@ const {
   updateSalonAdmin,
   deleteSalonAdmin,
   loginasSalonAdmin,
-  getSalonAdminProfile
+  getSalonAdminProfile,  
 } = require("../controllers/salonAdminAuthController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -23,6 +23,7 @@ router.post("/create-salon-admin", authMiddleware, createSalonAdmin);
 router.post("/login-as-salon-admin/:salonAdminId", loginasadmin, loginasSalonAdmin);
 
 router.get("/salon-admin-profile", authMiddleware, getSalonAdminProfile);
+
 
 //count all admin API
 router.get(

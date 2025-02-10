@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaTachometerAlt,FaCalendarAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isSalonAdminOpen, setSalonAdminOpen] = useState(false);
@@ -81,13 +81,25 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">View Salon Admin</span>
                   </NavLink>
                 </li>
-                
+                <li>
+                  <NavLink
+                    to="/admin/salon-branch"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${
+                        isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      }`
+                    }
+                    onClick={toggleSidebar}
+                  >
+                    <span className="text-lg font-medium"> Salon Branch</span>
+                  </NavLink>
+                </li>
               </ul>
             )}
           </li>
 
           {/* Clients Management */}
-          {/* <li>
+          <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
               onClick={() => toggleSubCategory('clients')}
@@ -128,10 +140,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
-          </li> */}
+          </li>
 
           {/* Bookings Management */}
-          {/* <li>
+         <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
               onClick={() => toggleSubCategory('bookings')}
@@ -172,7 +184,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
-          </li> */}
+          </li>
         </ul>
       </nav>
     </aside>

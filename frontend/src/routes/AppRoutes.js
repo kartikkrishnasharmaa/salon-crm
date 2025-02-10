@@ -13,6 +13,7 @@ import Alluser from '../pages/admin/Allusers';
 import Salonadmin from '../pages/admin/Salonadmin';
 import Viewalladmin from '../pages/admin/AllSalonAdmin';
 import Viewsingleadmin from '../pages/admin/Viewsingleadmin';
+import SalonBranchCreate from '../pages/admin/Branch';
 
 
 // salon admin routes
@@ -62,6 +63,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Salonadmin />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/salon-branch"
+          element={
+            <ProtectedRoute>
+              <SalonBranchCreate />
             </ProtectedRoute>
           }
         />
