@@ -89,7 +89,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             >
               <div className="flex items-center gap-4">
                 <FaUsers className="text-xl" />
-                <span className="text-lg font-medium">Manage Clients</span>
+                <span className="text-lg font-medium">Manage Branch</span>
               </div>
               {isClientsOpen ? <FaChevronUp /> : <FaChevronDown />}
             </div>
@@ -97,59 +97,17 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
-                    to="/admin/clients/view"
+                    to="/admin/create-branch"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
                     }
                     onClick={toggleSidebar}
                   >
-                    <span className="text-lg font-medium">View Clients</span>
+                    <span className="text-lg font-medium">Add Branch</span>
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink
-                    to="/admin/clients/add"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">Add Client</span>
-                  </NavLink>
-                </li>
-              </ul>
-            )}
-          </li>
-
-          {/* Bookings Management */}
-          <li>
-            <div
-              className="flex items-center justify-between py-3 px-4 cursor-pointer"
-              onClick={() => toggleSubCategory('bookings')}
-            >
-              <div className="flex items-center gap-4">
-                <FaCalendarAlt className="text-xl" />
-                <span className="text-lg font-medium">Manage Bookings</span>
-              </div>
-              {isBookingsOpen ? <FaChevronUp /> : <FaChevronDown />}
-            </div>
-            {isBookingsOpen && (
-              <ul className="pl-8 space-y-2">
-                <li>
-                  <NavLink
-                    to="/admin/bookings/view"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">View Bookings</span>
-                  </NavLink>
-                </li>
-                <li>
+                {/* <li>
                   <NavLink
                     to="#"
                     className={({ isActive }) =>
@@ -158,9 +116,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     }
                     onClick={toggleSidebar}
                   >
-                    <span className="text-lg font-medium">Add Booking</span>
+                    <span className="text-lg font-medium">View Branch</span>
                   </NavLink>
-                </li>
+                </li> */}
+                
               </ul>
             )}
           </li>

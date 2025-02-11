@@ -1,20 +1,25 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 // public routes
-import Login from '../pages/auth/Login';
-import Signup from '../pages/auth/Signup';
-import Home from '../pages/homepage/home';
+import Login from "../pages/auth/Login";
+import Signup from "../pages/auth/Signup";
+import Home from "../pages/homepage/home";
 
 // admin routes
-import Dashboard from '../pages/admin/Dashboard';
-import Booking from '../pages/admin/ManageBookings';
-import Clients from '../pages/admin/ManageClients';
-import Alluser from '../pages/admin/Allusers';
-import Salonadmin from '../pages/admin/Salonadmin';
-import Viewalladmin from '../pages/admin/AllSalonAdmin';
-import Viewsingleadmin from '../pages/admin/Viewsingleadmin';
-import SalonBranchCreate from '../pages/admin/Branch';
+import Dashboard from "../pages/admin/Dashboard";
+import Booking from "../pages/admin/ManageBookings";
+import Clients from "../pages/admin/ManageClients";
+import Alluser from "../pages/admin/Allusers";
 
+import Salonadmin from "../pages/admin/Salonadmin";
+import Viewalladmin from "../pages/admin/AllSalonAdmin";
+import Viewsingleadmin from "../pages/admin/Viewsingleadmin";
+import SalonBranchCreate from "../pages/admin/Branch";
 
 // salon admin routes
 import SalonadminLogin from '../pages/auth/SALogin';
@@ -31,7 +36,7 @@ import SAViewEmployee from '../pages/sadmin/employee/viewEmployee';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token'); // Check for token
+  const isAuthenticated = localStorage.getItem("token"); // Check for token
 
   if (!isAuthenticated) {
     // If not authenticated, redirect to login
@@ -51,11 +56,8 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-
         {/* salon admin public route */}
         <Route path="/salon-admin/login" element={<SalonadminLogin />} />
-
-
 
         {/* Protected Admin Routes */}
         <Route
@@ -115,6 +117,14 @@ const AppRoutes = () => {
           }
         />
 
+        <Route
+          path="/admin/create-branch"
+          element={
+            <ProtectedRoute>
+              <SalonBranchCreate />
+            </ProtectedRoute>
+          }
+        />
         {/* // salon admin routes */}
 
         <Route
@@ -191,11 +201,8 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-
-
       </Routes>
-
-    </Router >
+    </Router>
   );
 };
 

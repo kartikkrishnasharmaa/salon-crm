@@ -3,12 +3,18 @@ import logo from "../../assests/salon-logo.png";
 
 const Home = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      {/* Logo */}
-      <div className="mb-10">
-        <img src={logo} alt="Logo" className="w-40 h-40" />
-      </div>
-      
+    <div
+    className="flex items-center justify-center min-h-screen bg-cover bg-center relative"
+    style={{
+      backgroundImage: "url('/salonbackground.png')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
+    {/* Dark Overlay for Opacity */}
+    <div className="absolute inset-0 bg-black opacity-50"></div>
+    <div className="relative max-auto">
+    <div className="bg-white shadow-lg p-8 rounded-md shadow-cyan-600 hover:shadow-indigo-700 transition duration-200">
       {/* 4 Column Layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-4xl">
         <div className="flex flex-col items-center bg-white p-6 shadow-lg rounded-lg">
@@ -37,6 +43,8 @@ const Home = () => {
         </div>
       </div>
     </div>
+  </div>
+  </div>
     
   );
 };

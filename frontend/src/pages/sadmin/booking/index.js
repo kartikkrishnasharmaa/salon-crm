@@ -61,9 +61,6 @@ const Calender = () => {
     return (
         <SAAdminLayout>
             <div style={{ position: "relative" }}>
-                <h2 style={{ textAlign: "center", marginBottom: "10px" }}>
-                    Right Click to Book an Appointment
-                </h2>
                 <Calendar
                     localizer={localizer}
                     events={events}
