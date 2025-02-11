@@ -103,18 +103,6 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
-                    to="/sadmin/view-employee"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">Employee Manaagement</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
                     to="/sadmin/employee"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
@@ -125,7 +113,18 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">Create Employee</span>
                   </NavLink>
                 </li>
-
+                <li>
+                  <NavLink
+                    to="/sadmin/view-employee"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      }`
+                    }
+                    onClick={toggleSidebar}
+                  >
+                    <span className="text-lg font-medium">All Employee</span>
+                  </NavLink>
+                </li>
 
               </ul>
             )}

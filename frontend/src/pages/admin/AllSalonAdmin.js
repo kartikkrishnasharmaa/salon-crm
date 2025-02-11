@@ -22,6 +22,7 @@ const SalonAdminTable = ({superAdminToken}) => {
       const response = await axios.get('/salon/view-all-salon-admins', {
         headers: { Authorization: token },
       });
+      console.log("Salon Admins Data:", response.data.salonAdmins); // Debugging
 
       // If no salon admins, set state to empty and update total count
       if (response.data.salonAdmins && response.data.salonAdmins.length === 0) {
