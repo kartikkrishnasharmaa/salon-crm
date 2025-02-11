@@ -107,9 +107,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">Add Branch</span>
                   </NavLink>
                 </li>
-                {/* <li>
+                <li>
                   <NavLink
-                    to="#"
+                    to="/admin/view-branch"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
@@ -118,7 +118,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   >
                     <span className="text-lg font-medium">View Branch</span>
                   </NavLink>
-                </li> */}
+                </li>
                 
               </ul>
             )}
