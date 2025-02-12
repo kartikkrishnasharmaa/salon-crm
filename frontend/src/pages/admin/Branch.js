@@ -40,7 +40,7 @@ const SalonBranchCreate = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.post('/salon/create-branch', values, {
+      await axios.post('/branch/create-branch', values, {
         headers: { Authorization: token },
       });
       toast.success("Branch created successfully");

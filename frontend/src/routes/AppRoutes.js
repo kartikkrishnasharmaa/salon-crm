@@ -20,6 +20,7 @@ import Salonadmin from "../pages/admin/Salonadmin";
 import Viewalladmin from "../pages/admin/AllSalonAdmin";
 import Viewsingleadmin from "../pages/admin/Viewsingleadmin";
 import SalonBranchCreate from "../pages/admin/Branch";
+import Viewbranch from "../pages/admin/Viewbranch";
 
 // salon admin routes
 import SalonadminLogin from '../pages/auth/SALogin';
@@ -122,6 +123,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <SalonBranchCreate />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/view-branch"
+          element={
+            <ProtectedRoute>
+              <Viewbranch />
             </ProtectedRoute>
           }
         />

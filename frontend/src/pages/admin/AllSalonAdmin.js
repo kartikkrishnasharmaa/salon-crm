@@ -117,8 +117,10 @@ const SalonAdminTable = ({ superAdminToken }) => {
       localStorage.setItem("salonAdmin", JSON.stringify(response.data.user));
 
       // ✅ Redirect to Salon Admin Dashboard
-      navigate("/sadmin/dashboard");
-
+      setTimeout(() => {
+        navigate("/sadmin/dashboard");
+      }, 1000);
+  
     } catch (error) {
       console.error("Error logging in as Salon Admin:", error.response?.data || error);
       alert(`Error: ${error.response?.data?.message || "Something went wrong!"}`);
