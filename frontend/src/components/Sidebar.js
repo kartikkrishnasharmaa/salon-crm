@@ -4,16 +4,14 @@ import { FaTachometerAlt, FaCalendarAlt, FaUsers, FaChevronDown, FaChevronUp } f
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isSalonAdminOpen, setSalonAdminOpen] = useState(false);
-  const [isClientsOpen, setClientsOpen] = useState(false);
-  const [isBookingsOpen, setBookingsOpen] = useState(false);
+  const [isbranches, setbranches] = useState(false);
+  // const [isBookingsOpen, setBookingsOpen] = useState(false);
 
   const toggleSubCategory = (category) => {
     if (category === 'salonAdmin') {
       setSalonAdminOpen(!isSalonAdminOpen);
-    } else if (category === 'clients') {
-      setClientsOpen(!isClientsOpen);
-    } else if (category === 'bookings') {
-      setBookingsOpen(!isBookingsOpen);
+    } else if (category === 'branches') {
+      setbranches(!isbranches);
     }
   };
 
@@ -39,7 +37,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </NavLink>
           </li>
 
-          {/* Salon Admin Management */}
+          {/* Salon Admin*/}
           <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
@@ -81,7 +79,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             )}
           </li>
 
-          {/* Clients Management */}
+          {/* Manage Branch */}
           <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
@@ -93,7 +91,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               </div>
               {isClientsOpen ? <FaChevronUp /> : <FaChevronDown />}
             </div>
-            {isClientsOpen && (
+            {isbranches && (
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
@@ -107,9 +105,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">Add Branch</span>
                   </NavLink>
                 </li>
-                {/* <li>
+                <li>
                   <NavLink
-                    to="#"
+                    to="/admin/View-branch"
                     className={({ isActive }) =>
                       `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
                       }`
@@ -118,8 +116,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   >
                     <span className="text-lg font-medium">View Branch</span>
                   </NavLink>
-                </li> */}
-                
+                </li>
+
               </ul>
             )}
           </li>

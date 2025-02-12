@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -14,7 +14,7 @@ const SalonBranchCreate = () => {
     const fetchSalonAdmins = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get('http://192.168.43.15:5000/api/salon/view-all-salon-admins', {
+        const response = await axios.get('/salon/view-all-salon-admins', {
           headers: { Authorization: token },
         });
         console.log("Salon Admins list Data:", response.data.salonAdmins); // Debugging
@@ -40,7 +40,7 @@ const SalonBranchCreate = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.post('http://192.168.43.15:5000/api/salon/create-branch', values, {
+      await axios.post('/salon/create-branch', values, {
         headers: { Authorization: token },
       });
       toast.success("Branch created successfully");
