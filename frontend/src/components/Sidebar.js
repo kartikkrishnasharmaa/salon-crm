@@ -4,14 +4,16 @@ import { FaTachometerAlt, FaCalendarAlt, FaUsers, FaChevronDown, FaChevronUp } f
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isSalonAdminOpen, setSalonAdminOpen] = useState(false);
-  const [isbranches, setbranches] = useState(false);
-  // const [isBookingsOpen, setBookingsOpen] = useState(false);
+  const [isClientsOpen, setClientsOpen] = useState(false);
+  const [isBookingsOpen, setBookingsOpen] = useState(false);
 
   const toggleSubCategory = (category) => {
     if (category === 'salonAdmin') {
       setSalonAdminOpen(!isSalonAdminOpen);
-    } else if (category === 'branches') {
-      setbranches(!isbranches);
+    } else if (category === 'clients') {
+      setClientsOpen(!isClientsOpen);
+    } else if (category === 'bookings') {
+      setBookingsOpen(!isBookingsOpen);
     }
   };
 
@@ -37,7 +39,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </NavLink>
           </li>
 
-          {/* Salon Admin*/}
+          {/* Salon Admin Management */}
           <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
@@ -79,7 +81,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             )}
           </li>
 
-          {/* Manage Branch */}
+          {/* Clients Management */}
           <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
@@ -91,7 +93,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               </div>
               {isClientsOpen ? <FaChevronUp /> : <FaChevronDown />}
             </div>
-            {isbranches && (
+            {isClientsOpen && (
               <ul className="pl-8 space-y-2">
                 <li>
                   <NavLink
@@ -116,7 +118,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   >
                     <span className="text-lg font-medium">View Branch</span>
                   </NavLink>
-                </li> */}
+                </li>
 
               </ul>
             )}
