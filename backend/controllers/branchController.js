@@ -51,6 +51,36 @@ exports.createBranch = async (req, res) => {
     });
   }
 };
+
+exports.deleteBranch = async (req, res) => {
+  try {
+    const { salonAdminId, branchId } = req.params;
+    
+    // Logic to find the salon admin and delete the branch
+    const salonAdmin = await SalonAdmin.findById(salonAdminId);
+    
+    if (!salonAdmin) {
+      return res.status(404).send({ message: 'Salon Admin not found' });
+    }
+
+    const branchIndex = salonAdmin.branches.findIndex(branch => branch._id.toString() === branchId);
+    
+    if (branchIndex === -1) {
+      return res.status(404).send({ message: 'Branch not found' });
+    }
+
+    // Remove the branch from the salon admin's branches
+    salonAdmin.branches.splice(branchIndex, 1);
+    await salonAdmin.save();
+
+    res.status(200).send({ message: 'Branch deleted successfully' });
+  } catch (error) {
+    console.error("Error deleting branch:", error);
+    res.status(500).send({ message: 'Error deleting branch' });
+  }
+};
+
+
 exports.getBranches = async (req, res) => {
   try {
     const branches = await SalonAdmin.find()
@@ -74,25 +104,3 @@ exports.getBranches = async (req, res) => {
     });
   }
 };
-
-
-// exports.getBranches = async (req, res) => {
-//   try {
-//     const branches = await SalonAdmin.find()
-//       .populate("branches") // Fetch branch details
-//       .select("name branches") // Select only necessary fields
-//       .exec();
-
-//     if (!branches.length) {
-//       return res.status(404).json({ message: "No branches found" });
-//     }
-
-//     res.status(200).json({ branches });
-//   } catch (error) {
-//     console.error("Error fetching branches:", error);
-//     res.status(500).json({
-//       message: "Error fetching branches",
-//       error: error.message,
-//     });
-//   }
-// };
