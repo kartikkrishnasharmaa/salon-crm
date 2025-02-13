@@ -119,7 +119,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                     <span className="text-lg font-medium">View Branch</span>
                   </NavLink>
                 </li>
-                
+
               </ul>
             )}
           </li>

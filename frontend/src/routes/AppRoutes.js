@@ -32,8 +32,7 @@ import SAreport from '../pages/sadmin/report/index';
 import SAcreatereport from '../pages/sadmin/report/create_report';
 import SASetting from '../pages/sadmin/settings/index';
 import SAViewEmployee from '../pages/sadmin/employee/viewEmployee';
-
-
+import ProfilePage from "../pages/sadmin/profilepage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -126,7 +125,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/admin/view-branch"
           element={
             <ProtectedRoute>
@@ -134,6 +133,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+
         {/* // salon admin routes */}
 
         <Route
@@ -210,7 +210,17 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/sdmin/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
+
     </Router>
   );
 };
