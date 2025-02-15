@@ -26,9 +26,10 @@ const Login = () => {
 
     try {
       const response = await axios.post('/salon/salon-admin-login', formData);
+      const { token, salonAdmin } = response.data;
       console.log('Login Successful:', response.data);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("token", token);
+      localStorage.setItem("salonAdmin", JSON.stringify(salonAdmin));
       setSuccess(true);
 
       // Redirect to admin/dashboard after successful login

@@ -1,5 +1,6 @@
 const SalonAdmin = require("../models/salonAdminAuth");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 
 exports.getSalonBranches = async (req, res) => {
@@ -112,57 +113,80 @@ exports.loginasSalonAdmin = async (req, res) => {
   }
 };
 
+exports.createBranch = async (req, res) => {
+const { salonAdminId, branchName, address, phone } = req.body;
+  // Validate salonAdminId
+  if (!mongoose.Types.ObjectId.isValid(salonAdminId)) {
+    return res.status(400).json({ message: 'Invalid Salon Admin ID' });
+  }
+  try {
+    const salonAdmin = await SalonAdmin.findById(salonAdminId);
+    if (!salonAdmin) {
+      return res.status(404).json({ message: 'Salon Admin not found' });
+    }
+
+    // Check if the admin has less than 4 branches
+    if (salonAdmin.branches.length >= 4) {
+      return res.status(400).json({ message: 'Maximum of 4 branches can be created' });
+    }
+
+    // Create new branch
+    const newBranch = {
+      branchName,
+      address,
+      phone,
+    };
+
+    salonAdmin.branches.push(newBranch); // Add branch to salonAdmin
+    await salonAdmin.save(); // Save updated salonAdmin
+
+    res.status(200).json({ message: 'Branch created successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 // Salon Admin Login
 exports.salonAdminLogin = async (req, res) => {
+  const { email, password } = req.body; // Assume email and password are coming from the request body
+
   try {
-    const { email, password } = req.body;
+    // Fetch salonAdmin using email
+    const salonAdmin = await SalonAdmin.findOne({ email });
 
-    // Validate input
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+    if (!salonAdmin) {
+      return res.status(400).json({ message: "Salon Admin not found" });
     }
 
-    // Find the user
-    const user = await SalonAdmin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "Invalid email or password" });
-    }
+    // Check if the password matches
+    const isMatch = await salonAdmin.comparePassword(password);
 
-    // Compare passwords
-    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate token
+    // Generate JWT token
     const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { salonAdminId: salonAdmin._id },  // Include salonAdminId in token
+      process.env.JWT_SECRET,  // Make sure JWT_SECRET is set in your environment
+      { expiresIn: '1h' }  // Token expires in 1 hour
     );
 
-    // Respond with user details and token
+    // Send response with token and salonAdmin details
     res.status(200).json({
       message: "Login successful",
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+      token, // Send the JWT token
+      salonAdmin: {  // Send salonAdmin details in the response
+        _id: salonAdmin._id,
+        name: salonAdmin.ownerName,  // Assuming 'ownerName' is the salonAdmin's name
+        email: salonAdmin.email,
+        role: salonAdmin.role,
       },
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error during salon admin login",
-        error: error.message,
-      });
+    console.error("Error during salon admin login", error);
+    res.status(500).json({ message: "Error during salon admin login", error: error.message });
   }
 };
 

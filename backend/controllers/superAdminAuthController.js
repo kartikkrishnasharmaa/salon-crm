@@ -1,6 +1,5 @@
 const SuperAdmin = require('../models/superAdminAuth');
 const SalonAdmin = require('../models/salonAdminAuth');
-const Branch = require('../models/branch');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {

@@ -7,8 +7,6 @@ const Adminheader = ({ toggleSidebar }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-
   const handleOutsideClick = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsOpen(false);
