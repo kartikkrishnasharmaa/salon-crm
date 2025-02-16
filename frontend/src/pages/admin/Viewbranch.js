@@ -4,12 +4,12 @@ import AdminLayout from "../../layouts/AdminLayout";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const SalonAdminBranches = () => {
-  const [salonAdmins, setSalonAdmins] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState(null);
-  const [selectedAdminId, setSelectedAdminId] = useState(null);
+const [salonAdmins, setSalonAdmins] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+const [showModal, setShowModal] = useState(false);
+const [selectedBranch, setSelectedBranch] = useState(null);
+const [selectedAdminId, setSelectedAdminId] = useState(null);
 
   useEffect(() => {
     const fetchBranches = async () => {
