@@ -4,39 +4,37 @@ import AdminLayout from "../../layouts/AdminLayout";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const SalonAdminBranches = () => {
-const [salonAdmins, setSalonAdmins] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-const [showModal, setShowModal] = useState(false);
-const [selectedBranch, setSelectedBranch] = useState(null);
-const [selectedAdminId, setSelectedAdminId] = useState(null);
+  const [salonAdmins, setSalonAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedAdminId, setSelectedAdminId] = useState(null);
 
   useEffect(() => {
-    const fetchBranches = async () => {
+    const fetchSalonAdmins = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get("/salon/get-all-branches", {
           headers: { Authorization: token },
         });
-        setSalonAdmins(response.data.salonAdmins || []); // Ensure it's always an array
+        setSalonAdmins(response.data.data || []); // Corrected response path
       } catch (error) {
-        console.error("Error fetching branches:", error);
+        console.error("Error fetching salon admins:", error);
         setError("Failed to load salon admins. Please try again.");
       } finally {
         setLoading(false);
       }
     };
-    fetchBranches();
+    fetchSalonAdmins();
   }, []);
 
-  // Handle Delete Click (Show Confirmation Modal)
   const handleDeleteClick = (adminId, branch) => {
     setSelectedAdminId(adminId);
     setSelectedBranch(branch);
     setShowModal(true);
   };
 
-  // Confirm Delete & Call API
   const confirmDelete = async () => {
     if (!selectedAdminId || !selectedBranch) return;
 
@@ -46,7 +44,6 @@ const [selectedAdminId, setSelectedAdminId] = useState(null);
         headers: { Authorization: token },
       });
 
-      // Update UI after deletion
       setSalonAdmins((prevAdmins) =>
         prevAdmins.map((admin) =>
           admin._id === selectedAdminId
@@ -65,12 +62,14 @@ const [selectedAdminId, setSelectedAdminId] = useState(null);
   return (
     <AdminLayout>
       <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4 text-center">Salon Admins & Their Branches</h1>
-
-        {/* Error Message */}
+      <h1 className="text-4xl font-extrabold text-center mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+               drop-shadow-lg shadow-blue-500/50 
+               transform transition duration-300 hover:scale-105">
+  ✂️ Salon Admins & Their Branches 💈
+</h1>
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        {/* Loading State */}
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <p className="text-lg font-semibold text-gray-600 animate-pulse">Loading...</p>
@@ -84,15 +83,13 @@ const [selectedAdminId, setSelectedAdminId] = useState(null);
             {salonAdmins.map((admin) => (
               <div
                 key={admin._id}
-                className="bg-white border rounded-xl shadow-lg p-5 flex flex-col md:flex-row items-center md:items-start md:justify-between gap-6 transition-transform transform hover:scale-105 hover:shadow-2xl"
+                className="bg-white border rounded-xl shadow-lg p-5 flex flex-col md:flex-row items-center md:items-start md:justify-between gap-6 transition-transform transform hover:scale-105 hover:shadow-2xl shadow-bg-gradient-to-r from-blue-500 to-purple-600"
               >
-                {/* Salon Admin Info */}
                 <div className="w-full md:w-1/3">
                   <h2 className="text-2xl font-bold text-gray-800">{admin?.ownerName || "Unknown"}</h2>
                   <p className="text-gray-600">{admin?.email || "No Email"}</p>
                 </div>
 
-                {/* Branch List */}
                 <div className="w-full md:w-2/3 flex flex-wrap gap-4">
                   {admin.branches && admin.branches.length > 0 ? (
                     admin.branches.map((branch) => (
@@ -127,7 +124,6 @@ const [selectedAdminId, setSelectedAdminId] = useState(null);
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg">

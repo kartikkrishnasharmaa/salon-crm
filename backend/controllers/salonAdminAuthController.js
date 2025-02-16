@@ -4,8 +4,6 @@ const Branch = require("../models/branch");
 const SalonAdmin = require("../models/salonAdminAuth");
 
 
-
-
 exports.getSalonBranches = async (req, res) => {
   try {
     const { salonAdminId } = req.params;
@@ -146,15 +144,24 @@ exports.createBranch = async (req, res) => {
 
 exports.getAllSalonAdminsWithBranches = async (req, res) => {
   try {
-    const salonAdmins = await SalonAdmin.find().select("name email branches");
+    const salonAdmins = await SalonAdmin.find().lean(); // सभी Salon Admins को लाना
+    const salonAdminIds = salonAdmins.map(admin => admin._id); // सभी Salon Admins के IDs लेना
+    
+    // सभी Branches को उनके संबंधित Salon Admin IDs के साथ लाना
+    const branches = await Branch.find({ salonAdminId: { $in: salonAdminIds } }).lean();
 
-    if (!salonAdmins || salonAdmins.length === 0) {
-      return res.status(404).json({ message: "No salon admins found" });
-    }
+    // Salon Admins के साथ उनकी Branches को जोड़ना
+    const response = salonAdmins.map(admin => {
+      return {
+        ...admin,
+        branches: branches.filter(branch => branch.salonAdminId.toString() === admin._id.toString())
+      };
+    });
 
-    res.status(200).json({ salonAdmins });
+    res.status(200).json({ success: true, data: response });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching salon admins with branches:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 

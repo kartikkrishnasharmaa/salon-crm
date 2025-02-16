@@ -98,7 +98,11 @@ toast.success(res.data.message);
     <AdminLayout>
  <div className="flex justify-center items-center bg-gray-100 py-10 px-4">
   <div className="bg-white p-8 rounded-2xl shadow-lg w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12">
-    <h2 className="text-2xl font-bold text-center mb-6">Create New Salon Admin</h2>
+  <h1 className="text-4xl font-extrabold text-center mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+               drop-shadow-lg shadow-blue-500/50 
+               transform transition duration-300 hover:scale-105">
+  Create New Salon ✂️ Admin</h1>
 
     {message && (
       <p

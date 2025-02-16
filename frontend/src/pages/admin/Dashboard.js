@@ -44,8 +44,12 @@ const Dashboard = () => {
 
   return (
     <AdminLayout>
-      <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
-      
+    <h1 className="text-4xl font-extrabold text-center mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+               drop-shadow-lg shadow-blue-500/50 
+               transform transition duration-300 hover:scale-105">
+  Admin Dashboard
+</h1>
       {loginDetails ? (
         <div className="space-y-4">
                  {loading ? (

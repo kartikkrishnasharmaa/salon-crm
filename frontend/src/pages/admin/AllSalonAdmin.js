@@ -137,8 +137,12 @@ const SalonAdminTable = ({ superAdminToken }) => {
   return (
     <AdminLayout>
       <div className="overflow-x-auto">
-        <p className="text-2xl font-semibold text-gray-800 mb-4">Total Salon Admins: <strong>{totalCount}</strong></p>
-
+      <h1 className="text-2xl font-extrabold mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+               drop-shadow-lg shadow-blue-500/50 
+               transform transition duration-300 hover:scale-105">
+  Total Salon Admins: <strong>{totalCount}</strong>
+</h1>
         {salonAdmins.length === 0 ? (
           <div className="flex flex-col items-center justify-center bg-gray-100 p-8 rounded-lg shadow-lg space-y-6">
             <p className="text-xl font-semibold text-gray-700">
@@ -153,7 +157,7 @@ const SalonAdminTable = ({ superAdminToken }) => {
 
         ) : (
           <table className="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-red-500 text-white">
+            <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
               <tr>
                 <th className="px-6 py-3 text-left">Owner Name</th>
                 <th className="px-6 py-3 text-left">Email</th>

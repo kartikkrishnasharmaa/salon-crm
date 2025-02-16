@@ -43,7 +43,12 @@ function CreateBranch() {
   return (
     <AdminLayout>
       <div className="max-w-md mx-auto p-4 shadow-lg rounded-lg bg-white">
-        <h2 className="text-xl font-bold mb-4">Create Branch</h2>
+      <h1 className="text-4xl font-extrabold text-center mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+               drop-shadow-lg shadow-blue-500/50 
+               transform transition duration-300 hover:scale-105">
+  Create ✂️ Salon Branch
+</h1>
         {message && <p className="text-red-500">{message}</p>}
         <form onSubmit={handleSubmit}>
           <select
@@ -64,7 +69,7 @@ function CreateBranch() {
           <input type="text" placeholder="Branch Name" value={branchName} onChange={(e) => setBranchName(e.target.value)} className="w-full p-2 border mb-2" />
           <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full p-2 border mb-2" />
           <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full p-2 border mb-2" />
-          <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">Create Branch</button>
+          <button type="submit" className="w-full p-2 bg-gradient-to-r from-blue-500 to-purple-600 font-bold text-white rounded">Create Branch</button>
         </form>
       </div>
     </AdminLayout>
