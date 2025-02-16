@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const chalk = require('chalk');
 
 const connectDB = async () => {
   try {
@@ -6,13 +7,12 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('MongoDB connected successfully');
+    console.log(chalk.green.bold(' \n\n✅ MongoDB Connected Successfully!'));
   } catch (error) {
-    console.error('MongoDB connection failed:', error.message);
+    console.log(chalk.red.bold('\n\n ❌ MongoDB Connection Failed!'));
+    console.error(chalk.red(error.message));
     process.exit(1);
   }
 };
 
 module.exports = connectDB;
-
-

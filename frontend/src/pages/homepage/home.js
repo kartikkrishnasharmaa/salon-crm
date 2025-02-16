@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "../../assests/salon-logo.png";
 
 const Home = () => {
   return (

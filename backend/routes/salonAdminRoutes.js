@@ -10,6 +10,7 @@ const {
   loginasSalonAdmin,
   getSalonAdminProfile, 
   createBranch, 
+  getAllSalonAdminsWithBranches
 } = require("../controllers/salonAdminAuthController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -25,6 +26,7 @@ router.post("/login-as-salon-admin/:salonAdminId", loginasadmin, loginasSalonAdm
 router.get("/salon-admin-profile", authMiddleware, getSalonAdminProfile);
 
 router.post("/create-branch", authMiddleware, createBranch); 
+router.get("/get-all-branches", authMiddleware, getAllSalonAdminsWithBranches);
 
 //count all admin API
 router.get(

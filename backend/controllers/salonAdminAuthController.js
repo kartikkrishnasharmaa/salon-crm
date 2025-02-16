@@ -1,6 +1,9 @@
-const SalonAdmin = require("../models/salonAdminAuth");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const Branch = require("../models/branch");
+const SalonAdmin = require("../models/salonAdminAuth");
+
+
 
 
 exports.getSalonBranches = async (req, res) => {
@@ -114,38 +117,46 @@ exports.loginasSalonAdmin = async (req, res) => {
 };
 
 exports.createBranch = async (req, res) => {
-const { salonAdminId, branchName, address, phone } = req.body;
-  // Validate salonAdminId
-  if (!mongoose.Types.ObjectId.isValid(salonAdminId)) {
-    return res.status(400).json({ message: 'Invalid Salon Admin ID' });
-  }
+  const { salonAdminId, branchName, address, phone } = req.body;
   try {
     const salonAdmin = await SalonAdmin.findById(salonAdminId);
     if (!salonAdmin) {
-      return res.status(404).json({ message: 'Salon Admin not found' });
+      return res.status(404).json({ message: "Salon Admin not found" });
     }
 
-    // Check if the admin has less than 4 branches
-    if (salonAdmin.branches.length >= 4) {
-      return res.status(400).json({ message: 'Maximum of 4 branches can be created' });
+    const existingBranches = await Branch.find({ salonAdminId });
+    if (existingBranches.length >= 6) {
+      return res.status(400).json({ message: "Maximum of 6 branches can be created" });
     }
 
-    // Create new branch
-    const newBranch = {
+    const newBranch = new Branch({
+      salonAdminId,
       branchName,
       address,
       phone,
-    };
+    });
 
-    salonAdmin.branches.push(newBranch); // Add branch to salonAdmin
-    await salonAdmin.save(); // Save updated salonAdmin
-
-    res.status(200).json({ message: 'Branch created successfully' });
+    await newBranch.save();
+    res.status(200).json({ message: "Branch created successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+
+exports.getAllSalonAdminsWithBranches = async (req, res) => {
+  try {
+    const salonAdmins = await SalonAdmin.find().select("name email branches");
+
+    if (!salonAdmins || salonAdmins.length === 0) {
+      return res.status(404).json({ message: "No salon admins found" });
+    }
+
+    res.status(200).json({ salonAdmins });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // Salon Admin Login
 exports.salonAdminLogin = async (req, res) => {
@@ -343,8 +354,6 @@ exports.deleteSalonAdmin = async (req, res) => {
     res.status(500).json({ message: "Error deleting Salon Admin", error: error.message });
   }
 };
-
-
 
 // see total admins counting
 exports.getTotalSalonAdminsCount = async (req, res) => {

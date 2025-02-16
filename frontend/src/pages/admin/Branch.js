@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "../../api/axiosConfig";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import AdminLayout from "../../layouts/AdminLayout";
 
-const SalonBranchCreate = () => {
+function CreateBranch() {
   const [salonAdmins, setSalonAdmins] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    salonAdmin: "",
-    branchName: "",
-    address: "",
-    phone: "",
-  });
+  const [salonAdminId, setSalonAdminId] = useState("");
+  const [branchName, setBranchName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchSalonAdmins = async () => {
@@ -23,113 +19,56 @@ const SalonBranchCreate = () => {
         });
         setSalonAdmins(response.data.salonAdmins || []);
       } catch (error) {
-        toast.error("Failed to fetch salon admins");
+        console.error("Failed to fetch salon admins");
       }
     };
-
     fetchSalonAdmins();
   }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // Simple Validation (Check if fields are filled)
-    if (!formData.salonAdmin || !formData.branchName || !formData.address || !formData.phone) {
-      toast.error("Please fill all the fields.");
-      setLoading(false);
-      return;
-    }
-
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post("/salon/create-branch", formData, {
-        headers: { Authorization:token },
-      });
-      toast.success(response.data.message);
-      setFormData({
-        salonAdmin: "",
-        branchName: "",
-        address: "",
-        phone: "",
-      });
+      const response = await axios.post(
+        "/salon/create-branch",
+        { salonAdminId, branchName, address, phone },
+        { headers: { Authorization: token } }
+      );
+      setMessage(response.data.message);
     } catch (error) {
-      toast.error("Failed to create branch");
-    } finally {
-      setLoading(false);
+      setMessage(error.response?.data?.message || "Something went wrong");
     }
   };
 
   return (
     <AdminLayout>
-      <div className="max-w-lg mx-auto bg-white p-6 rounded shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Create Salon Branch</h2>
+      <div className="max-w-md mx-auto p-4 shadow-lg rounded-lg bg-white">
+        <h2 className="text-xl font-bold mb-4">Create Branch</h2>
+        {message && <p className="text-red-500">{message}</p>}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Select Salon Admin</label>
-            <select
-              name="salonAdmin"
-              value={formData.salonAdmin}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Select an Admin</option>
-              {salonAdmins.map((admin) => (
-                <option key={admin._id} value={admin._id}>
-                  {admin.ownerName} - {admin.salonName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700">Branch Name</label>
-            <input
-              type="text"
-              name="branchName"
-              value={formData.branchName}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700">Address</label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700">Phone Number</label>
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
-            disabled={loading}
+          <select
+            value={salonAdminId}
+            onChange={(e) => setSalonAdminId(e.target.value)}
+            className="w-full p-2 border mb-2 text-black bg-white"
           >
-            {loading ? "Creating..." : "Create Branch"}
-          </button>
+            <option value="">
+              {salonAdmins.length === 0 ? "Loading..." : "Select Salon Admin"}
+            </option>
+            {salonAdmins.map((admin) => (
+              <option key={admin._id} value={admin._id}>
+                {admin.ownerName} - {admin.email}
+              </option>
+            ))}
+          </select>
+
+          <input type="text" placeholder="Branch Name" value={branchName} onChange={(e) => setBranchName(e.target.value)} className="w-full p-2 border mb-2" />
+          <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full p-2 border mb-2" />
+          <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full p-2 border mb-2" />
+          <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">Create Branch</button>
         </form>
       </div>
     </AdminLayout>
   );
-};
+}
 
-export default SalonBranchCreate;
+export default CreateBranch;

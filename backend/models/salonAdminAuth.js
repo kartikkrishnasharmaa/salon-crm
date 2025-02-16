@@ -1,9 +1,9 @@
+// models/SalonAdmin.js
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const salonAdminSchema = mongoose.Schema(
   {
-    // Personal Details
     ownerName: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -16,30 +16,21 @@ const salonAdminSchema = mongoose.Schema(
       zipCode: { type: String },
       country: { type: String }
     },
-    // Business Details
     salonName: { type: String },
     salonType: { type: String, enum: ["Men", "Women", "Unisex"] },
     businessEmail: { type: String },
     businessPhone: { type: String },
     businessWebsite: { type: String },
-    establishedYear: { type: Number }, // Year of establishment
-    servicesOffered: [{ type: String }], // List of services
+    establishedYear: { type: Number },
+    servicesOffered: [{ type: String }],
     role: { type: String, default: "salonadmin" },
-    status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" }, // Approval status by super admin
-    branches: [
-      {
-        branchName: { type: String,  },
-        phone: { type: Number, },
-        address: { type: String, }
-      }
-    ], // Branches directly inside SalonAdmin
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "SuperAdmin" }, // SuperAdmin reference
+    status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "SuperAdmin" },
     updatedAt: { type: Date, default: Date.now }
   },
   { timestamps: true }
 );
 
-// Encrypt password before saving
 salonAdminSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
@@ -47,7 +38,6 @@ salonAdminSchema.pre("save", async function (next) {
   next();
 });
 
-// Compare passwords
 salonAdminSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
