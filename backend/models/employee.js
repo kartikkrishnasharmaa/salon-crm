@@ -7,7 +7,7 @@ const EmployeeSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ["manager", "staff", "receptionist"], required: true },
   salonId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin", required: true },
-  branchId: { type: String, required: true }, // Branch ka ID jisme employee assign hoga
+  branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch",}, // Updated
 });
 
 module.exports = mongoose.model("Employee", EmployeeSchema);

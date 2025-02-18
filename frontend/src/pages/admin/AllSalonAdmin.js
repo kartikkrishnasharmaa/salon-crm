@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from "../../api/axiosConfig";
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'; // Importing icons
-import { useNavigate } from 'react-router-dom'; // For navigation
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from "../../layouts/AdminLayout";
-import { ToastContainer, toast } from 'react-toastify'; // For toast notifications
-import 'react-toastify/dist/ReactToastify.css'; // Importing toast styles
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const SalonAdminTable = ({ superAdminToken }) => {
   const [salonAdmins, setSalonAdmins] = useState([]);
@@ -14,50 +14,38 @@ const SalonAdminTable = ({ superAdminToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [selectedAdminId, setSelectedAdminId] = useState(null); // Store the ID of the admin to delete
   const navigate = useNavigate(); // For navigation
-
-  // Fetch salon admins data
-  const fetchSalonAdmins = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get('/salon/view-all-salon-admins', {
-        headers: { Authorization: token },
-      });
-      console.log("Salon Admins Data:", response.data.salonAdmins); // Debugging
-
-      // If no salon admins, set state to empty and update total count
-      if (response.data.salonAdmins && response.data.salonAdmins.length === 0) {
-        setSalonAdmins([]);
-        setTotalCount(0);
-      } else {
-        setSalonAdmins(response.data.salonAdmins);
-        setTotalCount(Number(response.data.totalSalonAdmins));
-      }
-
-      setLoading(false); // Set loading to false after data is fetched
-    } catch (error) {
-      // Handle error gracefully when no admins are found (avoid crash)
-      if (error.response && error.response.status === 404) {
-        setSalonAdmins([]);
-        setTotalCount(0);
+    const fetchSalonAdmins = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No token found. Please log in.");
+          setLoading(false);
+          return;
+        }
+    
+        const response = await axios.get('/salon-admin/view-all-salon-admins', {
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 5000, // Set a timeout (5 seconds) for the request
+        });
+        setSalonAdmins(response.data); // Directly assign the response data to the state
+        setTotalCount(response.data.length); // Set total count based on the array length
         setLoading(false);
-      } else {
-        setError('Failed to load salon admins');
+      } catch (error) {
+        setError(`Error: ${error.message || 'Failed to fetch salon admins'}`);
         setLoading(false);
       }
-    }
-  };
-
-  // Only fetch salon admins on mount or after deleting an admin
-  useEffect(() => {
-    fetchSalonAdmins();
-  }, []); // Run only once on component mount
+    };
+    // Only fetch salon admins on mount or after deleting an admin
+    useEffect(() => {
+      fetchSalonAdmins();
+    }, []);
 
   // Handle delete confirmation
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`/salon/delete-salon-admin/${selectedAdminId}`, {
-        headers: { Authorization: token },
+      await axios.delete(`/salon-admin/delete-salon-admin/${selectedAdminId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       // Remove the deleted salon admin from the state
@@ -127,7 +115,6 @@ const SalonAdminTable = ({ superAdminToken }) => {
     }
   };
 
-
   // If data is still loading, show loading message
   if (loading) return <p>Loading...</p>;
 
@@ -137,12 +124,12 @@ const SalonAdminTable = ({ superAdminToken }) => {
   return (
     <AdminLayout>
       <div className="overflow-x-auto">
-      <h1 className="text-2xl font-extrabold mb-6 
-               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
-               drop-shadow-lg shadow-blue-500/50 
-               transform transition duration-300 hover:scale-105">
-  Total Salon Admins: <strong>{totalCount}</strong>
-</h1>
+        <h1 className="text-2xl font-extrabold mb-6 
+                 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+                 drop-shadow-lg shadow-blue-500/50 
+                 transform transition duration-300 hover:scale-105">
+          Total Salon Admins: <strong>{totalCount}</strong>
+        </h1>
         {salonAdmins.length === 0 ? (
           <div className="flex flex-col items-center justify-center bg-gray-100 p-8 rounded-lg shadow-lg space-y-6">
             <p className="text-xl font-semibold text-gray-700">
@@ -154,7 +141,6 @@ const SalonAdminTable = ({ superAdminToken }) => {
               Add Salon Admin
             </a>
           </div>
-
         ) : (
           <table className="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
@@ -164,8 +150,8 @@ const SalonAdminTable = ({ superAdminToken }) => {
                 <th className="px-6 py-3 text-left">Phone</th>
                 <th className="px-6 py-3 text-left">Salon Name</th>
                 <th className="px-6 py-3 text-left">Salon Type</th>
-                <th className="px-6 py-3 text-left">Established Year</th>
-                <th className="px-6 py-3 text-left">Actions</th> {/* Add column for actions */}
+                <th className="px-6 py-3 text-left">Login As Admin</th>
+                <th className="px-6 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
@@ -176,10 +162,9 @@ const SalonAdminTable = ({ superAdminToken }) => {
                   <td className="px-6 py-4">{admin.phone}</td>
                   <td className="px-6 py-4">{admin.salonName}</td>
                   <td className="px-6 py-4">{admin.salonType}</td>
-                  <td className="px-6 py-4">{admin.establishedYear}</td>
                   <td>
-                    <button onClick={() => handleLoginAsSalonAdmin(admin._id)} disabled={loading}>
-                      {loading ? "Logging in..." : "Login as Admin"}
+                    <button class="w-auto ml-6 p-2 bg-gradient-to-r from-blue-500 to-purple-600 font-bold text-white rounded" onClick={() => handleLoginAsSalonAdmin(admin._id)} disabled={loading}>
+                      {loading ? "Logging in..." : "Dashboard"}
                     </button>
                   </td>
                   <td className="px-6 py-4 flex space-x-4"> {/* Flex to align icons */}
@@ -220,6 +205,7 @@ const SalonAdminTable = ({ superAdminToken }) => {
           </div>
         </div>
       )}
+
 
       {/* Toast notifications container */}
       <ToastContainer />

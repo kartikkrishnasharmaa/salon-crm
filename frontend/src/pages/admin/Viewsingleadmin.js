@@ -15,7 +15,7 @@ const AdminDetailPage = () => {
     const fetchAdminDetail = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`/salon/view-salon-admin/${adminId}`, {
+        const response = await axios.get(`/salon-admin/view-salon-admin/${adminId}`, {
           headers: { Authorization: token },
         });
         setAdmin(response.data.salonAdmin);

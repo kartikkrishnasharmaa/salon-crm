@@ -15,7 +15,7 @@ const SalonAdminBranches = () => {
     const fetchSalonAdmins = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("/salon/get-all-branches", {
+        const response = await axios.get("/salon-admin/get-all-branches", {
           headers: { Authorization: token },
         });
         setSalonAdmins(response.data.data || []); // Corrected response path
@@ -83,19 +83,19 @@ const SalonAdminBranches = () => {
             {salonAdmins.map((admin) => (
               <div
                 key={admin._id}
-                className="bg-white border rounded-xl shadow-lg p-5 flex flex-col md:flex-row items-center md:items-start md:justify-between gap-6 transition-transform transform hover:scale-105 hover:shadow-2xl shadow-bg-gradient-to-r from-blue-500 to-purple-600"
+                className="bg-gray-100 box-border h-full w-auto p-10 m-6 border-4 shadow-md shadow-cyan-600 hover:shadow-indigo-700"
               >
                 <div className="w-full md:w-1/3">
-                  <h2 className="text-2xl font-bold text-gray-800">{admin?.ownerName || "Unknown"}</h2>
-                  <p className="text-gray-600">{admin?.email || "No Email"}</p>
+                  <h2 className="text-transparent text-xl font-bold bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg shadow-blue-500/50">{admin?.ownerName || "Unknown"}</h2>
+                  <p className="text-gray-600 mt-4">{admin?.email || "No Email"}</p>
                 </div>
 
-                <div className="w-full md:w-2/3 flex flex-wrap gap-4">
+                <div className="w-full md:w-2/3 flex flex-wrap  gap-4">
                   {admin.branches && admin.branches.length > 0 ? (
                     admin.branches.map((branch) => (
                       <div
                         key={branch._id}
-                        className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm hover:bg-gray-200 transition w-full md:w-[45%]"
+                        className="flex items-center mt-6 justify-between bg-gray-100 p-4 rounded-lg shadow-sm shadow-cyan-600 transition w-full md:w-[45%]"
                       >
                         <div>
                           <p className="text-lg font-medium text-gray-800">{branch.branchName || "No Name"}</p>
@@ -116,7 +116,10 @@ const SalonAdminBranches = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-500 italic">No branches found</p>
+                    <p className="text-xl mt-7 font-extrabold text-center mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600
+               drop-shadow-lg shadow-blue-500/50 
+               transform transition duration-300 hover:scale-105">No branches found</p>
                   )}
                 </div>
               </div>

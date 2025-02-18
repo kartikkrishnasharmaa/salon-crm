@@ -63,7 +63,7 @@ const Salonadmin = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post("salon/create-salon-admin", formData, {
+      const res = await axios.post("salon-admin/create-salon-admin", formData, {
         headers: { Authorization: token },
       });
 // clear message after 5 seconds
