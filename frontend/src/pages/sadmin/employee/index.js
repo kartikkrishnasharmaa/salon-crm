@@ -9,7 +9,7 @@ function Employees() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("staff"); // Default role
+  const [role, setRole] = useState("select"); // Default role
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -51,8 +51,10 @@ function Employees() {
             onChange={(e) => setRole(e.target.value)}
             className="w-full p-2 border mb-2 text-black bg-white"
           >
+            <option value="select">Select Role</option>
             <option value="staff">Staff</option>
             <option value="manager">Manager</option>
+            <option value="receptionist">Receptionist</option>
           </select>
 
           <button type="submit" className="w-full p-2 bg-gradient-to-r from-green-500 to-blue-600 font-bold text-white rounded">

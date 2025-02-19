@@ -49,6 +49,6 @@ router.get("/view-salon-admin/:adminId", authMiddleware,isSuperAdmin, viewSalonA
 router.delete('/delete-salon-admin/:id',authMiddleware,isSuperAdmin, deleteSalonAdmin);
 
 // // Salon admin login
-// router.post("/salon-admin-login", salonAdminLogin);
+router.post("/salon-admin-login", salonAdminLogin);
 
 module.exports = router;

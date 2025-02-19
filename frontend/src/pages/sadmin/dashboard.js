@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
 import SAAdminLayout from "../../layouts/Salonadmin";
+import BranchSelector from "../../components/BranchSelector";
+import { dummyEmployees, dummyCustomers, dummyAppointments } from '../../data/dummyData';
+
+
 import {
   FaUserTie,
   FaChartLine,
@@ -16,11 +22,20 @@ import {
   BarChart,
   Bar,
   ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
 } from "recharts";
 
 const SADashboard = () => {
-  
+  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+
+  const filteredEmployees = dummyEmployees.filter((emp) => emp.branch === selectedBranch);
+  const filteredCustomers = dummyCustomers.filter((cust) => cust.branch === selectedBranch);
+  const filteredAppointments = dummyAppointments.filter((appt) => appt.branch === selectedBranch);
+
   const [userData, setUserData] = useState(null);
   useEffect(() => {
     // Get the user data from localStorage (if available)
@@ -55,9 +70,9 @@ const SADashboard = () => {
     { name: "Pedicure", value: 10 },
     { name: "Massage", value: 10 },
   ];
-  
+
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A569BD"];
-  
+
   const customerGrowthData = [
     { month: "Jan", customers: 200 },
     { month: "Feb", customers: 250 },
@@ -68,33 +83,66 @@ const SADashboard = () => {
 
   return (
     <SAAdminLayout>
-      {userData ? (
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-8 rounded-xl shadow-2xl border-4 border-white">
-      <div className="text-white">
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <p className="text-lg font-semibold w-1/4">Owner Name:</p>
-            <p className="text-lg w-3/4">{userData.name}</p>
+      <BranchSelector />
+      <div className="mt-4">
+        {selectedBranch ? (
+          <p className="text-lg font-semibold text-gray-700">
+            Showing data for: <span className="text-blue-600">{selectedBranch}</span>
+          </p>
+        ) : (
+          <p className="text-lg text-gray-600">Please select a branch.</p>
+        )}
+      </div>
+
+      {selectedBranch && (
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Employees Count */}
+          <div className="bg-white p-4 shadow-md rounded-lg">
+            <h2 className="text-xl font-semibold">Employees</h2>
+            <p className="text-2xl font-bold text-blue-600">{filteredEmployees.length}</p>
           </div>
-    
-          <div className="flex items-center space-x-4">
-            <p className="text-lg font-semibold w-1/4">Email:</p>
-            <p className="text-lg w-3/4">{userData.email}</p>
+
+          {/* Customers Count */}
+          <div className="bg-white p-4 shadow-md rounded-lg">
+            <h2 className="text-xl font-semibold">Customers</h2>
+            <p className="text-2xl font-bold text-green-600">{filteredCustomers.length}</p>
           </div>
-    
-          <div className="flex items-center space-x-4">
-            <p className="text-lg font-semibold w-1/4">Role:</p>
-            <p className="text-lg w-3/4">{userData.role}</p>
+
+          {/* Appointments Count */}
+          <div className="bg-white p-4 shadow-md rounded-lg">
+            <h2 className="text-xl font-semibold">Appointments</h2>
+            <p className="text-2xl font-bold text-red-600">{filteredAppointments.length}</p>
           </div>
         </div>
-      </div>
-    </div>
-    
+      )}
+
+      {/* {userData ? (
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-8 rounded-xl shadow-2xl border-4 border-white">
+          <div className="text-white">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <p className="text-lg font-semibold w-1/4">Owner Name:</p>
+                <p className="text-lg w-3/4">{userData.name}</p>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <p className="text-lg font-semibold w-1/4">Email:</p>
+                <p className="text-lg w-3/4">{userData.email}</p>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <p className="text-lg font-semibold w-1/4">Role:</p>
+                <p className="text-lg w-3/4">{userData.role}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : (
         <p>Loading...</p>
-      )}
+      )} */}
+
       {/* Dashboard Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6">
         <div className="bg-blue-100 p-4 rounded-lg shadow-md flex items-center">
           <FaChartLine className="text-blue-600 text-3xl mr-3" />
           <div>
@@ -124,41 +172,41 @@ const SADashboard = () => {
           </div>
         </div>
         <div className="bg-red-100 p-4 rounded-lg shadow-md flex items-center">
-    <FaChartLine className="text-red-600 text-3xl mr-3" />
-    <div>
-      <p className="text-gray-600">Pending Appointments</p>
-      <h3 className="text-xl font-bold">24</h3>
-    </div>
-  </div>
+          <FaChartLine className="text-red-600 text-3xl mr-3" />
+          <div>
+            <p className="text-gray-600">Pending Appointments</p>
+            <h3 className="text-xl font-bold">24</h3>
+          </div>
+        </div>
 
-  <div className="bg-orange-100 p-4 rounded-lg shadow-md flex items-center">
-    <FaUsers className="text-orange-600 text-3xl mr-3" />
-    <div>
-      <p className="text-gray-600">Services Offered</p>
-      <h3 className="text-xl font-bold">15</h3>
-    </div>
-  </div>
+        <div className="bg-orange-100 p-4 rounded-lg shadow-md flex items-center">
+          <FaUsers className="text-orange-600 text-3xl mr-3" />
+          <div>
+            <p className="text-gray-600">Services Offered</p>
+            <h3 className="text-xl font-bold">15</h3>
+          </div>
+        </div>
 
-  <div className="bg-teal-100 p-4 rounded-lg shadow-md flex items-center">
-    <FaUserTie className="text-teal-600 text-3xl mr-3" />
-    <div>
-      <p className="text-gray-600">Active Memberships</p>
-      <h3 className="text-xl font-bold">85</h3>
-    </div>
-  </div>
+        <div className="bg-teal-100 p-4 rounded-lg shadow-md flex items-center">
+          <FaUserTie className="text-teal-600 text-3xl mr-3" />
+          <div>
+            <p className="text-gray-600">Active Memberships</p>
+            <h3 className="text-xl font-bold">85</h3>
+          </div>
+        </div>
 
-  <div className="bg-pink-100 p-4 rounded-lg shadow-md flex items-center">
-    <FaMoneyBillWave className="text-pink-600 text-3xl mr-3" />
-    <div>
-      <p className="text-gray-600">Product Sales</p>
-      <h3 className="text-xl font-bold">₹ 7,500</h3>
-    </div>
-  </div>
-      </div>
+        <div className="bg-pink-100 p-4 rounded-lg shadow-md flex items-center">
+          <FaMoneyBillWave className="text-pink-600 text-3xl mr-3" />
+          <div>
+            <p className="text-gray-600">Product Sales</p>
+            <h3 className="text-xl font-bold">₹ 7,500</h3>
+          </div>
+        </div>
+      </div> */}
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white p-4 shadow-lg rounded-lg">
+        {/* <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Monthly Revenue</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={revenueData}>
@@ -174,9 +222,9 @@ const SADashboard = () => {
               />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </div> */}
 
-        <div className="bg-white p-4 shadow-lg rounded-lg">
+        {/* <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Appointments Trend</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={appointmentsData}>
@@ -187,59 +235,67 @@ const SADashboard = () => {
               <Bar dataKey="count" fill="#82ca9d" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-4 shadow-lg rounded-lg">
-    <h3 className="text-lg font-bold mb-3">Service Popularity</h3>
-    
-    <ResponsiveContainer width="100%" height={300}>
-    <PieChart>
-      <Pie
-        data={serviceData}
-        cx="50%"
-        cy="50%"
-        outerRadius={100}
-        fill="#8884d8"
-        dataKey="value"
-        label={(entry) => entry.name} // Labels ke liye
-      >
-        {serviceData.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-    </PieChart>
-  </ResponsiveContainer>
+        </div> */}
+        {/* <div className="bg-white p-4 shadow-lg rounded-lg"> */}
+          {/* <h3 className="text-lg font-bold mb-3">Service Popularity</h3> */}
 
-  {/* Service Names with Colors */}
-  <div className="flex flex-wrap justify-center mt-4">
-    {serviceData.map((entry, index) => (
-      <div key={index} className="flex items-center mx-2">
-        <div
-          className="w-3 h-3 rounded-full mr-2"
-          style={{ backgroundColor: COLORS[index % COLORS.length] }}
-        ></div>
-        <p className="text-sm font-medium">{entry.name}</p>
-      </div>
-    ))}
-  </div>
-  </div>
+          {/* <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={serviceData}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+                label={(entry) => entry.name} // Labels ke liye
+              >
+                {serviceData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer> */}
 
-  {/* Customer Growth Chart */}
-  <div className="bg-white p-4 shadow-lg rounded-lg">
-    <h3 className="text-lg font-bold mb-3">Customer Growth Trend</h3>
-    <ResponsiveContainer width="100%" height={300}>
-      <AreaChart data={customerGrowthData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" />
-        <YAxis />
-        <Tooltip />
-        <Area type="monotone" dataKey="customers" stroke="#82ca9d" fill="#82ca9d" />
-      </AreaChart>
-    </ResponsiveContainer>
-  </div>
+          {/* Service Names with Colors */}
+          {/* <div className="flex flex-wrap justify-center mt-4">
+            {serviceData.map((entry, index) => (
+              <div key={index} className="flex items-center mx-2">
+                <div
+                  className="w-3 h-3 rounded-full mr-2"
+                  style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                ></div>
+                <p className="text-sm font-medium">{entry.name}</p>
+              </div>
+            ))}
+          </div> */}
+        {/* </div> */}
+
+        {/* Customer Growth Chart */}
+        {/* <div className="bg-white p-4 shadow-lg rounded-lg">
+          <h3 className="text-lg font-bold mb-3">Customer Growth Trend</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={customerGrowthData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="customers"
+                stroke="#82ca9d"
+                fill="#82ca9d"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div> */}
       </div>
 
       {/* Recent Appointments Table */}
-      <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
+      {/* <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
         <h3 className="text-lg font-bold mb-3">Recent Appointments</h3>
         <table className="w-full border-collapse border border-gray-200">
           <thead>
@@ -277,7 +333,7 @@ const SADashboard = () => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
     </SAAdminLayout>
   );
 };

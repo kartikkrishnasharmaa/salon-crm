@@ -25,7 +25,7 @@ const Login = () => {
     setSuccess(false);
 
     try {
-      const response = await axios.post('/salon/salon-admin-login', formData);
+      const response = await axios.post('/salon-admin/salon-admin-login', formData);
       const { token, salonAdmin } = response.data;
       console.log('Login Successful:', response.data);
       localStorage.setItem("token", token);
