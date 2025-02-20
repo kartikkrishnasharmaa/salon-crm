@@ -4,6 +4,7 @@ import { FaTachometerAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icon
 
 const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isBookings, setBooking] = useState(false);
+  const [isServices, setServices] = useState(false);
   const [isEmployeeManagement, setEmployeeManagement] = useState(false);
   const [isReportManagement, setReportManagement] = useState(false);
   const [isSettings, setSettings] = useState(false);
@@ -11,6 +12,8 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const toggleSubCategory = (category) => {
     if (category === 'Booking') {
       setBooking(!isBookings);
+    }else if (category === 'Service Management') {
+      setServices(!isServices);
     } else if (category === 'Employee Management') {
       setEmployeeManagement(!isEmployeeManagement);
     } else if (category === 'Report Management') {
@@ -41,8 +44,49 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
               <span className="text-lg font-medium">Dashboard</span>
             </NavLink>
           </li>
+          <li>
+            <div
+              className="flex items-center justify-between py-3 px-4 cursor-pointer"
+              onClick={() => toggleSubCategory('Service Management')}
+            >
+              <div className="flex items-center gap-4">
+                <FaUsers className="text-xl" />
+                <span className="text-lg font-medium">Services</span>
+              </div>
+              {isServices ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            {isServices && (
+              <ul className="pl-8 space-y-2">
+              
+                <li>
+                  <NavLink
+                    to="/sadmin/create-booking"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      }`
+                    }
+                    onClick={toggleSidebar}
+                  >
+                    <span className="text-lg font-medium">Create Services</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/sadmin/view-booking"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
+                      }`
+                    }
+                    onClick={toggleSidebar}
+                  >
+                    <span className="text-lg font-medium">View Services</span>
+                  </NavLink>
+                </li>
 
-          {/* Salon Admin Management */}
+              </ul>
+            )}
+          </li>
+
           <li>
             <div
               className="flex items-center justify-between py-3 px-4 cursor-pointer"
@@ -86,6 +130,8 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
             )}
           </li>
 
+          {/* Salon Admin Management */}
+        
 
           {/* Salon Admin Management */}
           <li>

@@ -61,10 +61,18 @@ const Dashboard = () => {
           ) : error ? (
             <p className="text-red-500 text-center">{error}</p>
           ) : (
-            <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto transition duration-300 hover:shadow-xl">
-              <h3 className="text-lg font-semibold text-gray-800">Total Salon Admins</h3>
-              <div className="mt-2 text-2xl font-bold text-gray-900">{totalAdmins}</div>
-            </div>
+            <div className="bg-white shadow-lg rounded-2xl p-6 max-w-xs transition duration-300 hover:shadow-2xl transform hover:scale-105">
+            <h3 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
+              <span className="text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h11M9 21V3M17 16l4-4m0 0l-4-4m4 4H9"></path>
+                </svg>
+              </span>
+              Total Salon Admins
+            </h3>
+            <div className="mt-3 text-3xl font-bold text-gray-900">{totalAdmins}</div>
+          </div>
+          
           )}
         </div>
       ) : (

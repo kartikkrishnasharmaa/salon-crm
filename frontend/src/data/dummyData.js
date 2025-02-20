@@ -1,5 +1,5 @@
 export const dummyEmployees = [
-  { id: 1, name: 'Amit Sharma', role: 'Manager', branch: 'branch1' },
+  { id: 1, name: 'Priyanka Rathore', role: 'Manager', branch: 'branch1' },
   { id: 2, name: 'Priya Verma', role: 'Receptionist', branch: 'branch1' },
   { id: 3, name: 'Rahul Yadav', role: 'Stylist', branch: 'branch2' },
   { id: 4, name: 'Neha Singh', role: 'Manager', branch: 'branch2' },
