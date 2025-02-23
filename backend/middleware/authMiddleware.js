@@ -63,8 +63,6 @@ const isSuperAdmin = (req, res, next) => {
   next();
 };
 
-
-
 // 🛡 Role-based Authorization Middleware
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {

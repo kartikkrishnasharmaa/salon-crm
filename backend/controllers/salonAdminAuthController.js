@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Branch = require("../models/branch");
+const SuperAdmin = require("../models/superAdminAuth");
 const SalonAdmin = require("../models/salonAdminAuth");
 const { validationResult } = require("express-validator"); // For input validation
                                                             
@@ -79,26 +80,36 @@ exports.createSalonAdmin = async (req, res) => {
 // Log in as Salon Admin (SuperAdmin logs in as salon admin)
 exports.loginasSalonAdmin = async (req, res) => {
   try {
-    const { salonAdminId } = req.params;
-    const salonAdmin = await SalonAdmin.findById(salonAdminId).select("-password");
+    // 🟢 1. Super Admin Verify Karein
+    if (!req.user || req.user.role !== "superAdmin") {
+      return res.status(403).json({ message: "Access denied! Only SuperAdmin can perform this action" });
+    }
 
+    const { salonAdminId } = req.params;
+    console.log("Salon Admin ID:", salonAdminId);
+
+    // 🟢 2. Salon Admin Find Karein
+    const salonAdmin = await SalonAdmin.findById(salonAdminId).select("-password");
     if (!salonAdmin) {
       return res.status(404).json({ message: "Salon Admin not found" });
     }
 
-    // Generate JWT token for the salon admin
-    const token = jwt.sign(
+    // 🟢 3. New Token Generate Karein for Salon Admin
+    const salonAdminToken = jwt.sign(
       { userId: salonAdmin._id, role: "salonadmin" },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
+    // 🟢 4. Response Return Karein with New Token
     res.status(200).json({
-      token,
+      token: salonAdminToken,
       user: salonAdmin,
       message: `Successfully logged in as ${salonAdmin.salonName}`,
     });
+
   } catch (error) {
+    console.error("Error in Super Admin Direct Login:", error.message);
     res.status(500).json({ message: "Error logging in as Salon Admin", error: error.message });
   }
 };

@@ -87,7 +87,7 @@ const SalonAdminTable = ({ superAdminToken }) => {
       }
 
       const response = await axios.post(
-        `/salon/login-as-salon-admin/${salonAdminId}`,
+        `/salon-admin/direct-login-salon-admin/${salonAdminId}`,
         {}, // Empty body
         {
           headers: {
