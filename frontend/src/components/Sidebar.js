@@ -1,128 +1,59 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaTachometerAlt, FaUsers, FaChevronDown, FaChevronUp, FaUserShield } from 'react-icons/fa';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
-  const [isSalonAdminOpen, setSalonAdminOpen] = useState(false);
-  const [isClientsOpen, setClientsOpen] = useState(false);
-  const [isBookingsOpen, setBookingsOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
 
   const toggleSubCategory = (category) => {
-    if (category === 'salonAdmin') {
-      setSalonAdminOpen(!isSalonAdminOpen);
-    } else if (category === 'clients') {
-      setClientsOpen(!isClientsOpen);
-    } else if (category === 'bookings') {
-      setBookingsOpen(!isBookingsOpen);
-    }
+    setOpenMenu(openMenu === category ? null : category);
   };
 
+  const menuItems = [
+    { name: 'Dashboard', icon: <FaTachometerAlt />, link: '/admin/dashboard' },
+    { name: 'Salon Admin', icon: <FaUserShield />, subMenu: [
+      { name: 'Add Salon Admin', link: '/admin/salonadmin' },
+      { name: 'View Salon Admin', link: '/admin/view-salonadmin' }
+    ]},
+    { name: 'Manage Branch', icon: <FaUsers />, subMenu: [
+      { name: 'Add Branch', link: '/admin/create-branch' },
+      { name: 'View Branch', link: '/admin/view-branch' }
+    ]}
+  ];
+
   return (
-    <aside
-      className={`fixed bg-white inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 transition-transform duration-300 ease-in-out w-80 bg-gradient-to-b text-black p-4 z-30 shadow-lg md:relative`}
-    >
+    <aside className={`fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out w-80 bg-white text-black p-4 z-30 shadow-lg md:relative`}>
       <nav>
         <ul className="space-y-4">
-          {/* Dashboard Link */}
-          <li>
-            <NavLink
-              to="/admin/dashboard"
-              className={({ isActive }) =>
-                `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                }`
-              }
-              onClick={toggleSidebar}
-            >
-              <FaTachometerAlt className="text-xl" /> {/* Icon */}
-              <span className="text-lg font-medium">Dashboard</span>
-            </NavLink>
-          </li>
-
-          {/* Salon Admin Management */}
-          <li>
-            <div
-              className="flex items-center justify-between py-3 px-4 cursor-pointer"
-              onClick={() => toggleSubCategory('salonAdmin')}
-            >
-              <div className="flex items-center gap-4">
-                <FaUsers className="text-xl" />
-                <span className="text-lg font-medium">Salon Admin</span>
-              </div>
-              {isSalonAdminOpen ? <FaChevronUp /> : <FaChevronDown />}
-            </div>
-            {isSalonAdminOpen && (
-              <ul className="pl-8 space-y-2">
-                <li>
-                  <NavLink
-                    to="/admin/salonadmin"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">Add Salon Admin</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/admin/view-salonadmin"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">View Salon Admin</span>
-                  </NavLink>
-                </li>
-              </ul>
-            )}
-          </li>
-
-          {/* Clients Management */}
-          <li>
-            <div
-              className="flex items-center justify-between py-3 px-4 cursor-pointer"
-              onClick={() => toggleSubCategory('clients')}
-            >
-              <div className="flex items-center gap-4">
-                <FaUsers className="text-xl" />
-                <span className="text-lg font-medium">Manage Branch</span>
-              </div>
-              {isClientsOpen ? <FaChevronUp /> : <FaChevronDown />}
-            </div>
-            {isClientsOpen && (
-              <ul className="pl-8 space-y-2">
-                <li>
-                  <NavLink
-                    to="/admin/create-branch"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">Add Branch</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/admin/view-branch"
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'
-                      }`
-                    }
-                    onClick={toggleSidebar}
-                  >
-                    <span className="text-lg font-medium">View Branch</span>
-                  </NavLink>
-                </li>
-
-              </ul>
-            )}
-          </li>
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              {item.subMenu ? (
+                <div className="flex items-center justify-between py-3 px-4 cursor-pointer" onClick={() => toggleSubCategory(item.name)}>
+                  <div className="flex items-center gap-4">
+                    {item.icon}
+                    <span className="text-lg font-medium">{item.name}</span>
+                  </div>
+                  {openMenu === item.name ? <FaChevronUp /> : <FaChevronDown />}
+                </div>
+              ) : (
+                <NavLink to={item.link} className={({ isActive }) => `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'}`} onClick={toggleSidebar}>
+                  {item.icon}
+                  <span className="text-lg font-medium">{item.name}</span>
+                </NavLink>
+              )}
+              {openMenu === item.name && item.subMenu && (
+                <ul className="pl-8 space-y-2">
+                  {item.subMenu.map((subItem, subIndex) => (
+                    <li key={subIndex}>
+                      <NavLink to={subItem.link} className={({ isActive }) => `flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ease-in-out ${isActive ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-blue-500 hover:text-white'}`} onClick={toggleSidebar}>
+                        <span className="text-lg font-medium">{subItem.name}</span>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
         </ul>
       </nav>
     </aside>

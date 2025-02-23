@@ -35,9 +35,9 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col items-center bg-white p-6 shadow-lg rounded-lg">
-          <a href="/login" className="px-6 py-2 bg-yellow-500 text-white rounded-lg mb-4 w-auto">CUSTOMER LOGIN
+          <a href="/client/login" className="px-6 py-2 bg-yellow-500 text-white rounded-lg mb-4 w-auto">CUSTOMER LOGIN
           </a>
-          <a href="/signup" className="px-6 py-2 bg-yellow-500 text-white rounded-lg mb-4 w-auto">CUSTOMER SIGNUP
+          <a href="/client/signup" className="px-6 py-2 bg-yellow-500 text-white rounded-lg mb-4 w-auto">CUSTOMER SIGNUP
           </a>
         </div>
       </div>

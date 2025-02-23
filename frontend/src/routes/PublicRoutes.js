@@ -4,6 +4,10 @@ import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 import Home from "../pages/homepage/home";
 import SalonadminLogin from "../pages/auth/SALogin";
+import CustomerLogin from "../pages/auth/CustomerLogin";
+import CustomerSignup from "../pages/auth/CustomerSignup";
+
+
 
 const PublicRoutes = () => {
   return (
@@ -17,6 +21,10 @@ const PublicRoutes = () => {
 
       {/* salon admin routes */}
       <Route path="/salon-admin/login" element={<SalonadminLogin />} />
+
+      {/* Client login */}
+      <Route path="/client/login" element={<CustomerLogin/>} />
+      <Route path="/client/signup" element={<CustomerSignup/>} />
     </Routes>
   );
 };

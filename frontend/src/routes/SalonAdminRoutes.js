@@ -10,6 +10,8 @@ import SAcreatereport from "../pages/sadmin/report/create_report";
 import SASetting from "../pages/sadmin/settings/index";
 import SAViewEmployee from "../pages/sadmin/employee/viewEmployee";
 import ProfilePage from "../pages/sadmin/profilepage";
+import Createcustomer from "../pages/sadmin/customer/create-customer";
+import SAallCustomer from "../pages/sadmin/customer/all-customer";
 
 const SalonAdminRoutes = () => {
   return (
@@ -35,6 +37,22 @@ const SalonAdminRoutes = () => {
         element={
           <ProtectedRoute>
             <SAViewBooking />
+          </ProtectedRoute>
+        }
+      />
+        <Route
+        path="/sadmin/create-customer"
+        element={
+          <ProtectedRoute>
+            <Createcustomer/>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sadmin/view-allcustomer"
+        element={
+          <ProtectedRoute>
+            <SAallCustomer />
           </ProtectedRoute>
         }
       />
