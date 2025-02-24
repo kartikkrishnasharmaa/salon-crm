@@ -116,7 +116,7 @@ const SADashboard = () => {
         </div>
       )}
 
-      {/* {userData ? (
+      {userData ? (
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-8 rounded-xl shadow-2xl border-4 border-white">
           <div className="text-white">
             <div className="space-y-4">
@@ -139,10 +139,10 @@ const SADashboard = () => {
         </div>
       ) : (
         <p>Loading...</p>
-      )} */}
+      )}
 
       {/* Dashboard Cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6">
         <div className="bg-blue-100 p-4 rounded-lg shadow-md flex items-center">
           <FaChartLine className="text-blue-600 text-3xl mr-3" />
           <div>
@@ -202,11 +202,11 @@ const SADashboard = () => {
             <h3 className="text-xl font-bold">₹ 7,500</h3>
           </div>
         </div>
-      </div> */}
+      </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {/* <div className="bg-white p-4 shadow-lg rounded-lg">
+        <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Monthly Revenue</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={revenueData}>
@@ -222,9 +222,9 @@ const SADashboard = () => {
               />
             </LineChart>
           </ResponsiveContainer>
-        </div> */}
+        </div>
 
-        {/* <div className="bg-white p-4 shadow-lg rounded-lg">
+        <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Appointments Trend</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={appointmentsData}>
@@ -235,11 +235,11 @@ const SADashboard = () => {
               <Bar dataKey="count" fill="#82ca9d" />
             </BarChart>
           </ResponsiveContainer>
-        </div> */}
-        {/* <div className="bg-white p-4 shadow-lg rounded-lg"> */}
-          {/* <h3 className="text-lg font-bold mb-3">Service Popularity</h3> */}
+        </div>
+        <div className="bg-white p-4 shadow-lg rounded-lg">
+          <h3 className="text-lg font-bold mb-3">Service Popularity</h3>
 
-          {/* <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
                 data={serviceData}
@@ -258,10 +258,10 @@ const SADashboard = () => {
                 ))}
               </Pie>
             </PieChart>
-          </ResponsiveContainer> */}
+          </ResponsiveContainer>
 
           {/* Service Names with Colors */}
-          {/* <div className="flex flex-wrap justify-center mt-4">
+          <div className="flex flex-wrap justify-center mt-4">
             {serviceData.map((entry, index) => (
               <div key={index} className="flex items-center mx-2">
                 <div
@@ -271,11 +271,11 @@ const SADashboard = () => {
                 <p className="text-sm font-medium">{entry.name}</p>
               </div>
             ))}
-          </div> */}
-        {/* </div> */}
+          </div>
+         </div>
 
         {/* Customer Growth Chart */}
-        {/* <div className="bg-white p-4 shadow-lg rounded-lg">
+        <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Customer Growth Trend</h3>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={customerGrowthData}>
@@ -291,11 +291,11 @@ const SADashboard = () => {
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div> */}
-      </div>
+        </div>
+      </div>  
 
       {/* Recent Appointments Table */}
-      {/* <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
+      <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
         <h3 className="text-lg font-bold mb-3">Recent Appointments</h3>
         <table className="w-full border-collapse border border-gray-200">
           <thead>
@@ -333,7 +333,7 @@ const SADashboard = () => {
             </tr>
           </tbody>
         </table>
-      </div> */}
+      </div>
     </SAAdminLayout>
   );
 };

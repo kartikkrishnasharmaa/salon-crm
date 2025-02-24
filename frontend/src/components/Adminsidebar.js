@@ -28,8 +28,10 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
       { name: 'All Employees', link: '/sadmin/view-employee' }
     ]},
     { name: 'Reports', icon: <FaChartBar />, subMenu: [
-      { name: 'View Reports', link: '/sadmin/report' },
-      { name: 'Create Report', link: '/sadmin/create-report' }
+      { name: 'All Reports', link: '/sadmin/report' },
+      { name: 'Customer Report', link: '/sadmin/customer-report' },
+      { name: 'Employee Report', link: '/sadmin/employee-report' },
+      { name: 'Booking Report', link: '/sadmin/booking-report' }
     ]},
     { name: 'Settings', icon: <FaCog />, subMenu: [
       { name: 'User Settings', link: '/sadmin/settings' }
