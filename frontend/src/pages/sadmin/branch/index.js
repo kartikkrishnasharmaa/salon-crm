@@ -42,7 +42,6 @@ const AssignEmployeeToBranch = () => {
         const response = await axios.get("/employee/all-employees", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("✅ Employees fetched:", response.data);
         setEmployees(response.data.employees);
       } catch (error) {
         console.error("❌ Error fetching employees:", error);

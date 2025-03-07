@@ -16,6 +16,13 @@ import Createcustomer from "../pages/sadmin/customer/create-customer";
 import SAallCustomer from "../pages/sadmin/customer/all-customer";
 import CreateService from "../pages/sadmin/service/createservice";
 import ViewService from "../pages/sadmin/service/viewservice";
+import CreateProduct from "../pages/sadmin/product/createproduct"
+import AllProduct from "../pages/sadmin/product/allproduct";
+import Stockmangement from "../pages/sadmin/product/stockmanagement";
+import Assignrole from "../pages/sadmin/employee/assignrole";
+import AssignStaff from "../pages/sadmin/service/assignstaff";
+import ViewServicee from "../pages/sadmin/service/viewservice"
+import ViewBranch from "../pages/sadmin/branch/view-branch"
 
 const SalonAdminRoutes = () => {
   return (
@@ -44,11 +51,11 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-         <Route
+      <Route
         path="/sadmin/create-service"
         element={
           <ProtectedRoute>
-            <CreateService/>
+            <CreateService />
           </ProtectedRoute>
         }
       />
@@ -60,11 +67,11 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-        <Route
+      <Route
         path="/sadmin/create-customer"
         element={
           <ProtectedRoute>
-            <Createcustomer/>
+            <Createcustomer />
           </ProtectedRoute>
         }
       />
@@ -125,10 +132,18 @@ const SalonAdminRoutes = () => {
         }
       />
       <Route
-        path="/sadmin/settings"
+        path="/sadmin/assign-branch"
         element={
           <ProtectedRoute>
             <SASetting />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/sadmin/view-branch"
+        element={
+          <ProtectedRoute>
+            <ViewBranch />
           </ProtectedRoute>
         }
       />
@@ -140,7 +155,59 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/sadmin/create-product"
+        element={
+          <ProtectedRoute>
+            <CreateProduct />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sadmin/display-product"
+        element={
+          <ProtectedRoute>
+            <AllProduct />
+          </ProtectedRoute>
+        }
+      />
+        <Route
+        path="/sadmin/stock-management"
+        element={
+          <ProtectedRoute>
+            <Stockmangement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sadmin/assign-role"
+        element={
+          <ProtectedRoute>
+            <Assignrole />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sadmin/assign-staff"
+        element={
+          <ProtectedRoute>
+            <AssignStaff />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sadmin/services-duration"
+        element={
+          <ProtectedRoute>
+            <ViewServicee />
+          </ProtectedRoute>
+        }
+      />
+
+
+
     </Routes>
+
   );
 };
 

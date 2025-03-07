@@ -1,127 +1,98 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import axios from "../../../api/axiosConfig";
 
 const localizer = momentLocalizer(moment);
 
-const Calender = () => {
-    const [view, setView] = useState("month");
-    const [events, setEvents] = useState([
-        {
-            title: "Sample Event 1",
-            start: new Date(2025, 1, 10, 10, 0),
-            end: new Date(2025, 1, 10, 12, 0),
-        },
-        {
-            title: "Sample Event 2",
-            start: new Date(2025, 1, 11, 14, 0),
-            end: new Date(2025, 1, 11, 16, 0),
-        },
-    ]);
+const EmployeeCalendar = () => {
+  const [employees, setEmployees] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [view, setView] = useState("week"); // ✅ Default view: week
 
-    const [contextMenu, setContextMenu] = useState(null);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       setError("Unauthorized: No token found");
+  //       setLoading(false);
+  //       return;
+  //     }
 
-    // Handle right-click on an empty slot
-    const handleRightClick = (e, slotInfo) => {
-        e.preventDefault(); // Prevent default context menu
-        setContextMenu({
-            position: { x: e.clientX, y: e.clientY },
-            date: slotInfo.start,
-        });
-    };
+  //     try {
+  //       // ✅ Fetch Employees
+  //       const employeeRes = await axios.get("/employee/all-employees", {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       setEmployees(employeeRes.data.employees);
 
-    // Confirm Booking
-    const handleBooking = () => {
-        setEvents([...events, {
-            title: "New Booking",
-            start: contextMenu.date,
-            end: new Date(contextMenu.date.getTime() + 60 * 60 * 1000), // 1-hour slot
-        }]);
-        setContextMenu(null);
-    };
+  //       // ✅ Fetch Appointments
+  //       const appointmentRes = await axios.get("/booking/get-all-appointments", {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       setEvents(appointmentRes.data);
+  //     } catch (error) {
+  //       setError(error.response?.data?.message || "Failed to fetch data");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    // Handle event click
-    const handleEventClick = (event) => {
-        // alert(Event clicked: ${ event.title });
-    };
+  //   fetchData();
+  // }, []);
 
-    // Handle view change (month, week, day)
-    const handleViewChange = (view) => {
-        setView(view);
-        setContextMenu(null); // Hide context menu on view change
-    };
+  // ✅ Custom Week Header (Employee Above Dates)
+  // const CustomWeekHeader = ({ date }) => {
+  //   const employeeIndex = moment(date).weekday(); // ✅ Employee ka index based on weekday
+  //   return (
+  //     <div className="flex flex-col items-center min-h-[90px]">
+  //       <span className="text-blue-600 font-semibold">
+  //         {employees[employeeIndex] ? employees[employeeIndex].name : "No Employee"}
+  //       </span>
+  //       <span className="text-gray-700 text-sm font-medium">
+  //         {moment(date).format("ddd, MMM D")}
+  //       </span>
+  //     </div>
+  //   );
+  // };
 
-    // Handle navigation (back, next, today)
-    const handleNavigate = () => {
-        setContextMenu(null); // Hide context menu when navigating
-    };
+  // ✅ Handle view change
+  const handleViewChange = (newView) => {
+    setView(newView);
+  };
 
-    return (
-        <SAAdminLayout>
-            <div style={{ position: "relative" }}>
-                <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: 500, background: "white", borderRadius: "10px" }}
-                    onSelectEvent={handleEventClick}
-                    onView={handleViewChange}
-                    view={view}
-                    views={["month", "week", "day"]}
-                    toolbar={true}
-                    onNavigate={handleNavigate}
-                    selectable
-                    onSelectSlot={(slotInfo) => handleRightClick}
-                />
+  return (
+    <SAAdminLayout>
+      <div style={{ position: "relative" }}>
+    
 
-                {/* Custom Right Click Booking Menu */}
-                {contextMenu && (
-                    <div
-                        style={{
-                            position: "absolute",
-                            top: contextMenu.position.y,
-                            left: contextMenu.position.x,
-                            background: "#fff",
-                            boxShadow: "0px 0px 5px gray",
-                            padding: "10px",
-                            borderRadius: "5px",
-                            zIndex: 1000,
-                        }}
-                    >
-                        <p>Book appointment on {contextMenu.date.toLocaleString()}?</p>
-                        <button
-                            onClick={handleBooking}
-                            style={{
-                                marginRight: "10px",
-                                background: "green",
-                                color: "white",
-                                border: "none",
-                                padding: "5px 10px",
-                                cursor: "pointer",
-                            }}
-                        >
-                            Confirm Booking
-                        </button>
-                        <button
-                            onClick={() => setContextMenu(null)}
-                            style={{
-                                background: "red",
-                                color: "white",
-                                border: "none",
-                                padding: "5px 10px",
-                                cursor: "pointer",
-                            }}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                )}
-            </div>
-        </SAAdminLayout>
-    );
+        {/* {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">{error}</p>
+        ) : ( */}
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500, background: "white", borderRadius: "10px" }}
+            view={view}
+            views={["month", "week", "day"]}
+            toolbar={true}
+            onView={handleViewChange}
+            // components={{
+            //   week: {
+            //     header: CustomWeekHeader, // ✅ Employees above dates
+            //   },
+            // }}
+          />
+      
+      </div>
+    </SAAdminLayout>
+  );
 };
 
-export default Calender;
+export default EmployeeCalendar;

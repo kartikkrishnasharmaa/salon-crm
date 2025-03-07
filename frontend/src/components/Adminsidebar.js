@@ -1,45 +1,60 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaUsers, FaCalendarCheck, FaTools, FaChartBar, FaCog, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { FaTachometerAlt, FaUsers, FaShoppingCart, FaCalendarCheck, FaTools, FaChartBar, FaCog, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [openMenu, setOpenMenu] = useState(null);
+  const selectedBranch = useSelector(state => state.branch.selectedBranch); // Get selected branch from Redux
+  console.log("Sidebar Selected Branch:", selectedBranch); // Debugging
 
   const toggleSubCategory = (category) => {
     setOpenMenu(openMenu === category ? null : category);
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: <FaTachometerAlt />, link: '/sadmin/dashboard' },
+    { name: 'Dashboard', icon: <FaTachometerAlt />, link: selectedBranch ? `/sadmin/dashboard?branchId=${selectedBranch}` : '/sadmin/dashboard' },
+    { name: 'Branch', icon: <FaTools />, subMenu: [
+      { name: 'View Branch', link: '/sadmin/view-branch' },
+      { name: 'Assign Branch', link: '/sadmin/assign-branch' }
+    ]},
     { name: 'Bookings', icon: <FaCalendarCheck />, subMenu: [
-      { name: 'Create Booking', link: '/sadmin/create-booking' },
-      { name: 'View Booking', link: '/sadmin/view-booking' }
+      { name: 'Create Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
+      { name: 'View Booking', link: selectedBranch ? `/sadmin/view-booking?branchId=${selectedBranch}` : '/sadmin/view-booking' }
     ]},
     { name: 'Services', icon: <FaTools />, subMenu: [
-      { name: 'Create Services', link: '/sadmin/create-service' },
-      { name: 'View Services', link: '/sadmin/view-services' }
+      { name: 'Create Services', link: selectedBranch ? `/sadmin/create-service?branchId=${selectedBranch}` : '/sadmin/create-service' },
+      { name: 'View Services', link: selectedBranch ? `/sadmin/view-services?branchId=${selectedBranch}` : '/sadmin/view-services' },
+      { name: 'Assign Services', link: selectedBranch ? `/sadmin/assign-staff?branchId=${selectedBranch}` : '/sadmin/assign-staff' },
+      { name: 'Services Detail', link: selectedBranch ? `/sadmin/services-duration?branchId=${selectedBranch}` : '/sadmin/services-duration' }
+    ]},
+    { name: 'Product', icon: <FaShoppingCart />, subMenu: [
+      { name: 'Create Product', link: selectedBranch ? `/sadmin/create-product?branchId=${selectedBranch}` : '/sadmin/create-product' },
+      { name: 'Display All Products', link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
+      { name: 'Stock Management', link: selectedBranch ? `/sadmin/stock-management?branchId=${selectedBranch}` : '/sadmin/stock-management' }
     ]},
     { name: 'Customers', icon: <FaUsers />, subMenu: [
-      { name: 'Create Customer', link: '/sadmin/create-customer' },
-      { name: 'All Customers', link: '/sadmin/view-allcustomer' }
+      { name: 'Create Customer', link: selectedBranch ? `/sadmin/create-customer?branchId=${selectedBranch}` : '/sadmin/create-customer' },
+      { name: 'All Customers', link: selectedBranch ? `/sadmin/view-allcustomer?branchId=${selectedBranch}` : '/sadmin/view-allcustomer' }
     ]},
     { name: 'Employees', icon: <FaUsers />, subMenu: [
-      { name: 'Create Employee', link: '/sadmin/employee' },
-      { name: 'All Employees', link: '/sadmin/view-employee' }
+      { name: 'Create Employee', link: selectedBranch ? `/sadmin/employee?branchId=${selectedBranch}` : '/sadmin/employee' },
+      { name: 'All Employees', link: selectedBranch ? `/sadmin/view-employee?branchId=${selectedBranch}` : '/sadmin/view-employee' },
+      { name: 'Assign Role', link: selectedBranch ? `/sadmin/assign-role?branchId=${selectedBranch}` : '/sadmin/assign-role' }
     ]},
     { name: 'Reports', icon: <FaChartBar />, subMenu: [
-      { name: 'All Reports', link: '/sadmin/report' },
-      { name: 'Customer Report', link: '/sadmin/customer-report' },
-      { name: 'Employee Report', link: '/sadmin/employee-report' },
-      { name: 'Booking Report', link: '/sadmin/booking-report' }
+      { name: 'All Reports', link: selectedBranch ? `/sadmin/report?branchId=${selectedBranch}` : '/sadmin/report' },
+      { name: 'Customer Report', link: selectedBranch ? `/sadmin/customer-report?branchId=${selectedBranch}` : '/sadmin/customer-report' },
+      { name: 'Employee Report', link: selectedBranch ? `/sadmin/employee-report?branchId=${selectedBranch}` : '/sadmin/employee-report' },
+      { name: 'Booking Report', link: selectedBranch ? `/sadmin/booking-report?branchId=${selectedBranch}` : '/sadmin/booking-report' }
     ]},
     { name: 'Settings', icon: <FaCog />, subMenu: [
-      { name: 'User Settings', link: '/sadmin/settings' }
+      { name: 'Assign Branch', link: '/sadmin/assign-branch' }
     ]}
   ];
 
   return (
-    <aside className={`fixed bg-white inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out w-80 bg-gradient-to-b text-black p-4 z-30 shadow-lg md:relative`}>
+    <aside className={`fixed bg-white inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out w-80 bg-gradient-to-b text-black p-4 z-30 shadow-lg md:relative overflow-y-auto max-h-screen`}>
       <nav>
         <ul className="space-y-4">
           {menuItems.map((item, index) => (

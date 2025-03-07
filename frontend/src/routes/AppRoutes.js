@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import PublicRoutes from "./PublicRoutes";
 import SuperAdminRoutes from "./SuperAdminRoutes";
 import SalonAdminRoutes from "./SalonAdminRoutes";
+import ClientPageRoutes from "./ClientRoutes";
 
 const AppRoutes = () => {
   return (
@@ -10,6 +11,7 @@ const AppRoutes = () => {
       <PublicRoutes />
       <SuperAdminRoutes />
       <SalonAdminRoutes />
+      <ClientPageRoutes />
     </Router>
   );
 };

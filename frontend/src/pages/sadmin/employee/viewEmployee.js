@@ -1,34 +1,73 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SAAdminLayout from "../../../layouts/Salonadmin";
-import { useSelector } from "react-redux";
-import { dummyEmployees } from "../../../data/dummyData";
+import axios from "../../../api/axiosConfig";
 
 const ViewEmployees = () => {
-  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const filteredEmployees = dummyEmployees.filter(
-    (emp) => emp.branch === selectedBranch
-  );
+    useEffect(() => {
+      const fetchEmployees = async () => {
+        const token = localStorage.getItem("token"); // Retrieve token
+  
+        if (!token) {
+          setError("Unauthorized: No token found");
+          setLoading(false);
+          return;
+        }
+  
+        try {
+          const response = await axios.get("/employee/all-employees", {
+            headers: { Authorization: `Bearer ${token}` }, // Pass token in headers
+          });
+          setEmployees(response.data.employees);
+        } catch (error) {
+          setError(error.response?.data?.message || "Failed to fetch employees");
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchEmployees();
+    }, []);
 
   return (
     <SAAdminLayout>
-      <h2 className="text-3xl font-bold mb-6">View All Employee</h2>
-      <div className="p-4 bg-white shadow-md rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">
-          Employees for Branch: {selectedBranch || "None Selected"}
-        </h2>
-        {filteredEmployees.length > 0 ? (
-          <ul className="space-y-2">
-            {filteredEmployees.map((emp) => (
-              <li key={emp.id} className="border p-2 rounded-lg">
-                {emp.name} - {emp.role}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-600">No employees found.</p>
-        )}
-      </div>
+      <h2 className="text-3xl font-bold mb-6">View All Employees</h2>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="py-2 px-4 border">#</th>
+                <th className="py-2 px-4 border">Name</th>
+                <th className="py-2 px-4 border">Email</th>
+                <th className="py-2 px-4 border">Phone</th>
+                <th className="py-2 px-4 border">Role</th>
+                <th className="py-2 px-4 border">Branch</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((employee, index) => (
+                <tr key={employee._id} className="border">
+                  <td className="py-2 px-4 border">{index + 1}</td>
+                  <td className="py-2 px-4 border">{employee.name}</td>
+                  <td className="py-2 px-4 border">{employee.email}</td>
+                  <td className="py-2 px-4 border">{employee.phone}</td>
+                  <td className="py-2 px-4 border">{employee.role}</td>
+                  <td className="py-2 px-4 border">{employee.branchId?.branchName || "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </SAAdminLayout>
   );
 };

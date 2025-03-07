@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 
 function Employees() {
-  const [salons, setSalons] = useState([]);
-  const [salonId, setSalonId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -14,14 +12,28 @@ function Employees() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("selected role: ", role);
+
+    // ❌ Prevent submitting if role is not selected
+    if (role === "select") {
+      setMessage("Please select a valid role");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "/employee/employee/create",
+        "/employee/create-employee",
         { name, email, phone, password, role },
-        { headers: { Authorization: token } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessage(response.data.message);
+      // Clear form after submission
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+      setRole("select");
     } catch (error) {
       setMessage(error.response?.data?.message || "Something went wrong");
     }
@@ -38,8 +50,6 @@ function Employees() {
         </h1>
         {message && <p className="text-red-500">{message}</p>}
         <form onSubmit={handleSubmit}>
-          {/* Branch Dropdown */}
-     
           <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2 border mb-2" />
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border mb-2" />
           <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full p-2 border mb-2" />
@@ -67,24 +77,3 @@ function Employees() {
 }
 
 export default Employees;
-
-
-// import React from "react";
-// import SAAdminLayout from "../../../layouts/Salonadmin";
-
-
-// const Employees = () => {
-
-//     return (
-//         <SAAdminLayout>
-//             <h2 className="text-3xl font-bold mb-6">Create Employee</h2>
-
-
-
-
-
-//         </SAAdminLayout>
-//     );
-// };
-
-// export default Employees;

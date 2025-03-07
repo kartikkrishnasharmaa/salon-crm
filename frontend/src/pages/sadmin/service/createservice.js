@@ -6,6 +6,8 @@ const SAcreateservice = () => {
     const [category, setCategory] = useState("Hair");
     const [serviceType, setServiceType] = useState("Basic");
     const [description, setDescription] = useState("");
+    const [price, setPrice] = useState("");
+    const [duration, setDuration] = useState("");
     const [message, setMessage] = useState("");
 
     const handleSubmit = (e) => {
@@ -53,7 +55,6 @@ const SAcreateservice = () => {
                         <option value="Hair Treatment">Hair Treatment</option>
                         <option value="Other">Other</option>
                     </select>
-                  
                     <select
                         value={serviceType}
                         onChange={(e) => setServiceType(e.target.value)}
@@ -63,6 +64,22 @@ const SAcreateservice = () => {
                         <option value="Premium">Premium</option>
                         <option value="Luxury">Luxury</option>
                     </select>
+                    <input
+                        type="number"
+                        placeholder="Service Price (₹)"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Duration (e.g., 30 mins, 1 hour)"
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                        className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
                     <textarea
                         placeholder="Service Description"
                         value={description}
