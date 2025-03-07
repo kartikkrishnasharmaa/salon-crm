@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import axios from "../../../api/axiosConfig";
+import { useSelector } from 'react-redux';
 
 const ViewEmployees = () => {
+    const selectedBranch = useSelector(state => state.branch.selectedBranch);
+  
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,7 +21,7 @@ const ViewEmployees = () => {
         }
   
         try {
-          const response = await axios.get("/employee/all-employees", {
+          const response = await axios.get(`/employee/all/employees?branchId=${selectedBranch}`, {
             headers: { Authorization: `Bearer ${token}` }, // Pass token in headers
           });
           setEmployees(response.data.employees);
