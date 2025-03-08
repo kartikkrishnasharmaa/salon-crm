@@ -19,7 +19,8 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
       { name: 'Assign Branch', link: '/sadmin/assign-branch' }
     ]},
     { name: 'Bookings', icon: <FaCalendarCheck />, subMenu: [
-      { name: 'Create Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
+      { name: 'Calender Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
+      { name: 'Add Ticket', link: selectedBranch ? `/sadmin/new-booking?branchId=${selectedBranch}` : '/sadmin/new-booking' },
       { name: 'View Booking', link: selectedBranch ? `/sadmin/view-booking?branchId=${selectedBranch}` : '/sadmin/view-booking' }
     ]},
     { name: 'Services', icon: <FaTools />, subMenu: [

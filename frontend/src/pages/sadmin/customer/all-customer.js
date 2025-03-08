@@ -23,13 +23,15 @@ const CustomerTable = () => {
   return (
     <SAAdminLayout>
       <div className="overflow-x-auto">
-        <h1 className="text-2xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg shadow-blue-500/50 transform transition duration-300 hover:scale-105">
-          Total Customers: <strong>{customers.length}</strong>
-        </h1>
+      <h1 className="text-2xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg shadow-blue-500/50">
+  Total Customers: <strong>{customers.customers ? customers.customers.length : 0}</strong>
+</h1>
+
         {customers.customers && customers.customers.length > 0 ? (
     <table className="w-full border-collapse border border-gray-200 mt-4">
         <thead>
             <tr className="bg-gray-100">
+            <th className="py-3 px-4 text-left">S.No</th>
                 <th className="border border-gray-300 p-2">Name</th>
                 <th className="border border-gray-300 p-2">Phone</th>
                 <th className="border border-gray-300 p-2">Email</th>
@@ -37,8 +39,9 @@ const CustomerTable = () => {
             </tr>
         </thead>
         <tbody>
-            {customers.customers.map((c) => (
+            {customers.customers.map((c,index) => (
                 <tr key={c._id} className="text-center">
+                      <td className="py-3 px-4 border">{index + 1}</td>
                     <td className="border border-gray-300 p-2">{c.name}</td>
                     <td className="border border-gray-300 p-2">{c.phone}</td>
                     <td className="border border-gray-300 p-2">{c.email}</td>

@@ -21,8 +21,9 @@ import AllProduct from "../pages/sadmin/product/allproduct";
 import Stockmangement from "../pages/sadmin/product/stockmanagement";
 import Assignrole from "../pages/sadmin/employee/assignrole";
 import AssignStaff from "../pages/sadmin/service/assignstaff";
-import ViewServicee from "../pages/sadmin/service/viewservice"
-import ViewBranch from "../pages/sadmin/branch/view-branch"
+import ViewServicee from "../pages/sadmin/service/viewservice";
+import ViewBranch from "../pages/sadmin/branch/view-branch";
+import SalonNewBooking from "../pages/sadmin/booking/newbooking";
 
 const SalonAdminRoutes = () => {
   return (
@@ -48,6 +49,14 @@ const SalonAdminRoutes = () => {
         element={
           <ProtectedRoute>
             <SAViewBooking />
+          </ProtectedRoute>
+        }
+      />
+         <Route
+        path="/sadmin/new-booking"
+        element={
+          <ProtectedRoute>
+            <SalonNewBooking />
           </ProtectedRoute>
         }
       />

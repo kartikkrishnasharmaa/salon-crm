@@ -2,6 +2,8 @@ import React, { useEffect,useState } from "react";
 import { useSelector } from 'react-redux';
 import axios from "../../api/axiosConfig";
 import SAAdminLayout from "../../layouts/Salonadmin";
+import moment from "moment";
+
 import BranchSelector from "../../components/BranchSelector";
 import {
   FaUserTie,
@@ -30,17 +32,53 @@ import {
 const SADashboard = () => {
   const selectedBranch = useSelector(state => state.branch.selectedBranch);
   const [customers, setCustomers] = useState([]);
-  
+  const [appointments, setAppointments] = useState([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
+const [loading, setLoading] = useState(true);
+const [errorAppointments, setErrorAppointments] = useState(null);
+
   useEffect(() => {
       if (selectedBranch) {
           console.log("Fetching Customers for Branch ID:", selectedBranch);
-          
           axios.get(`/customer/salon/customers?branchId=${selectedBranch}`, { 
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
           })
           .then(res => setCustomers(res.data))
           .catch(error => console.error("Error fetching customers:", error));
       }
+  }, [selectedBranch]);
+
+   // ✅ Fetch Appointments
+   useEffect(() => {
+    if (!selectedBranch) return;
+    setLoadingAppointments(true);
+    setErrorAppointments(null);
+
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const res = await axios.get(`/booking/get-appointments?branchId=${selectedBranch}`, { headers });
+
+        const formattedAppointments = res.data.appointments.map((appt) => ({
+          id: appt._id,
+          customer: appt.customerId?.name || "Unknown",
+          service: appt.service,
+          date: moment(appt.date).format("DD MMM, YYYY"),
+          status: appt.status,
+        }));
+
+        setAppointments(formattedAppointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        setErrorAppointments("Failed to load appointments.");
+      } finally {
+        setLoadingAppointments(false);
+      }
+    };
+
+    fetchAppointments();
   }, [selectedBranch]);
   
  const revenueData = [
@@ -233,45 +271,41 @@ const SADashboard = () => {
       </div>
 
       {/* Recent Appointments Table */}
-      <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
-        <h3 className="text-lg font-bold mb-3">Recent Appointments</h3>
-        <table className="w-full border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Customer</th>
-              <th className="border border-gray-300 p-2">Service</th>
-              <th className="border border-gray-300 p-2">Date</th>
-              <th className="border border-gray-300 p-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="text-center">
-              <td className="border border-gray-300 p-2">Kartik Sharma</td>
-              <td className="border border-gray-300 p-2">Haircut</td>
-              <td className="border border-gray-300 p-2">Feb 5, 2025</td>
-              <td className="border border-gray-300 p-2 text-green-600">
-                Completed
-              </td>
-            </tr>
-            <tr className="text-center">
-              <td className="border border-gray-300 p-2">Priyanka Rathore</td>
-              <td className="border border-gray-300 p-2">Facial</td>
-              <td className="border border-gray-300 p-2">Feb 6, 2025</td>
-              <td className="border border-gray-300 p-2 text-yellow-600">
-                Pending
-              </td>
-            </tr>
-            <tr className="text-center">
-              <td className="border border-gray-300 p-2">Krishna</td>
-              <td className="border border-gray-300 p-2">Manicure</td>
-              <td className="border border-gray-300 p-2">Feb 7, 2025</td>
-              <td className="border border-gray-300 p-2 text-red-600">
-                Cancelled
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+     {/* Recent Appointments */}
+     <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
+          <h3 className="text-lg font-bold mb-3">Recent Appointments</h3>
+
+          {loadingAppointments ? (
+            <p className="text-center text-gray-600">Loading...</p>
+          ) : errorAppointments ? (
+            <p className="text-red-500">{errorAppointments}</p>
+          ) : appointments.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 p-2">Customer</th>
+                  <th className="border border-gray-300 p-2">Service</th>
+                  <th className="border border-gray-300 p-2">Date</th>
+                  <th className="border border-gray-300 p-2">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.map((appointment, index) => (
+                  <tr key={index} className="text-center">
+                    <td className="border border-gray-300 p-2">{appointment.customer}</td>
+                    <td className="border border-gray-300 p-2">{appointment.service}</td>
+                    <td className="border border-gray-300 p-2">{appointment.date}</td>
+                    <td className={`border border-gray-300 p-2 ${appointment.status === "Completed" ? "text-green-600" : "text-yellow-600"}`}>
+                      {appointment.status}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-center text-gray-600">No appointments found</p>
+          )}
+        </div>
     </SAAdminLayout>
   );
 };

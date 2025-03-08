@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "../../../api/axiosConfig";
 import Modal from "react-modal";
+import { FaPlus } from "react-icons/fa";
 
 const localizer = momentLocalizer(moment);
 Modal.setAppElement("#root");
@@ -18,6 +20,7 @@ const EmployeeCalendar = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
   const [selectedTime, setSelectedTime] = useState(moment().format("HH:mm"));
+  const [selectedendTime, setSelectedendTime] = useState(moment().format("HH:mm"));
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [service, setService] = useState("");
@@ -42,21 +45,30 @@ const EmployeeCalendar = () => {
         setCustomers(customerRes.data?.customers || []);
   
         // ✅ Fetch appointments
-        // const appointmentRes = await axios.get("/booking/get-all-appointments", {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // });
-        // setEvents(
-        //   appointmentRes.data.map((appointment) => ({
-        //     title: appointment.service,
-        //     start: new Date(appointment.date),
-        //     end: new Date(appointment.date),
-        //   }))
-        // );
+        const appointmentRes = await axios.get(`/booking/get-appointments?branchId=${selectedBranch}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        // ✅ Convert to Calendar Format
+        const formattedAppointments = appointmentRes.data.appointments.map((appointment) => {
+          const startDateTime = moment(`${appointment.date}T${appointment.startTime}`, "YYYY-MM-DDTHH:mm").toDate();
+          const endDateTime = moment(`${appointment.date}T${appointment.endTime}`, "YYYY-MM-DDTHH:mm").toDate();
+        
+          return {
+            id: appointment._id,
+            title: `${appointment.service} - ${appointment.status}`,
+            start: startDateTime,
+            end: endDateTime,
+          };
+        });
+        
+    
+        setEvents(formattedAppointments); 
       } catch (error) {
         console.error("Error fetching data", error);
         setEmployees([]);
         setCustomers([]);
-        // setEvents([]);
+        setEvents([]);
       }
     };
   
@@ -65,6 +77,21 @@ const EmployeeCalendar = () => {
   
   const handleViewChange = (newView) => setView(newView);
 
+  const dayStyleGetter = (date) => {
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    const isEventDay = events.some(event => moment(event.start).format("YYYY-MM-DD") === formattedDate);
+  
+    if (isEventDay) {
+      return {
+        style: {
+          backgroundColor: "#ffeeba", // 🔶 Highlight event dates
+          borderRadius: "5px",
+        },
+      };
+    }
+    return {};
+  };
+  
   const handleSelectSlot = (slotInfo) => {
     setSelectedDate(moment(slotInfo.start).format("YYYY-MM-DD"));
     setSelectedTime(moment(slotInfo.start).format("HH:mm"));
@@ -74,26 +101,44 @@ const EmployeeCalendar = () => {
   const handleBookingSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) return;
-      await axios.post(
-        "/booking/create-appointment",
-        {
-          employeeId: selectedEmployee,
-          customerId: selectedCustomer,
-          service,
-          date: `${selectedDate}T${selectedTime}`,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      if (!token || !selectedBranch) {
+        console.error("Token or Branch ID is missing", { token, selectedBranch });
+        return;
+      }
+  
+      const payload = {
+        customerId: selectedCustomer,
+        employeeId: selectedEmployee,
+        service,
+        date: selectedDate,
+        startTime: selectedTime,
+        endTime: selectedendTime,
+        branchId: selectedBranch, // ✅ Ensure it's included
+      };
+  
+      console.log("Sending Booking Payload:", payload);
+  
+      await axios.post("/booking/create-booking", payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
       setModalIsOpen(false);
     } catch (error) {
-      console.error("Error creating appointment", error);
+      console.error("Error creating appointment:", error.response?.data || error);
     }
   };
+  
 
   return (
     <SAAdminLayout>
       <div style={{ position: "relative", padding: "20px", textAlign: "center" }}>
+      <Link
+      to="/your-target-page" // Change this to your target route
+      className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center z-50"
+
+    >
+      <FaPlus size={24} />
+    </Link>
         <div style={{ height: "80vh", width: "100%", background: "white", borderRadius: "10px", padding: "10px" }}>
           <Calendar
             localizer={localizer}
@@ -107,6 +152,8 @@ const EmployeeCalendar = () => {
             onView={handleViewChange}
             selectable
             onSelectSlot={handleSelectSlot}
+            dayPropGetter={dayStyleGetter} // ✅ Event days highlight honge
+
           />
         </div>
       </div>
@@ -157,7 +204,8 @@ const EmployeeCalendar = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
           {[
             { label: "Date", type: "date", value: selectedDate, onChange: setSelectedDate },
-            { label: "Time", type: "time", value: selectedTime, onChange: setSelectedTime },
+            { label: "Start Time", type: "time", value: selectedTime, onChange: setSelectedTime },
+            { label: "End Time", type: "time", value: selectedendTime, onChange: setSelectedendTime },
             { label: "Service", type: "text", value: service, onChange: setService, placeholder: "Enter Service" },
           ].map(({ label, type, value, onChange, placeholder }, index) => (
             <div key={index} style={rowStyle}>

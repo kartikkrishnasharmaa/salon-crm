@@ -31,7 +31,7 @@ app.use('/api/salon-admin', salonAdminRoutes);
 app.use('/api/customer', customerRoutes);
 app.use('/api/employee', employeeRoutes);
 app.use('/api/branch',branchRoutes)
-// app.use('/api/booking', bookingRoutes);
+app.use('/api/booking', bookingRoutes);
 
 app.use((err, req, res, next) => {
   console.error(chalk.red.bold(`❌ Error: ${err.message}`));
