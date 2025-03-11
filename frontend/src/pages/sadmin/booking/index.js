@@ -8,6 +8,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "../../../api/axiosConfig";
 import Modal from "react-modal";
 import { FaPlus } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const localizer = momentLocalizer(moment);
 Modal.setAppElement("#root");
@@ -50,20 +52,21 @@ const EmployeeCalendar = () => {
         });
     
         // ✅ Convert to Calendar Format
-        const formattedAppointments = appointmentRes.data.appointments.map((appointment) => {
-          const startDateTime = moment(`${appointment.date}T${appointment.startTime}`, "YYYY-MM-DDTHH:mm").toDate();
-          const endDateTime = moment(`${appointment.date}T${appointment.endTime}`, "YYYY-MM-DDTHH:mm").toDate();
-        
-          return {
-            id: appointment._id,
-            title: `${appointment.service} - ${appointment.status}`,
-            start: startDateTime,
-            end: endDateTime,
-          };
-        });
-        
-    
-        setEvents(formattedAppointments); 
+      // ✅ Sorting Events before setting state
+const formattedAppointments = appointmentRes.data.appointments.map((appointment) => {
+  const startDateTime = moment(`${appointment.date}T${appointment.startTime}`, "YYYY-MM-DDTHH:mm").toDate();
+  const endDateTime = moment(`${appointment.date}T${appointment.endTime}`, "YYYY-MM-DDTHH:mm").toDate();
+
+  return {
+    id: appointment._id,
+    title: `${appointment.service} - ${appointment.status}`,
+    start: startDateTime,
+    end: endDateTime,
+  };
+}).sort((a, b) => a.start - b.start); // ✅ Sorting appointments by start time
+
+setEvents(formattedAppointments);
+
       } catch (error) {
         console.error("Error fetching data", error);
         setEmployees([]);
@@ -121,7 +124,11 @@ const EmployeeCalendar = () => {
       await axios.post("/booking/create-booking", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+   // ✅ Show success message
+   toast.success("Appointment booked successfully!", {
+    position: "top-right",
+    autoClose: 3000,
+  });
       setModalIsOpen(false);
     } catch (error) {
       console.error("Error creating appointment:", error.response?.data || error);
@@ -133,28 +140,34 @@ const EmployeeCalendar = () => {
     <SAAdminLayout>
       <div style={{ position: "relative", padding: "20px", textAlign: "center" }}>
       <Link
-      to="/your-target-page" // Change this to your target route
+      to="/sadmin/new-booking" // Change this to your target route
       className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center z-50"
 
     >
       <FaPlus size={24} />
     </Link>
         <div style={{ height: "80vh", width: "100%", background: "white", borderRadius: "10px", padding: "10px" }}>
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: "100%", width: "100%" }}
-            view={view}
-            views={["month", "week", "day"]}
-            toolbar={true}
-            onView={handleViewChange}
-            selectable
-            onSelectSlot={handleSelectSlot}
-            dayPropGetter={dayStyleGetter} // ✅ Event days highlight honge
+        <Calendar
+  localizer={localizer}
+  events={events}
+  startAccessor="start"
+  endAccessor="end"
+  style={{ height: "100%", width: "100%" }}
+  view={view}
+  views={["month", "week", "day"]}
+  toolbar={true}
+  onView={handleViewChange}
+  selectable
+  onSelectSlot={handleSelectSlot}
+  eventPropGetter={(event) => ({
+    style: {
+      top: `${moment(event.start).hour() * 60 + moment(event.start).minute()}px`,
+      backgroundColor: "#4caf50",
+      color: "white",
+    },
+  })} 
+/>
 
-          />
         </div>
       </div>
 
@@ -234,6 +247,8 @@ const EmployeeCalendar = () => {
           Book Appointment
         </button>
       </Modal>
+            <ToastContainer />
+      
     </SAAdminLayout>
   );
 };
