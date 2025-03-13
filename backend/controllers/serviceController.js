@@ -6,7 +6,7 @@ exports.createservice = async (req, res) => {
   try {
     const { branchId, name, category, type, price, duration, startTime, endTime, description } = req.body;
 
-    // 🛑 Validate Required Fields
+    //  Validate Required Fields
     if (!branchId || !name || !category || !type || !price || !duration || !startTime || !endTime) {
       return res.status(400).json({ message: "All fields are required" });
     }

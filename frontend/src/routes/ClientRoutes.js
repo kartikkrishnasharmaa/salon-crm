@@ -5,6 +5,7 @@ import BookingHistory from "../pages/client/booking/BookingHistory";
 import BookingByClient from "../pages/client/booking/BookingClient";
 import Paymenthistory from "../pages/client/payment/Paymenthistroy";
 import PaymentPage from "../pages/client/payment/PaymentPage";
+
 const ClientPageRoutes = () => {
   return (
     <Routes>

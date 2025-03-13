@@ -4,10 +4,7 @@ import ClientLayout from "../../layouts/ClientLayout";
 import axios from "../../api/axiosConfig";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 const Dashboard = () => {
-
-
     return (
         <ClientLayout>
             {/* Dashboard Heading */}
@@ -17,9 +14,6 @@ const Dashboard = () => {
                  transform transition duration-300 hover:scale-105">
                 Client Dashboard
             </h1>
-
-
-
             <ToastContainer position="top-right" autoClose={3000} />
         </ClientLayout>
     );
