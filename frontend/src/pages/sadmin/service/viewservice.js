@@ -1,49 +1,81 @@
-import React from 'react';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
 import SAAdminLayout from "../../../layouts/Salonadmin";
-const SAviewservice = () => {
+import axios from "../../../api/axiosConfig";
+import { useSelector } from "react-redux";
 
-    return (
-        <SAAdminLayout>
-            <h1 className="text-2xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg shadow-blue-500/50 transform transition duration-300 hover:scale-105">
-          All Services
-        </h1>
-          <table className="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-              <tr>
-                <th className="px-6 py-3 text-left">Service Name</th>
-                <th className="px-6 py-3 text-left">Category</th>
-                <th className="px-6 py-3 text-left">Plan</th>
-                <th className="px-6 py-3 text-left">Actions</th>
+const ViewServices = () => {
+  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const token = localStorage.getItem("token"); // 🔑 Retrieve token
+
+      if (!token) {
+        setError("Unauthorized: No token found");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `/service/get-services?branchId=${selectedBranch}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setServices(response.data.services);
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to fetch services");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedBranch) fetchServices();
+  }, [selectedBranch]);
+
+  return (
+    <SAAdminLayout>
+      <h2 className="text-3xl font-bold mb-6">View All Services</h2>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="py-2 px-4 border">#</th>
+                <th className="py-2 px-4 border">Service Name</th>
+                <th className="py-2 px-4 border">Category</th>
+                <th className="py-2 px-4 border">Type</th>
+                <th className="py-2 px-4 border">Price</th>
+                <th className="py-2 px-4 border">Duration</th>
               </tr>
             </thead>
-            <tbody className="text-gray-700">
-             
-                <tr className="hover:bg-gray-100 border-b transition-all">
-                  <td className="px-6 py-4">Hair Cutting</td>
-                  <td className="px-6 py-4">Hair</td>
-                  <td className="px-6 py-4">Basic</td>
-                  <td className="px-6 py-4 flex space-x-4">
-                    <FaEye className="text-blue-500 cursor-pointer" title="View"/>
-                    <FaEdit className="text-yellow-500 cursor-pointer" title="Edit" />
-                    <FaTrash className="text-red-500 cursor-pointer" title="Delete" />
-                  </td>
+            <tbody>
+              {services.map((service, index) => (
+                <tr key={service._id} className="border">
+                  <td className="py-2 px-4 border">{index + 1}</td>
+                  <td className="py-2 px-4 border">{service.name}</td>
+                  <td className="py-2 px-4 border">{service.category}</td>
+                  <td className="py-2 px-4 border">{service.type}</td>
+                  <td className="py-2 px-4 border">₹{service.price}</td>
+                  <td className="py-2 px-4 border">{service.duration} mins</td>
                 </tr>
-                 
-                <tr className="hover:bg-gray-100 border-b transition-all">
-                  <td className="px-6 py-4">Hair Color</td>
-                  <td className="px-6 py-4">Hair</td>
-                  <td className="px-6 py-4">Premium</td>
-                  <td className="px-6 py-4 flex space-x-4">
-                    <FaEye className="text-blue-500 cursor-pointer" title="View"/>
-                    <FaEdit className="text-yellow-500 cursor-pointer" title="Edit" />
-                    <FaTrash className="text-red-500 cursor-pointer" title="Delete" />
-                  </td>
-                </tr>
+              ))}
             </tbody>
           </table>
-           </SAAdminLayout>
-    );
+        </div>
+      )}
+    </SAAdminLayout>
+  );
 };
 
-export default SAviewservice;
+export default ViewServices;

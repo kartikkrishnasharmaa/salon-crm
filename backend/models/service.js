@@ -12,7 +12,7 @@ const serviceSchema = new mongoose.Schema(
     duration: { type: Number, required: true }, // Duration in minutes
     startTime: { type: String, required: true }, // Example: "10:00 AM"
     endTime: { type: String, required: true },   // Example: "11:00 AM"
-    assignedEmployee: { type: mongoose.Schema.Types.ObjectId, ref: "Employee", required: true },
+    assignedEmployee: { type: mongoose.Schema.Types.ObjectId, ref: "Employee",},
     status: { type: String, enum: ["Active", "Inactive"], default: "Active" }
   },
   { timestamps: true }

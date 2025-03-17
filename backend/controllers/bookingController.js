@@ -36,7 +36,7 @@ exports.getAppointments = async (req, res) => {
 
     const appointments = await Appointment.find({ branchId })
       .populate("customerId", "name")  // Populate customer name
-      .populate("employeeId", "name")  // Populate employee name
+      .populate("assignedEmployee", "name")  // Populate employee name
       .populate("branchId", "name");     // Populate branch name
 
     res.status(200).json({ success: true, appointments });

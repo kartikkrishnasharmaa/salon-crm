@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 
@@ -9,6 +9,33 @@ function Employees() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("select"); // Default role
   const [message, setMessage] = useState("");
+  const [branchId, setBranchId] = useState("");
+  const [branches, setBranches] = useState([]);
+  const [error, setError] = useState("");
+
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const salonAdminData = JSON.parse(localStorage.getItem("salonAdmin"));
+        if (!salonAdminData?._id || !token) {
+          setError("Salon ID or token missing. Please log in again.");
+          return;
+        }
+
+        const response = await axios.get(`/branch/get-salon/${salonAdminData._id}/branches`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBranches(response.data.branches);
+      } catch (error) {
+        setError("Failed to fetch branches.");
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +51,7 @@ function Employees() {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "/employee/create-employee",
-        { name, email, phone, password, role },
+        { name, email, phone, password,branchId, role },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessage(response.data.message);
@@ -34,6 +61,8 @@ function Employees() {
       setPhone("");
       setPassword("");
       setRole("select");
+      setBranchId("");
+
     } catch (error) {
       setMessage(error.response?.data?.message || "Something went wrong");
     }
@@ -54,7 +83,12 @@ function Employees() {
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border mb-2" />
           <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full p-2 border mb-2" />
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border mb-2" />
-
+          <select value={branchId} onChange={(e) => setBranchId(e.target.value)} className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
+            <option value="">Select a Branch</option>
+            {branches.map((branch) => (
+              <option key={branch._id} value={branch._id}>{branch.branchName}</option>
+            ))}
+          </select>
           {/* Role Selection */}
           <select
             value={role}

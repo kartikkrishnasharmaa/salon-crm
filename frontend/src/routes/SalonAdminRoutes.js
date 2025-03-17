@@ -24,6 +24,7 @@ import AssignStaff from "../pages/sadmin/service/assignstaff";
 import ViewServicee from "../pages/sadmin/service/viewservice";
 import ViewBranch from "../pages/sadmin/branch/view-branch";
 import SalonNewBooking from "../pages/sadmin/booking/newbooking";
+import Allorders from "../pages/sadmin/orders/allorders";
 
 const SalonAdminRoutes = () => {
   return (
@@ -204,6 +205,14 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
+            <Route
+        path="/sadmin/all-orders"
+        element={
+          <ProtectedRoute>
+            <Allorders/>
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/sadmin/services-duration"
         element={
@@ -212,8 +221,6 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-
-
 
     </Routes>
 

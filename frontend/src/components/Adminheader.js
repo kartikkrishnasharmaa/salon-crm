@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux"; // Redux hook
 import Logo from "./../assests/salon-logo.png";
 import { FaUserCircle, FaPhoneAlt } from "react-icons/fa";
 import { HiMenu, HiX } from "react-icons/hi";
@@ -8,6 +9,9 @@ const Adminheader = ({ toggleSidebar }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const selectedBranch = useSelector(state => state.branch.selectedBranch); // Redux se branch ID le rhe hai
+
   const handleOutsideClick = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsOpen(false);
@@ -23,20 +27,19 @@ const Adminheader = ({ toggleSidebar }) => {
     return () => document.removeEventListener("click", handleOutsideClick);
   }, [isOpen]);
 
+  // Function to dynamically generate menu link with branchId
+  const getBranchLink = (baseLink) => {
+    return selectedBranch ? `${baseLink}?branchId=${selectedBranch}` : baseLink;
+  };
+
   return (
     <header className="bg-white flex items-center justify-between p-4 shadow-md relative z-50">
       {/* Sidebar & Menu Toggle Buttons for Mobile */}
       <div className="flex items-center gap-4 md:hidden">
-        <button
-          className="text-black focus:outline-none"
-          onClick={toggleSidebar}
-        >
+        <button className="text-black focus:outline-none" onClick={toggleSidebar}>
           <HiMenu size={28} />
         </button>
-        <button
-          className="text-black focus:outline-none"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
+        <button className="text-black focus:outline-none" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <HiX size={28} /> : <HiMenu size={28} />}
         </button>
       </div>
@@ -48,21 +51,21 @@ const Adminheader = ({ toggleSidebar }) => {
 
       {/* Desktop Menu Centered */}
       <nav className="hidden md:flex space-x-6 text-lg font-semibold mx-auto">
-        <a href="/sadmin/dashboard" className="hover:text-blue-600">
+        <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
           Dashboard
-        </a>
-        <a href="/sadmin/create-booking" className="hover:text-blue-600">
+        </Link>
+        <Link to={getBranchLink("/sadmin/create-booking")} className="hover:text-blue-600">
           Bookings
-        </a>
-        <a href="/sadmin/employee" className="hover:text-blue-600">
+        </Link>
+        <Link to={getBranchLink("/sadmin/employee")} className="hover:text-blue-600">
           Employees
-        </a>
-        <a href="/sadmin/report" className="hover:text-blue-600">
+        </Link>
+        <Link to={getBranchLink("/sadmin/report")} className="hover:text-blue-600">
           Reports
-        </a>
-        <a href="/sadmin/settings" className="hover:text-blue-600">
+        </Link>
+        <Link to={getBranchLink("/sadmin/settings")} className="hover:text-blue-600">
           Settings
-        </a>
+        </Link>
         <div className="mr-6">
           <FaPhoneAlt className="text-green-600 text-xl animate-ping absolute" />
           <FaPhoneAlt className="text-green-600 text-xl" />
@@ -101,21 +104,21 @@ const Adminheader = ({ toggleSidebar }) => {
       {/* Mobile Menu Positioned Below Header */}
       {menuOpen && (
         <nav className="absolute top-24 left-0 w-full bg-white shadow-md flex flex-col md:hidden py-4 space-y-4 text-center z-40">
-          <a href="#" className="hover:text-blue-600">
+          <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
             Dashboard
-          </a>
-          <a href="#" className="hover:text-blue-600">
+          </Link>
+          <Link to={getBranchLink("/sadmin/create-booking")} className="hover:text-blue-600">
             Bookings
-          </a>
-          <a href="#" className="hover:text-blue-600">
+          </Link>
+          <Link to={getBranchLink("/sadmin/employee")} className="hover:text-blue-600">
             Employees
-          </a>
-          <a href="#" className="hover:text-blue-600">
+          </Link>
+          <Link to={getBranchLink("/sadmin/report")} className="hover:text-blue-600">
             Reports
-          </a>
-          <a href="#" className="hover:text-blue-600">
+          </Link>
+          <Link to={getBranchLink("/sadmin/settings")} className="hover:text-blue-600">
             Settings
-          </a>
+          </Link>
         </nav>
       )}
     </header>

@@ -6,43 +6,43 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 
 const Booking = () => {
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+  // const [appointments, setAppointments] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  // const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      if (!selectedBranch) return;
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `/booking/get-appointments?branchId=${selectedBranch}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+  // useEffect(() => {
+  //   const fetchAppointments = async () => {
+  //     if (!selectedBranch) return;
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       const response = await axios.get(
+  //         `/booking/get-appointments?branchId=${selectedBranch}`,
+  //         { headers: { Authorization: `Bearer ${token}` } }
+  //       );
 
-        // Map the API response to include the populated names and formatted date
-        const formattedAppointments = response.data.appointments.map((appt) => ({
-          id: appt._id,
-          customer: appt.customerId?.name || "Unknown",
-          employee: appt.employeeId?.name || "Not Assigned",
-          branch: appt.branchId?.name || "Unknown Branch",
-          service: appt.service,
-          date: moment(appt.date).format("dddd, MMMM Do YYYY"), // e.g., "Wednesday, March 5th 2025"
-          startTime: appt.startTime,
-          endTime: appt.endTime,
-          status: appt.status,
-        }));
+  //       // Map the API response to include the populated names and formatted date
+  //       const formattedAppointments = response.data.appointments.map((appt) => ({
+  //         id: appt._id,
+  //         customer: appt.customerId?.name || "Unknown",
+  //         employee: appt.employeeId?.name || "Not Assigned",
+  //         branch: appt.branchId?.name || "Unknown Branch",
+  //         service: appt.service,
+  //         date: moment(appt.date).format("dddd, MMMM Do YYYY"), // e.g., "Wednesday, March 5th 2025"
+  //         startTime: appt.startTime,
+  //         endTime: appt.endTime,
+  //         status: appt.status,
+  //       }));
 
-        setAppointments(formattedAppointments);
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       setAppointments(formattedAppointments);
+  //     } catch (error) {
+  //       console.error("Error fetching appointments:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchAppointments();
-  }, [selectedBranch]);
+  //   fetchAppointments();
+  // }, [selectedBranch]);
 
   return (
     <SAAdminLayout>
@@ -50,9 +50,9 @@ const Booking = () => {
       <div className="bg-white shadow-md rounded-lg p-6">
         <h3 className="text-xl font-semibold mb-4 text-gray-800">
           Appointments for Branch:{" "}
-          <span className="text-blue-500">{selectedBranch || "None Selected"}</span>
+          {/* <span className="text-blue-500">{selectedBranch || "None Selected"}</span> */}
         </h3>
-        {loading ? (
+        {/* {loading ? (
           <p className="text-gray-600 text-center">Loading...</p>
         ) : appointments.length > 0 ? (
           <div className="overflow-x-auto">
@@ -93,7 +93,7 @@ const Booking = () => {
           </div>
         ) : (
           <p className="text-gray-600 text-center">No appointments found.</p>
-        )}
+        )} */}
       </div>
     </SAAdminLayout>
   );

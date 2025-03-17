@@ -8,6 +8,6 @@
     role: { type: String, enum: ["staff","manager", "receptionist"], required: true },
     salonId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin", required: true },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch",}, // Updated
-  });
+  }, { timestamps: true });
 
   module.exports = mongoose.model("Employee", EmployeeSchema);

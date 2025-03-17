@@ -1,61 +1,90 @@
-import { useState, useEffect } from "react";
-import axios from "../../../api/axiosConfig";
+import React, { useEffect, useState } from "react";
 import SAAdminLayout from "../../../layouts/Salonadmin";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import axios from "../../../api/axiosConfig";
+import { useSelector } from 'react-redux';
 
-function AllProducts() {
-    const [products, setProducts] = useState([
-        { id: 1, name: "Shampoo", category: "Hair Care", price: 15, stock: 50 },
-        { id: 2, name: "Conditioner", category: "Hair Care", price: 12, stock: 40 },
-        { id: 3, name: "Face Wash", category: "Skin Care", price: 10, stock: 30 },
-        { id: 4, name: "Body Lotion", category: "Body Care", price: 20, stock: 25 },
-    ]);
+const ViewProducts = () => {
+    const selectedBranch = useSelector(state => state.branch.selectedBranch);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
+        console.log("🔹 Selected Branch for fetch product:", selectedBranch);
+
         const fetchProducts = async () => {
+            const token = localStorage.getItem("token"); // Retrieve token
+
+            if (!token) {
+                setError("Unauthorized: No token found");
+                setLoading(false);
+                return;
+            }
+
+            if (!selectedBranch?._id) {
+                setError("No branch selected");
+                setLoading(false);
+                return;
+            }
+
             try {
-                const response = await axios.get("/products");
-                setProducts(response.data.length ? response.data : products);
+                const apiUrl = `/product/get-products?branchId=${selectedBranch._id}`;
+                console.log("Fetching products from:", apiUrl);
+
+                const response = await axios.get(apiUrl, {
+                    headers: { Authorization: `Bearer ${token}` }, // Pass token in headers
+                });
+
+                setProducts(response.data.products);
             } catch (error) {
-                console.error("Error fetching products", error);
+                console.error("Error fetching products:", error.response?.data || error.message);
+                setError(error.response?.data?.message || "Failed to fetch products");
+            } finally {
+                setLoading(false);
             }
         };
+
         fetchProducts();
-    }, []);
+    }, [selectedBranch]); // Re-run when branch changes
 
     return (
         <SAAdminLayout>
-            <h1 className="text-2xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg shadow-blue-500/50 transform transition duration-300 hover:scale-105">
-                All Products
-            </h1>
-            <table className="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
-                <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-                    <tr>
-                        <th className="px-6 py-3 text-left">Product Name</th>
-                        <th className="px-6 py-3 text-left">Category</th>
-                        <th className="px-6 py-3 text-left">Price</th>
-                        <th className="px-6 py-3 text-left">Stock</th>
-                        <th className="px-6 py-3 text-left">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="text-gray-700">
-                    {products.map((product) => (
-                        <tr key={product.id} className="hover:bg-gray-100 border-b transition-all">
-                            <td className="px-6 py-4">{product.name}</td>
-                            <td className="px-6 py-4">{product.category}</td>
-                            <td className="px-6 py-4">${product.price}</td>
-                            <td className="px-6 py-4">{product.stock}</td>
-                            <td className="px-6 py-4 flex space-x-4">
-                                <FaEye className="text-blue-500 cursor-pointer" title="View" />
-                                <FaEdit className="text-yellow-500 cursor-pointer" title="Edit" />
-                                <FaTrash className="text-red-500 cursor-pointer" title="Delete" />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <h2 className="text-3xl font-bold mb-6">View All Products</h2>
+
+            {loading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p className="text-red-500">{error}</p>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="py-2 px-4 border">#</th>
+                                <th className="py-2 px-4 border">Name</th>
+                                <th className="py-2 px-4 border">Category</th>
+                                <th className="py-2 px-4 border">Price</th>
+                                <th className="py-2 px-4 border">Stock</th>
+                                <th className="py-2 px-4 border">Branch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products.map((product, index) => (
+                                <tr key={product._id} className="border">
+                                    <td className="py-2 px-4 border">{index + 1}</td>
+                                    <td className="py-2 px-4 border">{product.name}</td>
+                                    <td className="py-2 px-4 border">{product.category}</td>
+                                    <td className="py-2 px-4 border">{product.price}</td>
+                                    <td className="py-2 px-4 border">{product.stockQuantity}</td>
+                                    <td className="py-2 px-4 border">{product.salonBranch?.branchName || "N/A"}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </SAAdminLayout>
     );
-}
+};
 
-export default AllProducts;
+export default ViewProducts;

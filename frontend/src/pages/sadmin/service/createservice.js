@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 
 const SAcreateservice = () => {
@@ -8,11 +10,57 @@ const SAcreateservice = () => {
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [duration, setDuration] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    // 🔹 Redux se `branchId` le rahe hain
+    const branchId = useSelector(state => state.branch.selectedBranch);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage("Service created successfully!");
+
+        if (!branchId) {
+            setMessage("Branch not selected! Please select a branch.");
+            return;
+        }
+
+        if (!serviceName || !category || !serviceType || !price || !duration || !startTime || !endTime) {
+            setMessage("All fields are required!");
+            return;
+        }
+
+        if (startTime >= endTime) {
+            setMessage("End time must be after start time.");
+            return;
+        }
+
+        setIsLoading(true);
+        setMessage("");
+
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                "/service/create-service",
+                { branchId, name: serviceName, category, type: serviceType, price, duration, startTime, endTime, description },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            setMessage(response.data.message);
+            setServiceName("");
+            setCategory("Hair");
+            setServiceType("Basic");
+            setDescription("");
+            setPrice("");
+            setDuration("");
+            setStartTime("");
+            setEndTime("");
+        } catch (error) {
+            setMessage(error.response?.data?.message || "Something went wrong");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -21,9 +69,12 @@ const SAcreateservice = () => {
                 <h1 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg">
                     Create Salon Service
                 </h1>
-                {message && (
-                    <p className="text-green-500 text-center font-medium">{message}</p>
-                )}
+                
+                {/* ✅ Branch ID Debugging */}
+                <p className="text-center text-gray-500">Branch ID: {branchId || "Not Selected"}</p>
+
+                {message && <p className="text-center font-medium text-red-500">{message}</p>}
+
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
                         type="text"
@@ -33,6 +84,7 @@ const SAcreateservice = () => {
                         className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
                         required
                     />
+                    
                     <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
@@ -55,6 +107,7 @@ const SAcreateservice = () => {
                         <option value="Hair Treatment">Hair Treatment</option>
                         <option value="Other">Other</option>
                     </select>
+
                     <select
                         value={serviceType}
                         onChange={(e) => setServiceType(e.target.value)}
@@ -64,6 +117,7 @@ const SAcreateservice = () => {
                         <option value="Premium">Premium</option>
                         <option value="Luxury">Luxury</option>
                     </select>
+
                     <input
                         type="number"
                         placeholder="Service Price (₹)"
@@ -72,6 +126,7 @@ const SAcreateservice = () => {
                         className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
                         required
                     />
+
                     <input
                         type="text"
                         placeholder="Duration (e.g., 30 mins, 1 hour)"
@@ -80,17 +135,38 @@ const SAcreateservice = () => {
                         className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
                         required
                     />
+
+                    <input
+                        type="time"
+                        placeholder="Start Time"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                        className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+
+                    <input
+                        type="time"
+                        placeholder="End Time"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                        className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+
                     <textarea
                         placeholder="Service Description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 col-span-1 md:col-span-2"
                     ></textarea>
+
                     <button
                         type="submit"
                         className="w-full md:col-span-2 p-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:shadow-lg transition"
+                        disabled={isLoading}
                     >
-                        Create Service
+                        {isLoading ? "Creating Service..." : "Create Service"}
                     </button>
                 </form>
             </div>
