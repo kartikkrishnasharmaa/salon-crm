@@ -45,6 +45,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
+  
       <Route
         path="/sadmin/view-booking"
         element={
