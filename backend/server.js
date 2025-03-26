@@ -14,6 +14,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Initialize environment variables
 dotenv.config();
@@ -38,6 +39,7 @@ app.use('/api/booking', bookingRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/order', orderRoutes);
+app.use('/api/category', categoryRoutes);
 
 app.use((err, req, res, next) => {
   console.error(chalk.red.bold(`❌ Error: ${err.message}`));

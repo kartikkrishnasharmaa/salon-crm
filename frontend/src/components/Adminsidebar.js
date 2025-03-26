@@ -30,6 +30,7 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
       { name: 'Services Detail', link: selectedBranch ? `/sadmin/services-duration?branchId=${selectedBranch}` : '/sadmin/services-duration' }
     ]},
     { name: 'Product', icon: <FaShoppingCart />, subMenu: [
+      { name: 'Create Catgeory', link: selectedBranch ? `/sadmin/create-category?branchId=${selectedBranch}` : '/sadmin/create-category' },
       { name: 'Create Product', link: selectedBranch ? `/sadmin/create-product?branchId=${selectedBranch}` : '/sadmin/create-product' },
       { name: 'Display All Products', link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
       { name: 'Stock Management', link: selectedBranch ? `/sadmin/stock-management?branchId=${selectedBranch}` : '/sadmin/stock-management' }

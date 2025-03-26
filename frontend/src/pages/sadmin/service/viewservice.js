@@ -57,6 +57,8 @@ const ViewServices = () => {
                 <th className="py-2 px-4 border">Type</th>
                 <th className="py-2 px-4 border">Price</th>
                 <th className="py-2 px-4 border">Duration</th>
+                <th className="py-2 px-4 border">Status</th>
+                <th className="py-2 px-4 border">Created Time</th>
               </tr>
             </thead>
             <tbody>
@@ -68,6 +70,10 @@ const ViewServices = () => {
                   <td className="py-2 px-4 border">{service.type}</td>
                   <td className="py-2 px-4 border">₹{service.price}</td>
                   <td className="py-2 px-4 border">{service.duration} mins</td>
+                  <td className="py-2 px-4 border">{service.status}</td>
+                  <td className="py-2 px-4 border">
+                    {new Date(service.createdAt).toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -16,7 +16,7 @@ import Createcustomer from "../pages/sadmin/customer/create-customer";
 import SAallCustomer from "../pages/sadmin/customer/all-customer";
 import CreateService from "../pages/sadmin/service/createservice";
 import ViewService from "../pages/sadmin/service/viewservice";
-import CreateProduct from "../pages/sadmin/product/createproduct"
+import CreateProduct from "../pages/sadmin/product/createproduct";
 import AllProduct from "../pages/sadmin/product/allproduct";
 import Stockmangement from "../pages/sadmin/product/stockmanagement";
 import Assignrole from "../pages/sadmin/employee/assignrole";
@@ -25,6 +25,7 @@ import ViewServicee from "../pages/sadmin/service/viewservice";
 import ViewBranch from "../pages/sadmin/branch/view-branch";
 import SalonNewBooking from "../pages/sadmin/booking/newbooking";
 import Allorders from "../pages/sadmin/orders/allorders";
+import CreateCategory from "../pages/sadmin/product/createcategory";
 
 const SalonAdminRoutes = () => {
   return (
@@ -45,7 +46,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-  
+
       <Route
         path="/sadmin/view-booking"
         element={
@@ -54,7 +55,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-         <Route
+      <Route
         path="/sadmin/new-booking"
         element={
           <ProtectedRoute>
@@ -150,7 +151,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-       <Route
+      <Route
         path="/sadmin/view-branch"
         element={
           <ProtectedRoute>
@@ -174,6 +175,12 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/sadmin/create-category" 
+       element={
+        <ProtectedRoute>
+          <CreateCategory />
+        </ProtectedRoute>
+      } />
       <Route
         path="/sadmin/display-product"
         element={
@@ -182,7 +189,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-        <Route
+      <Route
         path="/sadmin/stock-management"
         element={
           <ProtectedRoute>
@@ -206,11 +213,11 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-            <Route
+      <Route
         path="/sadmin/all-orders"
         element={
           <ProtectedRoute>
-            <Allorders/>
+            <Allorders />
           </ProtectedRoute>
         }
       />
@@ -222,9 +229,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-
     </Routes>
-
   );
 };
 

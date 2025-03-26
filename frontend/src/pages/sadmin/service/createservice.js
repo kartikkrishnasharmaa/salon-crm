@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
@@ -17,6 +17,58 @@ const SAcreateservice = () => {
 
     // 🔹 Redux se `branchId` le rahe hain
     const branchId = useSelector(state => state.branch.selectedBranch);
+
+    // Calculate end time whenever startTime or duration changes
+    useEffect(() => {
+        if (startTime && duration) {
+            const calculatedEndTime = calculateEndTime(startTime, duration);
+            setEndTime(calculatedEndTime);
+        }
+    }, [startTime, duration]);
+
+    const calculateEndTime = (start, duration) => {
+        // Parse duration (e.g., "30 mins", "1 hour", "2 hours 30 mins")
+        let minutes = 0;
+        
+        // Check for hours
+        const hourMatch = duration.match(/(\d+)\s*hour/);
+        if (hourMatch) {
+            minutes += parseInt(hourMatch[1]) * 60;
+        }
+        
+        // Check for "hr" abbreviation
+        const hrMatch = duration.match(/(\d+)\s*hr/);
+        if (hrMatch) {
+            minutes += parseInt(hrMatch[1]) * 60;
+        }
+        
+        // Check for minutes
+        const minMatch = duration.match(/(\d+)\s*min/);
+        if (minMatch) {
+            minutes += parseInt(minMatch[1]);
+        }
+        
+        // If no time units found, try to parse as plain number (assuming minutes)
+        if (minutes === 0 && !isNaN(parseInt(duration))) {
+            minutes = parseInt(duration);
+        }
+
+        if (minutes === 0) return ""; // Invalid duration format
+
+        // Parse start time
+        const [hours, mins] = start.split(':').map(Number);
+        const startDate = new Date();
+        startDate.setHours(hours, mins, 0, 0);
+
+        // Add duration
+        const endDate = new Date(startDate.getTime() + minutes * 60000);
+
+        // Format as HH:MM
+        const endHours = endDate.getHours().toString().padStart(2, '0');
+        const endMins = endDate.getMinutes().toString().padStart(2, '0');
+
+        return `${endHours}:${endMins}`;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -97,14 +149,9 @@ const SAcreateservice = () => {
                         <option value="Makeup">Makeup</option>
                         <option value="Facial">Facial</option>
                         <option value="Massage">Massage</option>
-                        <option value="Hair Coloring">Hair Coloring</option>
-                        <option value="Threading">Threading</option>
                         <option value="Waxing">Waxing</option>
-                        <option value="Bridal Makeup">Bridal Makeup</option>
                         <option value="Manicure">Manicure</option>
-                        <option value="Pedicure">Pedicure</option>
                         <option value="Eyebrow Shaping">Eyebrow Shaping</option>
-                        <option value="Hair Treatment">Hair Treatment</option>
                         <option value="Other">Other</option>
                     </select>
 
@@ -149,8 +196,8 @@ const SAcreateservice = () => {
                         type="time"
                         placeholder="End Time"
                         value={endTime}
-                        onChange={(e) => setEndTime(e.target.value)}
-                        className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                        readOnly
+                        className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 bg-gray-100"
                         required
                     />
 
