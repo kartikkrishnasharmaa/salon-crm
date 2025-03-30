@@ -20,6 +20,7 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
     ]},
     { name: 'Bookings', icon: <FaCalendarCheck />, subMenu: [
       { name: 'Calender Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
+      { name: 'BTesting', link: selectedBranch ? `/sadmin/btesting?branchId=${selectedBranch}` : '/sadmin/btesting' },
       { name: 'Add Ticket', link: selectedBranch ? `/sadmin/new-booking?branchId=${selectedBranch}` : '/sadmin/new-booking' },
       { name: 'View Booking', link: selectedBranch ? `/sadmin/view-booking?branchId=${selectedBranch}` : '/sadmin/view-booking' }
     ]},

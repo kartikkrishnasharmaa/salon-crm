@@ -23,6 +23,8 @@ const TestingCalendarr = () => {
   const [blockTimeModalOpen, setBlockTimeModalOpen] = useState(false);
   const [instaSaleModalOpen, setInstaSaleModalOpen] = useState(false);
   const [activeModalType, setActiveModalType] = useState(null);
+  const [activeModal, setActiveModal] = useState(null); // 'view', 'checkin', 'edit'
+
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
   );
@@ -135,19 +137,7 @@ const TestingCalendarr = () => {
     { _id: "64f1a2b3c4d5e6f7a8b9c0d3", name: "Emily Davis" },
     { _id: "64f1a2b3c4d5e6f7a8b9c0d4", name: "John Doe" },
   ];
-  const handleEventClick = (event) => {
-    if (!event?.id) {
-      console.error("Clicked event has no ID:", event);
-      return;
-    }
-
-    console.log("Event clicked - ID:", event.id, "Full event:", event);
-
-    // Store both the ID and full appointment data
-    setCurrentAppointmentId(event.id);
-    setSelectedAppointment(event);
-    setBookingModalOpen(true);
-  };
+  
   const handleModalButtonClick = (type) => {
     setModalIsOpen(false);
     setActiveModalType(type);
@@ -479,13 +469,13 @@ const TestingCalendarr = () => {
       currentAppointmentId,
       selectedAppointment,
     });
-
+  
     // Try all possible ways to get the ID
     const appointmentId =
       currentAppointmentId ||
       selectedAppointment?.id ||
-      JSON.parse(localStorage.getItem("lastSelectedAppointment"))?.id;
-
+      (JSON.parse(localStorage.getItem("lastSelectedAppointment")) || {})?.id;
+  
     if (!appointmentId) {
       toast.error("Please select an appointment first");
       console.error("No appointment ID found. Current state:", {
@@ -495,9 +485,9 @@ const TestingCalendarr = () => {
       });
       return;
     }
-
+  
     setIsProcessingCheckIn(true);
-
+  
     try {
       const response = await axios.patch(
         `/booking/checkin/${appointmentId}`,
@@ -509,10 +499,10 @@ const TestingCalendarr = () => {
           },
         }
       );
-
+  
       if (response.data.success) {
         toast.success("Checked in successfully!");
-
+  
         // Update events list
         setEvents((prevEvents) =>
           prevEvents.map((event) =>
@@ -521,7 +511,7 @@ const TestingCalendarr = () => {
               : event
           )
         );
-
+  
         // Update selected appointment
         if (selectedAppointment?.id === appointmentId) {
           setSelectedAppointment((prev) => ({
@@ -599,7 +589,7 @@ const TestingCalendarr = () => {
   useEffect(() => {
     if (!selectedBranch || !token) return;
 
-    const fetchAppointments = async () => {
+    const fetchAppointments = async () => { 
       try {
         const response = await axios.get(
           `/booking/get-appointments?branchId=${selectedBranch}`,
@@ -609,19 +599,9 @@ const TestingCalendarr = () => {
         );
 
         if (response.data.success) {
-          const formattedAppointments = response.data.appointments
-            .map((appointment) => {
-              if (
-                !appointment.customer ||
-                !appointment.services ||
-                !appointment.staff ||
-                !appointment.date ||
-                !appointment.time
-              ) {
-                console.warn("Invalid appointment data:", appointment);
-                return null;
-              }
-
+          const formattedAppointments = response.data.appointments.map(appointment => {
+            // Ensure we capture the ID regardless of field name
+            const id = appointment._id || appointment.id || appointment.appointmentId;
               const startDateTime = new Date(appointment.date);
               const [hours, minutes] = appointment.time.split(":").map(Number);
               startDateTime.setHours(hours, minutes, 0, 0);
@@ -637,7 +617,7 @@ const TestingCalendarr = () => {
               endDateTime.setMinutes(endDateTime.getMinutes() + totalDuration);
 
               return {
-                id: appointment._id,
+                id: id,
                 title: `${appointment.customer.name} - ${appointment.services
                   .map((service) => service.name)
                   .join(", ")}`,
@@ -708,36 +688,39 @@ const TestingCalendarr = () => {
   // };
   const CustomEvent = ({ event }) => {
     const handleEventClick = () => {
-      if (!event?.id) {
-        console.error("Event has no ID:", event);
+      const eventId = event.id || event._id || event.appointmentId; 
+
+      if (!eventId) {
+        console.error("No ID found in event object:", event);
+        toast.error("Could not identify appointment ID");
         return;
       }
-
+    
+  
       console.log("Selecting appointment:", event.id);
-
-      // Store both the full event and its ID
-      setSelectedAppointment(event);
-      setCurrentAppointmentId(event.id);
-      setBookingModalOpen(true);
-
-      // For debugging
-      localStorage.setItem("lastSelectedAppointment", JSON.stringify(event));
+  
+     // Store ID in multiple ways for redundancy
+  setCurrentAppointmentId(eventId);
+  setSelectedAppointment({...event, id: eventId}); // Ensure ID is set
+  setActiveModal('view'); // This will control which modal view to show
+      
+  localStorage.setItem("lastSelectedAppointment", JSON.stringify({...event, id: eventId}));
     };
-
+  
     return (
       <Tippy
         content={`
-        Customer: ${event.customer?.name || "N/A"} ${
+          Customer: ${event.customer?.name || "N/A"} ${
           event.customer?.lastName || ""
         }
-        Services: ${
-          event.services
-            ?.map((service) => `${service.name} (₹${service.price})`)
-            .join(", ") || "N/A"
-        }
-        Staff: ${getStaffNames(event.staff || [])}
-        Status: ${event.status || "Pending"}
-      `}
+          Services: ${
+            event.services
+              ?.map((service) => `${service.name} (₹${service.price})`)
+              .join(", ") || "N/A"
+          }
+          Staff: ${getStaffNames(event.staff || [])}
+          Status: ${event.status || "Pending"}
+        `}
         placement="top"
         delay={[100, 0]}
         arrow={true}
@@ -1049,43 +1032,40 @@ const TestingCalendarr = () => {
               </button>
 
               <div className="flex flex-wrap justify-center gap-4 mt-6">
-                <button
-                  onClick={handleCheckIn}
-                  disabled={!currentAppointmentId || isProcessingCheckIn}
-                  className={`${
-                    !currentAppointmentId
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-green-600 hover:bg-green-700"
-                  } text-white font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 flex items-center gap-2`}
-                >
-                  {isProcessingCheckIn ? (
-                    <>
-                      <svg
-                        className="animate-spin h-5 w-5 mr-2"
-                        viewBox="0 0 24 24"
-                      >
-                        {/* Loading spinner */}
-                      </svg>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Check In
-                    </>
-                  )}
-                </button>
+              <button
+  onClick={handleCheckIn}
+  disabled={!currentAppointmentId || isProcessingCheckIn}
+  className={`${
+    !currentAppointmentId
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-green-600 hover:bg-green-700"
+  } text-white font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 flex items-center gap-2`}
+>
+  {isProcessingCheckIn ? (
+    <>
+      <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+        {/* Loading spinner */}
+      </svg>
+      Processing...
+    </>
+  ) : (
+    <>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clipRule="evenodd"
+        />
+      </svg>
+      Check In
+    </>
+  )}
+</button>
               </div>
               <button
                 onClick={() => {

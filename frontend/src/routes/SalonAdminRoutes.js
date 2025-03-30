@@ -26,6 +26,7 @@ import ViewBranch from "../pages/sadmin/branch/view-branch";
 import SalonNewBooking from "../pages/sadmin/booking/newbooking";
 import Allorders from "../pages/sadmin/orders/allorders";
 import CreateCategory from "../pages/sadmin/product/createcategory";
+import SalonCalendardummy from "../pages/sadmin/booking/SalonCalendar";
 
 const SalonAdminRoutes = () => {
   return (
@@ -35,6 +36,14 @@ const SalonAdminRoutes = () => {
         element={
           <ProtectedRoute>
             <Salondashboard />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/sadmin/btesting"
+        element={
+          <ProtectedRoute>
+            <SalonCalendardummy />
           </ProtectedRoute>
         }
       />
