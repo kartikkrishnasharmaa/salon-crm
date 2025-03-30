@@ -1,343 +1,395 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
-import { FaBox } from "react-icons/fa";
+import { FaBox, FaRupeeSign, FaBalanceScale } from "react-icons/fa";
+import Tabs from "rc-tabs"; // ✅ Fix: Import as default
+import "rc-tabs/assets/index.css";
+
+const hsnCodes = [
+  { code: "3304", description: "Beauty/makeup preparations" },
+  { code: "3305", description: "Hair care products" },
+  {
+    code: "3307",
+    description: "Pre-shave, shaving or after-shave preparations",
+  },
+  // Add more HSN codes as needed
+];
+const brands = {
+  "L'Oreal": {
+    "Hair Care": ["Shampoo", "Conditioner", "Hair Mask"],
+  },
+  Nivea: {
+    "Skin Care": ["Moisturizer", "Face Wash", "Sunscreen"],
+  },
+  "O.P.I": {
+    "Nail Care": ["Nail Polish", "Nail Extensions"],
+  },
+};
 
 function AllProducts() {
-  // 🏷️ Product Form State
   const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState([]); // For dropdown
-  const [stockQuantity, setStockQuantity] = useState("");
-  const [description, setDescription] = useState("");
   const [brand, setBrand] = useState("");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [phone, setPhone] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
   const [inclusiveTax, setInclusiveTax] = useState(false);
   const [mrp, setMrp] = useState("");
   const [hsnCode, setHsnCode] = useState("");
-  const [tax, setTax] = useState("");
-  const [measurement, setMeasurement] = useState("");
-  const [isRetail, setIsRetail] = useState(false);
-  const [isConsumable, setIsConsumable] = useState(false);
-  const [images, setImages] = useState([]);
-  const [previewImages, setPreviewImages] = useState([]);
+  const [barcode, setBarcode] = useState("");
+  const [isConsumable, setIsConsumable] = useState("");
+  const [isRetail, setIsRetail] = useState("");
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
-
-  const measurementUnits = [
-    "kg", "g", "mg", 
-    "l", "ml", 
-    "pcs", "pair", 
-    "box", "packet",
-    "m", "cm", "mm"
-  ];
-  // 🏪 Get Branch ID from Redux
-  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
-
-  // 📦 Fetch Categories when branch changes
-  useEffect(() => {
-    if (selectedBranch) {
-      fetchCategories();
-    }
-  }, [selectedBranch]);
-
-  // 🔄 Fetch Categories from API
-  const fetchCategories = async () => {
-    try {
-      console.log("Fetching categories for branch:", selectedBranch);
-      const token = localStorage.getItem("token");
-      const response = await axios.get("/category/get-categories", {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { branchId: selectedBranch },
-      });
-      setCategories(response.data.categories || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setError(error.response?.data?.message || "Failed to fetch categories");
-    }
-  };
-
-  // 📸 Handle Image Upload & Preview
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files);
-    setPreviewImages(files.map(file => URL.createObjectURL(file)));
-  };
-
-  // 🚀 Submit Product Form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!selectedBranch || !name || !category || !price || !stockQuantity) {
-        throw new Error("Please fill all required fields");
-      }
-
       const token = localStorage.getItem("token");
       const formData = new FormData();
-
-      // ✨ Append all fields
-      formData.append("branchId", selectedBranch);
       formData.append("name", name);
+      formData.append("brand", brand);
       formData.append("category", category);
+      formData.append("subCategory", subCategory);
+      formData.append("phone", phone);
       formData.append("price", price);
-      formData.append("stockQuantity", stockQuantity);
-      if (description) formData.append("description", description);
-      if (brand) formData.append("brand", brand);
+      formData.append("quantity", quantity);
+      formData.append("unit", unit);
       formData.append("inclusiveTax", inclusiveTax);
-      if (mrp) formData.append("mrp", mrp);
-      if (hsnCode) formData.append("hsnCode", hsnCode);
-      if (tax) formData.append("tax", tax);
-      if (measurement) formData.append("measurement", measurement);
-      formData.append("isRetail", isRetail);
+      formData.append("mrp", mrp);
+      formData.append("hsnCode", hsnCode);
+      formData.append("barcode", barcode);
       formData.append("isConsumable", isConsumable);
-      images.forEach(image => formData.append("images", image));
+      formData.append("isRetail", isRetail);
 
-      const response = await axios.post("/product/create-product", formData, {
+      const response = await axios.post("/products/create", formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
           "Content-Type": "multipart/form-data",
         },
       });
-
-      setMessage("Product created successfully!");
-      resetForm();
+      setMessage(response.data.message);
     } catch (error) {
-      setMessage(error.response?.data?.message || error.message);
+      setMessage(error.response?.data?.message || "Something went wrong");
     }
   };
 
-  // 🔄 Reset Form
-  const resetForm = () => {
-    setName("");
-    setPrice("");
-    setCategory("");
-    setStockQuantity("");
-    setDescription("");
-    setBrand("");
-    setInclusiveTax(false);
-    setMrp("");
-    setHsnCode("");
-    setTax("");
-    setMeasurement("");
-    setIsRetail(false);
-    setIsConsumable(false);
-    setImages([]);
-    setPreviewImages([]);
+  const [locations, setLocations] = useState([
+    { location: "Warehouse A", city: "New York", price: price || 0 },
+    { location: "Store B", city: "Los Angeles", price: price || 0 },
+    { location: "Warehouse C", city: "Chicago", price: price || 0 },
+    { location: "Store D", city: "Houston", price: price || 0 },
+  ]);
+
+  const updatePrice = (index, newPrice) => {
+    const updatedLocations = [...locations];
+    updatedLocations[index].price = newPrice;
+    setLocations(updatedLocations);
   };
 
   return (
     <SAAdminLayout>
-      <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <div className="flex justify-center mb-4">
-          <FaBox className="text-4xl text-blue-500" />
-        </div>
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Add New Product
-        </h1>
-
-        {/* 🚨 Error Messages */}
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        {message && (
-          <p className={`text-center mb-4 ${
-            message.includes("success") ? "text-green-500" : "text-red-500"
-          }`}>
-            {message}
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 🔹 Branch Info */}
- 
-          {/* 🔹 Required Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Product Name*</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full p-2 border rounded-md"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Category*</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2 border rounded-md"
-                required
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat.name}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Price*</label>
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full p-2 border rounded-md"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Stock Quantity*</label>
-              <input
-                type="number"
-                value={stockQuantity}
-                onChange={(e) => setStockQuantity(e.target.value)}
-                className="w-full p-2 border rounded-md"
-                required
-              />
-            </div>
+      <div className="flex justify-center items-center bg-gray-100 p-4">
+        <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-7xl space-y-6">
+          <div className="flex justify-center mb-6">
+            <FaBox className="text-5xl text-blue-500" />
           </div>
-
-          {/* 🔹 Optional Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Brand</label>
-              <input
-                type="text"
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">HSN Code</label>
-              <input
-                type="text"
-                value={hsnCode}
-                onChange={(e) => setHsnCode(e.target.value)}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">MRP</label>
-              <input
-                type="number"
-                value={mrp}
-                onChange={(e) => setMrp(e.target.value)}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Tax (%)</label>
-              <input
-                type="number"
-                value={tax}
-                onChange={(e) => setTax(e.target.value)}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-          </div>
-
-          {/* 🔹 Checkboxes */}
-          <div className="flex flex-wrap gap-4">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={inclusiveTax}
-                onChange={(e) => setInclusiveTax(e.target.checked)}
-              />
-              <span>Price Inclusive of Tax</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={isRetail}
-                onChange={(e) => setIsRetail(e.target.checked)}
-              />
-              <span>Retail Product</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={isConsumable}
-                onChange={(e) => setIsConsumable(e.target.checked)}
-              />
-              <span>Consumable</span>
-            </label>
-          </div>
-
-          {/* 🔹 Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2 border rounded-md"
-              rows={3}
-            />
-          </div>
-
-          {/* 🔹 Measurement */}
-     {/* 🔹 Measurement - Updated to Dropdown */}
-     <div>
-          <label className="block text-sm font-medium text-gray-700">Measurement Unit</label>
-          <select
-            value={measurement}
-            onChange={(e) => setMeasurement(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="">Select Unit</option>
-            {measurementUnits.map((unit) => (
-              <option key={unit} value={unit}>
-                {unit}
-              </option>
-            ))}
-          </select>
-        </div>
-
-          {/* 🔹 Image Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Product Images</label>
-            <input
-              type="file"
-              multiple
-              onChange={handleImageChange}
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-
-          {/* 🖼️ Image Previews */}
-          {previewImages.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 mt-2">
-              {previewImages.map((imgSrc, index) => (
-                <img
-                  key={index}
-                  src={imgSrc}
-                  alt="Preview"
-                  className="w-full h-24 object-cover rounded-md"
-                />
-              ))}
-            </div>
+          <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+            Add 🛒 Product
+          </h1>
+          {message && (
+            <p className="text-red-500 text-center mb-4">{message}</p>
           )}
 
-          {/* ✅ Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Add Product
-          </button>
-        </form>
+          <Tabs
+            defaultActiveKey="1"
+            className="custom-tabs" // Add this
+            items={[
+              {
+                key: "1",
+                label: "Info",
+                children: (
+                  <>
+                    <form onSubmit={handleSubmit} className="p-6">
+                      <input
+                        type="text"
+                        placeholder="Product Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full p-3 border rounded-md mb-4"
+                        required
+                      />
+
+                      {/* Brand Dropdown */}
+                      <select
+                        className="w-full p-3 border rounded-md mb-4"
+                        value={brand}
+                        onChange={(e) => {
+                          setBrand(e.target.value);
+                          setCategory("");
+                          setSubCategory("");
+                        }}
+                        required
+                      >
+                        <option value="">Select Brand</option>
+                        {Object.keys(brands).map((brandName) => (
+                          <option key={brandName} value={brandName}>
+                            {brandName}
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* Category Dropdown */}
+                      <select
+                        className="w-full p-3 border rounded-md mb-4"
+                        value={category}
+                        onChange={(e) => {
+                          setCategory(e.target.value);
+                          setSubCategory("");
+                        }}
+                        disabled={!brand}
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {brand &&
+                          Object.keys(brands[brand]).map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
+                      </select>
+
+                      {/* Sub-Category Dropdown */}
+                      <select
+                        className="w-full p-3 border rounded-md mb-4"
+                        value={subCategory}
+                        onChange={(e) => setSubCategory(e.target.value)}
+                        disabled={!category}
+                        required
+                      >
+                        <option value="">Select Sub-Category</option>
+                        {brand &&
+                          category &&
+                          brands[brand][category]?.map((subCat) => (
+                            <option key={subCat} value={subCat}>
+                              {subCat}
+                            </option>
+                          ))}
+                      </select>
+
+                      {/* HSN Code Dropdown */}
+                      <select
+                        className="w-full p-3 border rounded-md mb-4"
+                        value={hsnCode}
+                        onChange={(e) => setHsnCode(e.target.value)}
+                        required
+                      >
+                        <option value="">Select HSN Code</option>
+                        {hsnCodes.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.code} - {item.description}
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* Quantity Section with Icon and Label */}
+                      <div className="mb-4">
+                        <label className="block text-gray-700 font-medium mb-2 flex items-center">
+                          <FaBalanceScale className="mr-2" />
+                          <input
+                            type="text"
+                            placeholder="Quantity"
+                            className="w-full p-3 border rounded-md mb-4"
+                          />
+                        </label>
+
+                        <div className="flex space-x-4">
+                          <div className="flex-1">
+                            <label className="block text-sm text-gray-600 mb-1">
+                              Unit
+                            </label>
+                            <select
+                              className="w-full p-3 border rounded-md"
+                              value={unit}
+                              onChange={(e) => setUnit(e.target.value)}
+                              required
+                            >
+                              <option value="">Choose Unit</option>
+                              <option value="pcs">Pieces (pcs)</option>
+                              <option value="ml">Milliliters (ml)</option>
+                              <option value="g">Grams (g)</option>
+                              <option value="L">Liters (L)</option>
+                              <option value="kg">Kilograms (kg)</option>
+                            </select>
+                          </div>
+
+                          <div className="flex-1">
+                            <label className="block text-sm text-gray-600 mb-1">
+                              Amount
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="number"
+                                placeholder="Enter quantity"
+                                value={quantity}
+                                onChange={(e) => setQuantity(e.target.value)}
+                                className="w-full p-3 border rounded-md pl-10"
+                                required
+                              />
+                              <span className="absolute left-3 top-3.5 text-gray-400">
+                                Qty:
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Price and MRP */}
+                      <div className="flex space-x-4 mb-4">
+                        <input
+                          type="number"
+                          placeholder="Purchase Price"
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
+                          className="w-1/2 p-3 border rounded-md"
+                          required
+                        />
+                        <input
+                          type="number"
+                          placeholder="MRP"
+                          value={mrp}
+                          onChange={(e) => setMrp(e.target.value)}
+                          className="w-1/2 p-3 border rounded-md"
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FaRupeeSign className="text-gray-400" />
+                          </div>
+                          <input
+                            type="number"
+                            placeholder="MRP"
+                            className="w-full p-3 border rounded-md pl-10"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Barcode */}
+                      <input
+                        type="text"
+                        placeholder="Barcode (optional)"
+                        value={barcode}
+                        onChange={(e) => setBarcode(e.target.value)}
+                        className="w-full p-3 border rounded-md mb-4"
+                      />
+
+                      {/* Tax and Product Type */}
+                      <div className="flex space-x-4 mb-4">
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={inclusiveTax}
+                            onChange={(e) => setInclusiveTax(e.target.checked)}
+                            className="h-5 w-5"
+                          />
+                          <span>Price inclusive of tax</span>
+                        </label>
+
+                        <select
+                          className="p-3 border rounded-md"
+                          value={isConsumable}
+                          onChange={(e) => setIsConsumable(e.target.value)}
+                          required
+                        >
+                          <option value="">Product Type</option>
+                          <option value="true">Consumable</option>
+                          <option value="false">Non-Consumable</option>
+                        </select>
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full p-3 bg-green-500 text-white font-bold rounded-md hover:bg-green-600 transition"
+                      >
+                        Add Product
+                      </button>
+                    </form>
+                  </>
+                ),
+              },
+              {
+                key: "2",
+                label: "Location",
+                children: (
+                  <div>
+                    <div>
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">
+                          Product Name: {name}
+                        </h2>
+                        <table className="w-full border-collapse border border-gray-300">
+                          <thead>
+                            <tr className="bg-gray-200">
+                              <th className="border border-gray-300 p-2">
+                                Location
+                              </th>
+                              <th className="border border-gray-300 p-2">
+                                City
+                              </th>
+                              <th className="border border-gray-300 p-2">
+                                Stock Available
+                              </th>
+                              <th className="border border-gray-300 p-2">
+                                Retail Available
+                              </th>
+                              <th className="border border-gray-300 p-2">
+                                Price
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {locations.map((item, index) => (
+                              <tr
+                                key={index}
+                                className="border border-gray-300"
+                              >
+                                <td className="border border-gray-300 p-2">
+                                  {item.location}
+                                </td>
+                                <td className="border border-gray-300 p-2">
+                                  {item.city}
+                                </td>
+                                <td className="border border-gray-300 p-2 text-center">
+                                  <input type="checkbox" />
+                                </td>
+                                <td className="border border-gray-300 p-2 text-center">
+                                  <input type="checkbox" />
+                                </td>
+                                <td className="border border-gray-300 p-2">
+                                  <input
+                                    type="number"
+                                    value={item.price}
+                                    onChange={(e) =>
+                                      updatePrice(index, e.target.value)
+                                    }
+                                    className="p-1 border rounded w-full"
+                                  />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
       </div>
     </SAAdminLayout>
   );

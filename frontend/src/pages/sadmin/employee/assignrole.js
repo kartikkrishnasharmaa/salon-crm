@@ -1,50 +1,79 @@
 import { useState } from "react";
+import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 
-const roles = ["Manager", "Staff", "Receptionist"];
+function Employees() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("select"); // Default role
+  const [message, setMessage] = useState("");
 
-function AssignRole() {
-    const [employees, setEmployees] = useState([
-        { id: 1, name: "Ravi Kumar", assignedRoles: "" },
-        { id: 2, name: "Pooja Sharma", assignedRoles: "" },
-        { id: 3, name: "Amit Verma", assignedRoles: "" }
-    ]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("selected role: ", role);
 
-    const handleRoleAssign = (id, role) => {
-        setEmployees(prevEmployees =>
-            prevEmployees.map(emp =>
-                emp.id === id ? { ...emp, assignedRoles: role } : emp
-            )
-        );
-    };
+    // ❌ Prevent submitting if role is not selected
+    if (role === "select") {
+      setMessage("Please select a valid role");
+      return;
+    }
 
-    return (
-        <SAAdminLayout>
-            <div className="p-6">
-                <h2 className="text-2xl font-bold mb-6 text-center">Assign Roles to Employees</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {employees.map(emp => (
-                        <div key={emp.id} className="p-6 border rounded-xl shadow-md bg-white flex flex-col items-center">
-                            <p className="text-lg font-semibold mb-2">{emp.name}</p>
-                            <label className="block w-full text-center">Assign Role:
-                                <select
-                                    className="mt-2 p-2 w-full border rounded bg-gray-100 text-center"
-                                    value={emp.assignedRoles}
-                                    onChange={(e) => handleRoleAssign(emp.id, e.target.value)}
-                                >
-                                    <option value="">Select Role</option>
-                                    {roles.map(role => (
-                                        <option key={role} value={role}>{role}</option>
-                                    ))}
-                                </select>
-                            </label>
-                            {emp.assignedRoles && <p className="mt-3 text-blue-600 font-medium">Role: {emp.assignedRoles}</p>}
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </SAAdminLayout>
-    );
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "/employee/create-employee",
+        { name, email, phone, password, role },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessage(response.data.message);
+      // Clear form after submission
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+      setRole("select");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
+  return (
+    <SAAdminLayout>
+      <div className="max-w-md mx-auto p-4 shadow-lg rounded-lg bg-white">
+        <h1 className="text-4xl font-extrabold text-center mb-6 
+               text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-600
+               drop-shadow-lg shadow-green-500/50 
+               transform transition duration-300 hover:scale-105">
+          Create 👨‍💼 Employee
+        </h1>
+        {message && <p className="text-red-500">{message}</p>}
+        <form onSubmit={handleSubmit}>
+          <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2 border mb-2" />
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border mb-2" />
+          <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full p-2 border mb-2" />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border mb-2" />
+
+          {/* Role Selection */}
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full p-2 border mb-2 text-black bg-white"
+          >
+            <option value="select">Select Role</option>
+            <option value="staff">Staff</option>
+            <option value="manager">Manager</option>
+            <option value="receptionist">Receptionist</option>
+          </select>
+
+          <button type="submit" className="w-full p-2 bg-gradient-to-r from-green-500 to-blue-600 font-bold text-white rounded">
+            Create Employee
+          </button>
+        </form>
+      </div>
+    </SAAdminLayout>
+  );
 }
 
-export default AssignRole;
+export default Employees;

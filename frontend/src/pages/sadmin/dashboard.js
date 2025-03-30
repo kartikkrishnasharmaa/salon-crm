@@ -1,5 +1,5 @@
-import React, { useEffect,useState } from "react";
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "../../api/axiosConfig";
 import SAAdminLayout from "../../layouts/Salonadmin";
 import moment from "moment";
@@ -30,58 +30,65 @@ import {
 } from "recharts";
 
 const SADashboard = () => {
-  const selectedBranch = useSelector(state => state.branch.selectedBranch);
-  const [customers, setCustomers] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
-const [loading, setLoading] = useState(true);
-const [errorAppointments, setErrorAppointments] = useState(null);
+  const [errorAppointments, setErrorAppointments] = useState(null);
+  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+
+  const fetchAppointments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const res = await axios.get(
+        `/booking/get-appointments?branchId=${selectedBranch}`,
+        { headers }
+      );
+
+      // Sort appointments by date (newest first) and time (latest first)
+      const sortedAppointments = res.data.appointments
+        .sort((a, b) => {
+          // First compare dates
+          const dateComparison = new Date(b.date) - new Date(a.date);
+          if (dateComparison !== 0) return dateComparison;
+          
+          // If dates are equal, compare times
+          const timeA = moment(a.time, 'HH:mm').format('HH:mm');
+          const timeB = moment(b.time, 'HH:mm').format('HH:mm');
+          return timeB.localeCompare(timeA);
+        })
+        .slice(0, 5); // Take only the 5 most recent
+
+      const formattedAppointments = sortedAppointments.map((appt, index) => ({
+        id: appt._id,
+        serialNo: index + 1,
+        customer: `${appt.customer?.name || 'Unknown'} ${appt.customer?.lastName || ''}`,
+        phone: appt.customer?.mobile || 'N/A',
+        services: appt.services?.map(s => s.name).join(", ") || 'No services',
+        date: moment(appt.date).format("DD MMM, YYYY"),
+        time: moment(appt.time, 'HH:mm').format("h:mm A"),
+        status: appt.status || 'Pending',
+        paymentStatus: appt.paymentStatus || 'Pending',
+        totalPrice: appt.totalPrice || 0
+      }));
+
+      setAppointments(formattedAppointments);
+      setErrorAppointments(null);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      setErrorAppointments(error.response?.data?.message || "Failed to load recent appointments");
+    } finally {
+      setLoadingAppointments(false);
+    }
+  };
 
   useEffect(() => {
-      if (selectedBranch) {
-          console.log("Fetching Customers for Branch ID:", selectedBranch);
-          axios.get(`/customer/salon/customers?branchId=${selectedBranch}`, { 
-              headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-          })
-          .then(res => setCustomers(res.data))
-          .catch(error => console.error("Error fetching customers:", error));
-      }
+    if (selectedBranch) {
+      fetchAppointments();
+    }
   }, [selectedBranch]);
 
-   // ✅ Fetch Appointments
-   useEffect(() => {
-    if (!selectedBranch) return;
-    setLoadingAppointments(true);
-    setErrorAppointments(null);
-
-    const fetchAppointments = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const headers = { Authorization: `Bearer ${token}` };
-
-        const res = await axios.get(`/booking/get-appointments?branchId=${selectedBranch}`, { headers });
-
-        const formattedAppointments = res.data.appointments.map((appt) => ({
-          id: appt._id,
-          customer: appt.customerId?.name || "Unknown",
-          service: appt.service,
-          date: moment(appt.date).format("DD MMM, YYYY"),
-          status: appt.status,
-        }));
-
-        setAppointments(formattedAppointments);
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-        setErrorAppointments("Failed to load appointments.");
-      } finally {
-        setLoadingAppointments(false);
-      }
-    };
-
-    fetchAppointments();
-  }, [selectedBranch]);
-  
- const revenueData = [
+  const revenueData = [
     { month: "Jan", revenue: 5000 },
     { month: "Feb", revenue: 7000 },
     { month: "Mar", revenue: 8000 },
@@ -270,42 +277,108 @@ const [errorAppointments, setErrorAppointments] = useState(null);
         </div>
       </div>
 
-      {/* Recent Appointments Table */}
-     {/* Recent Appointments */}
-     <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
-          <h3 className="text-lg font-bold mb-3">Recent Appointments</h3>
+      {/* Recent Appointments */}
+      <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-bold text-gray-800">
+            Recent Appointments
+          </h3>
+          {appointments.length > 0 && (
+            <span className="text-sm text-gray-500">
+              Showing {appointments.length} most recent
+            </span>
+          )}
+        </div>
 
-          {loadingAppointments ? (
-            <p className="text-center text-gray-600">Loading...</p>
-          ) : errorAppointments ? (
-            <p className="text-red-500">{errorAppointments}</p>
-          ) : appointments.length > 0 ? (
-            <table className="w-full border-collapse border border-gray-200">
+        {loadingAppointments ? (
+          <div className="flex justify-center items-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : errorAppointments ? (
+          <div className="p-4 text-center text-red-500 bg-red-50 rounded">
+            {errorAppointments}
+          </div>
+        ) : appointments.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 p-2">Customer</th>
-                  <th className="border border-gray-300 p-2">Service</th>
-                  <th className="border border-gray-300 p-2">Date</th>
-                  <th className="border border-gray-300 p-2">Status</th>
+                <tr className="bg-gray-50 text-left">
+                  <th className="p-3 text-sm font-medium text-gray-600">
+                    Customer
+                  </th>
+                  <th className="p-3 text-sm font-medium text-gray-600">
+                    Services
+                  </th>
+                  <th className="p-3 text-sm font-medium text-gray-600">
+                    Date & Time
+                  </th>
+                  <th className="p-3 text-sm font-medium text-gray-600">
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {appointments.map((appointment, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="border border-gray-300 p-2">{appointment.customer}</td>
-                    <td className="border border-gray-300 p-2">{appointment.service}</td>
-                    <td className="border border-gray-300 p-2">{appointment.date}</td>
-                    <td className={`border border-gray-300 p-2 ${appointment.status === "Completed" ? "text-green-600" : "text-yellow-600"}`}>
-                      {appointment.status}
+                {appointments.map((appointment) => (
+                  <tr
+                    key={appointment.id}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="p-3">
+                      <div className="font-medium text-gray-800">
+                        {appointment.customer}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {appointment.phone}
+                      </div>
+                    </td>
+                    <td className="p-3 text-sm text-gray-700 max-w-xs truncate">
+                      {appointment.services}
+                    </td>
+                    <td className="p-3 text-sm text-gray-700">
+                      <div>{appointment.date}</div>
+                      <div className="text-xs text-gray-500">
+                        {appointment.time}
+                      </div>
+                    </td>
+                    <td className="p-3">
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          appointment.status === "Completed"
+                            ? "bg-green-100 text-green-800"
+                            : appointment.status === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {appointment.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          ) : (
-            <p className="text-center text-gray-600">No appointments found</p>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="p-6 text-center">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            <p className="mt-2 text-sm text-gray-600">
+              No recent appointments found
+            </p>
+          </div>
+        )}
+      </div>
     </SAAdminLayout>
   );
 };

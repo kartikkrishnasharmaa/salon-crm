@@ -27,7 +27,6 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
       { name: 'Create Services', link: selectedBranch ? `/sadmin/create-service?branchId=${selectedBranch}` : '/sadmin/create-service' },
       { name: 'View Services', link: selectedBranch ? `/sadmin/view-services?branchId=${selectedBranch}` : '/sadmin/view-services' },
       { name: 'Assign Services', link: selectedBranch ? `/sadmin/assign-staff?branchId=${selectedBranch}` : '/sadmin/assign-staff' },
-      { name: 'Services Detail', link: selectedBranch ? `/sadmin/services-duration?branchId=${selectedBranch}` : '/sadmin/services-duration' }
     ]},
     { name: 'Product', icon: <FaShoppingCart />, subMenu: [
       { name: 'Create Catgeory', link: selectedBranch ? `/sadmin/create-category?branchId=${selectedBranch}` : '/sadmin/create-category' },
