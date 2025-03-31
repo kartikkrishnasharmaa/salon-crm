@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import moment from "moment";
 import { FaWindowClose } from "react-icons/fa";
+import axios from "../../../api/axiosConfig";
+import { toast } from "react-toastify";
 
 const AppointmentDetailsModal = ({ isOpen, appointment, onClose, onCheckIn }) => {
+  const [isCancelling, setIsCancelling] = useState(false);
+  const token = localStorage.getItem("token");
+
   const getStaffNames = (staffIds) => {
     const staffList = [
       { _id: "64f1a2b3c4d5e6f7a8b9c0d3", name: "Emily Davis" },
@@ -28,8 +33,41 @@ const AppointmentDetailsModal = ({ isOpen, appointment, onClose, onCheckIn }) =>
       staff: getStaffNames(appointment.staff || []),
     }));
 
-    // Your bill generation logic here
     console.log("Generating bill for:", billData);
+  };
+
+  const handleCancelAppointment = async () => {
+    if (!appointment?.id) {
+      toast.error("No appointment selected");
+      return;
+    }
+
+    setIsCancelling(true);
+    try {
+      const response = await axios.patch(
+        `/booking/cancel/${appointment.id}`,
+       {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Appointment cancelled successfully!");
+        onClose();
+        // You might want to add a callback here to refresh the appointments list
+      } else {
+        throw new Error(response.data.message || "Failed to cancel appointment");
+      }
+    } catch (error) {
+      console.error("Cancellation failed:", error);
+      toast.error(error.message || "Failed to cancel appointment");
+    } finally {
+      setIsCancelling(false);
+    }
   };
 
   return (
@@ -157,12 +195,33 @@ const AppointmentDetailsModal = ({ isOpen, appointment, onClose, onCheckIn }) =>
             Generate Bill
           </button>
 
-          <button
-            onClick={onCheckIn}
-            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 flex items-center gap-2"
-          >
-            Check In
-          </button>
+          {appointment.status !== "Cancelled" && (
+            <>
+              <button
+                onClick={onCheckIn}
+                disabled={appointment.status === "Completed"}
+                className={`${
+                  appointment.status === "Completed" 
+                    ? "bg-gray-400 cursor-not-allowed" 
+                    : "bg-green-600 hover:bg-green-700"
+                } text-white font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 flex items-center gap-2`}
+              >
+                Check In
+              </button>
+
+              <button
+                onClick={handleCancelAppointment}
+                disabled={isCancelling}
+                className={`${
+                  isCancelling 
+                    ? "bg-gray-400 cursor-not-allowed" 
+                    : "bg-red-600 hover:bg-red-700"
+                } text-white font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 flex items-center gap-2`}
+              >
+                {isCancelling ? "Cancelling..." : "Cancel Appointment"}
+              </button>
+            </>
+          )}
 
           <button
             onClick={onClose}

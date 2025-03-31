@@ -254,3 +254,65 @@ exports.checkInAppointment = async (req, res) => {
   }
 };
 
+// Cancel an Appointment
+// Cancel an Appointment
+exports.cancelAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { cancellationReason } = req.body;
+
+    if (!appointmentId) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Appointment ID is required" 
+      });
+    }
+
+    // Find appointment and check if it exists
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Appointment not found" 
+      });
+    }
+
+    // Check if the appointment is already completed
+    if (appointment.status === "Completed") {
+      return res.status(400).json({ 
+        success: false,
+        message: "Completed appointments cannot be canceled" 
+      });
+    }
+
+    // Update appointment status to "Cancelled"
+    appointment.status = "Cancelled";
+    appointment.cancellationReason = cancellationReason || "No reason provided";
+    await appointment.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment cancelled successfully",
+      appointment: {
+        id: appointment._id,
+        customer: appointment.customer,
+        branchId: appointment.branchId,
+        services: appointment.services,
+        staff: appointment.staff,
+        date: appointment.date,
+        time: appointment.time,
+        status: appointment.status,
+        paymentStatus: appointment.paymentStatus,
+        totalPrice: appointment.totalPrice,
+        cancellationReason: appointment.cancellationReason,
+      },
+    });
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Server Error",
+      error: error.message 
+    });
+  }
+};
