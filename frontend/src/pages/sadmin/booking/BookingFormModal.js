@@ -316,7 +316,8 @@ const BookingFormModal = ({
         <h2 className="text-lg font-bold mb-3">New Booking</h2>
 
         <div className="w-full p-6">
-          <div className="grid grid-cols-1 overflow-y-auto h-auto md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
             <div className="flex flex-col">
               <label className="font-semibold">Booking Date</label>
               <input
