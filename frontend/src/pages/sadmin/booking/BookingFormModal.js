@@ -5,8 +5,15 @@ import { toast } from "react-toastify";
 import axios from "../../../api/axiosConfig";
 import { FaWindowClose } from "react-icons/fa";
 
-const BookingFormModal = ({ isOpen, onClose, selectedBranch, fetchAppointments }) => {
-  const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
+const BookingFormModal = ({
+  isOpen,
+  onClose,
+  selectedBranch,
+  fetchAppointments,
+}) => {
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
   const [selectedTime, setSelectedTime] = useState(moment().format("HH:mm"));
   const [mobile, setMobile] = useState("");
   const [customerType, setCustomerType] = useState("walkin");
@@ -173,7 +180,9 @@ const BookingFormModal = ({ isOpen, onClose, selectedBranch, fetchAppointments }
       time: selectedTime,
       customer: `${customerData.name} ${customerData.lastName}`,
       staff: selectedStaff
-        .map((staffId) => staffList.find((staff) => staff._id === staffId)?.name)
+        .map(
+          (staffId) => staffList.find((staff) => staff._id === staffId)?.name
+        )
         .filter(Boolean)
         .join(", "),
     }));
@@ -308,8 +317,235 @@ const BookingFormModal = ({ isOpen, onClose, selectedBranch, fetchAppointments }
 
         <div className="w-full p-6">
           <div className="grid grid-cols-1 overflow-y-auto h-auto md:grid-cols-4 gap-6">
-            {/* Form fields remain the same as original */}
-            {/* ... */}
+            <div className="flex flex-col">
+              <label className="font-semibold">Booking Date</label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="border rounded p-2 w-full md:w-44"
+                required
+              />
+              {/* Select Time */}
+              <div className="flex flex-col">
+                <label className="font-semibold">Select Time</label>
+                <input
+                  type="time"
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="border rounded p-2 w-full md:w-44"
+                  required
+                />
+              </div>
+              {/* Mobile Number */}
+              <div className="flex flex-col mb-3">
+                <label className="font-semibold">Mobile Number</label>
+                <input
+                  type="text"
+                  value={mobile}
+                  onChange={handleMobileChange}
+                  className="border rounded p-2 w-full"
+                  placeholder="Enter Mobile Number"
+                  maxLength="10"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="font-semibold">Date Of Birth</label>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="border rounded p-2 w-full md:w-44"
+                  required
+                />
+              </div>{" "}
+              <div className="flex flex-col">
+                <label className="font-semibold">Anniversary Date</label>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="border rounded p-2 w-full md:w-44"
+                  required
+                />
+              </div>
+              {/* Name */}
+              <div className="flex flex-col mb-3">
+                <label className="font-semibold">Name</label>
+                <input
+                  type="text"
+                  value={customerData.name}
+                  onChange={(e) =>
+                    setCustomerData({ ...customerData, name: e.target.value })
+                  }
+                  className={`border rounded p-2 w-full ${
+                    !isNewCustomer ? "bg-gray-100" : ""
+                  }`}
+                  placeholder="Customer Name"
+                  readOnly={!isNewCustomer}
+                  required
+                />
+              </div>
+              {/* Last Name */}
+              <div className="flex flex-col mb-3">
+                <label className="font-semibold">Last Name</label>
+                <input
+                  type="text"
+                  value={customerData.lastName}
+                  onChange={(e) =>
+                    setCustomerData({
+                      ...customerData,
+                      lastName: e.target.value,
+                    })
+                  }
+                  className={`border rounded p-2 w-full ${
+                    !isNewCustomer ? "bg-gray-100" : ""
+                  }`}
+                  placeholder="Last Name"
+                  readOnly={!isNewCustomer}
+                  required
+                />
+              </div>
+              {/* Email */}
+              <div className="flex flex-col mb-3">
+                <label className="font-semibold">Email</label>
+                <input
+                  type="email"
+                  value={customerData.email}
+                  onChange={(e) =>
+                    setCustomerData({
+                      ...customerData,
+                      email: e.target.value,
+                    })
+                  }
+                  className={`border rounded p-2 w-full ${
+                    !isNewCustomer ? "bg-gray-100" : ""
+                  }`}
+                  placeholder="Customer Email"
+                  readOnly={!isNewCustomer}
+                  required
+                />
+              </div>
+              {/* Gender */}
+              <div className="flex flex-col mb-3">
+                <label className="font-semibold">Gender</label>
+                <div className="flex space-x-4 mt-2">
+                  {["Male", "Female", "Other"].map((g) => (
+                    <label key={g} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={g}
+                        checked={customerData.gender === g}
+                        onChange={(e) =>
+                          setCustomerData({
+                            ...customerData,
+                            gender: e.target.value,
+                          })
+                        }
+                        disabled={!isNewCustomer}
+                        className="form-radio"
+                        required
+                      />
+                      <span>{g}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Customer Type */}
+              <div className="flex flex-col">
+                <label className="font-semibold">Customer Type</label>
+                <div className="flex space-x-4 mt-2">
+                  {["walkin", "appointment"].map((type) => (
+                    <label key={type} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="customerType"
+                        value={type}
+                        checked={customerType === type}
+                        onChange={() => setCustomerType(type)}
+                        className="form-radio"
+                        required
+                      />
+                      <span className="capitalize">{type}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Staff Type */}
+              <div className="flex flex-col">
+                <label className="font-semibold">Staff Type</label>
+                <div className="flex space-x-4 mt-2">
+                  {["single", "multiple"].map((type) => (
+                    <label key={type} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="staffType"
+                        value={type}
+                        checked={staffType === type}
+                        onChange={() => handleStaffTypeChange(type)}
+                        className="form-radio"
+                        required
+                      />
+                      <span className="capitalize">
+                        {type === "single" ? "Single Staff" : "Multiple Staff"}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Single Staff Selection */}
+              {staffType === "single" && (
+                <div className="flex flex-col mt-2">
+                  <label className="font-semibold">Select Staff</label>
+                  <select
+                    className="border rounded p-2 w-full md:w-44"
+                    value={selectedStaff[0] || ""}
+                    onChange={(e) => setSelectedStaff([e.target.value])}
+                    required
+                  >
+                    <option value="">Select Staff</option>
+                    {staffList.map((staff) => (
+                      <option key={staff._id} value={staff._id}>
+                        {staff.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {/* Multiple Staff Selection */}
+              {staffType === "multiple" && (
+                <div className="flex flex-col mt-2">
+                  <label className="font-semibold">Select Multiple Staff</label>
+                  <div
+                    className="border rounded p-2 w-full md:w-44"
+                    style={{
+                      maxHeight: "100px",
+                      overflowY: "auto",
+                      border: "1px solid #ccc",
+                      padding: "8px",
+                      width: "200px",
+                    }}
+                  >
+                    {staffList.map((staff) => (
+                      <label
+                        key={staff._id}
+                        className="flex items-center space-x-2"
+                      >
+                        <input
+                          type="checkbox"
+                          value={staff._id}
+                          checked={selectedStaff.includes(staff._id)}
+                          onChange={(e) => handleStaffSelect(e.target.value)}
+                        />
+                        <span>{staff.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Notes Section */}
@@ -365,7 +601,9 @@ const BookingFormModal = ({ isOpen, onClose, selectedBranch, fetchAppointments }
 
             {/* Past History */}
             <div className="border p-3 rounded-md overflow-auto shadow-md">
-              <h3 className="text-lg font-semibold mb-2">Client Past History</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Client Past History
+              </h3>
               {pastHistory.length > 0 ? (
                 pastHistory.map((history, index) => (
                   <div key={index} className="p-2 border-b">
