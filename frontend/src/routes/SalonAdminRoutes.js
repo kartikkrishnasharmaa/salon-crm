@@ -27,6 +27,7 @@ import SalonNewBooking from "../pages/sadmin/booking/newbooking";
 import Allorders from "../pages/sadmin/orders/allorders";
 import CreateCategory from "../pages/sadmin/product/createcategory";
 import SalonCalendardummy from "../pages/sadmin/booking/SalonCalendar";
+import ClientDetails from "../pages/sadmin/customer/client-info";
 
 const SalonAdminRoutes = () => {
   return (
@@ -39,7 +40,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-       <Route
+      <Route
         path="/sadmin/btesting"
         element={
           <ProtectedRoute>
@@ -184,12 +185,14 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/sadmin/create-category" 
-       element={
-        <ProtectedRoute>
-          <CreateCategory />
-        </ProtectedRoute>
-      } />
+      <Route
+        path="/sadmin/create-category"
+        element={
+          <ProtectedRoute>
+            <CreateCategory />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/sadmin/display-product"
         element={
@@ -235,6 +238,14 @@ const SalonAdminRoutes = () => {
         element={
           <ProtectedRoute>
             <ViewServicee />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sadmin/client-info/:id"
+        element={
+          <ProtectedRoute>
+            <ClientDetails />
           </ProtectedRoute>
         }
       />
