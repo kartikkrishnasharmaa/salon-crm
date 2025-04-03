@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { FaTachometerAlt, FaUsers, FaShoppingCart, FaCalendarCheck, FaTools, FaChartBar, FaCog, FaChevronDown, FaChevronUp ,FaMoneyBillWave} from 'react-icons/fa';
+import { FaTachometerAlt, FaUsers, FaShoppingCart, FaCalendarCheck, FaTools, FaChartBar, FaCog,FaMapMarkerAlt , FaChevronDown, FaChevronUp ,FaMoneyBillWave} from 'react-icons/fa';
 
 const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -12,9 +12,9 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
   const menuItems = [
     { name: 'Business Details', icon: <FaTachometerAlt />, link: selectedBranch ? `/sadmin/dashboard?branchId=${selectedBranch}` : '/sadmin/dashboard' },
-    { name: 'Location', icon: <FaTools />, link: selectedBranch ? `/sadmin/view-branch?branchId=${selectedBranch}` : '/sadmin/view-branch' },
+    { name: 'Location', icon: <FaMapMarkerAlt  />, link: selectedBranch ? `/sadmin/main-branch?branchId=${selectedBranch}` : '/sadmin/main-branch' },
     { name: 'Services', icon: <FaTools />, link: selectedBranch ? `/sadmin/view-services?branchId=${selectedBranch}` : '/sadmin/view-services' },
-    { name: 'Products', icon: <FaTools />, link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
+    { name: 'Products', icon: <FaShoppingCart />, link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
     // { name: 'Bookings', icon: <FaCalendarCheck />, subMenu: [
     //   { name: 'Calender Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
     //   { name: 'BTesting', link: selectedBranch ? `/sadmin/btesting?branchId=${selectedBranch}` : '/sadmin/btesting' },

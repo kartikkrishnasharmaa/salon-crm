@@ -23,6 +23,7 @@ import Assignrole from "../pages/sadmin/employee/assignrole";
 import AssignStaff from "../pages/sadmin/service/assignstaff";
 import ViewServicee from "../pages/sadmin/service/viewservice";
 import ViewBranch from "../pages/sadmin/branch/view-branch";
+import MainbranchPage from "../pages/sadmin/branch/main";
 import SalonNewBooking from "../pages/sadmin/booking/newbooking";
 import Allorders from "../pages/sadmin/orders/allorders";
 import CreateCategory from "../pages/sadmin/product/createcategory";
@@ -159,8 +160,18 @@ const SalonAdminRoutes = () => {
           <ProtectedRoute>
             <SASetting />
           </ProtectedRoute>
+        }/>
+
+<Route
+        path="/sadmin/main-branch"
+        element={
+          <ProtectedRoute>
+            <MainbranchPage />
+          </ProtectedRoute>
         }
       />
+
+
       <Route
         path="/sadmin/view-branch"
         element={
