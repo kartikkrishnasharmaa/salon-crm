@@ -1,11 +1,9 @@
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import Tabs from "rc-tabs"; // ✅ Fix: Import as default
+import Tabs from "rc-tabs";
 import "rc-tabs/assets/index.css";
 
-
 function AllProducts() {
- 
   return (
     <SAAdminLayout>
       <div className="flex justify-center items-center bg-gray-100 p-4">
@@ -14,7 +12,7 @@ function AllProducts() {
             <FaMapMarkerAlt className="text-5xl text-blue-500" />
           </div>
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-            Salon Location
+            Office Location Details
           </h1>
 
           <Tabs
@@ -26,8 +24,7 @@ function AllProducts() {
                 label: "Info",
                 children: (
                   <>
-                <h2 className="text-xl font-bold mt-9">
-                brancd name                        </h2>
+                    <h2 className="text-xl font-bold mt-9">brancd name </h2>
                   </>
                 ),
               },
@@ -40,8 +37,8 @@ function AllProducts() {
                     <div>
                       <div>
                         <h2 className="text-xl font-bold mt-9">
-Location name                        </h2>
-                      
+                          Location name{" "}
+                        </h2>
                       </div>
                     </div>
                   </div>
