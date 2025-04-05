@@ -3,15 +3,8 @@ import { useSelector } from "react-redux";
 import axios from "../../api/axiosConfig";
 import SAAdminLayout from "../../layouts/Salonadmin";
 import moment from "moment";
-
+import { FaArrowUp, FaUserTie, FaChartLine, FaUsers, FaMoneyBillWave } from "react-icons/fa";
 import BranchSelector from "../../components/BranchSelector";
-import {
-  FaUserTie,
-  FaChartLine,
-  FaUsers,
-  FaMoneyBillWave,
-} from "react-icons/fa";
-
 import {
   LineChart,
   Line,
@@ -34,6 +27,7 @@ const SADashboard = () => {
   const [loadingAppointments, setLoadingAppointments] = useState(true);
   const [errorAppointments, setErrorAppointments] = useState(null);
   const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+  const [showScroll, setShowScroll] = useState(false);
 
   const fetchAppointments = async () => {
     try {
@@ -45,19 +39,15 @@ const SADashboard = () => {
         { headers }
       );
 
-      // Sort appointments by date (newest first) and time (latest first)
       const sortedAppointments = res.data.appointments
         .sort((a, b) => {
-          // First compare dates
           const dateComparison = new Date(b.date) - new Date(a.date);
           if (dateComparison !== 0) return dateComparison;
-          
-          // If dates are equal, compare times
           const timeA = moment(a.time, 'HH:mm').format('HH:mm');
           const timeB = moment(b.time, 'HH:mm').format('HH:mm');
           return timeB.localeCompare(timeA);
         })
-        .slice(0, 5); // Take only the 5 most recent
+        .slice(0, 5);
 
       const formattedAppointments = sortedAppointments.map((appt, index) => ({
         id: appt._id,
@@ -88,6 +78,18 @@ const SADashboard = () => {
     }
   }, [selectedBranch]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScroll(window.pageYOffset > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const revenueData = [
     { month: "Jan", revenue: 5000 },
     { month: "Feb", revenue: 7000 },
@@ -103,6 +105,7 @@ const SADashboard = () => {
     { date: "4 Feb", count: 8 },
     { date: "5 Feb", count: 18 },
   ];
+
   const serviceData = [
     { name: "Haircut", value: 40 },
     { name: "Facial", value: 25 },
@@ -124,7 +127,6 @@ const SADashboard = () => {
   return (
     <SAAdminLayout>
       <BranchSelector />
-      {/* Dashboard Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6">
         <div className="bg-blue-100 p-4 rounded-lg shadow-md flex items-center">
           <FaChartLine className="text-blue-600 text-3xl mr-3" />
@@ -154,40 +156,8 @@ const SADashboard = () => {
             <h3 className="text-xl font-bold">1,200</h3>
           </div>
         </div>
-        <div className="bg-red-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaChartLine className="text-red-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Pending Appointments</p>
-            <h3 className="text-xl font-bold">24</h3>
-          </div>
-        </div>
-
-        <div className="bg-orange-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaUsers className="text-orange-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Services Offered</p>
-            <h3 className="text-xl font-bold">15</h3>
-          </div>
-        </div>
-
-        <div className="bg-teal-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaUserTie className="text-teal-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Active Memberships</p>
-            <h3 className="text-xl font-bold">85</h3>
-          </div>
-        </div>
-
-        <div className="bg-pink-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaMoneyBillWave className="text-pink-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Product Sales</p>
-            <h3 className="text-xl font-bold">₹ 7,500</h3>
-          </div>
-        </div>
       </div>
 
-      {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Monthly Revenue</h3>
@@ -221,7 +191,6 @@ const SADashboard = () => {
         </div>
         <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Service Popularity</h3>
-
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -231,7 +200,7 @@ const SADashboard = () => {
                 outerRadius={100}
                 fill="#8884d8"
                 dataKey="value"
-                label={(entry) => entry.name} // Labels ke liye
+                label={(entry) => entry.name}
               >
                 {serviceData.map((entry, index) => (
                   <Cell
@@ -242,8 +211,6 @@ const SADashboard = () => {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-
-          {/* Service Names with Colors */}
           <div className="flex flex-wrap justify-center mt-4">
             {serviceData.map((entry, index) => (
               <div key={index} className="flex items-center mx-2">
@@ -257,7 +224,6 @@ const SADashboard = () => {
           </div>
         </div>
 
-        {/* Customer Growth Chart */}
         <div className="bg-white p-4 shadow-lg rounded-lg">
           <h3 className="text-lg font-bold mb-3">Customer Growth Trend</h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -277,7 +243,6 @@ const SADashboard = () => {
         </div>
       </div>
 
-      {/* Recent Appointments */}
       <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-800">
@@ -378,6 +343,15 @@ const SADashboard = () => {
             </p>
           </div>
         )}
+      </div>
+
+      <div className={`fixed bottom-5 left-5 z-[9999] transition-opacity duration-300 ${showScroll ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <button 
+          onClick={scrollToTop}
+          className="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
+        >
+          <FaArrowUp className="text-lg" />
+        </button>
       </div>
     </SAAdminLayout>
   );
