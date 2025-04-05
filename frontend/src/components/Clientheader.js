@@ -41,7 +41,7 @@ const Clientheader = ({ toggleSidebar }) => {
 
             {/* Desktop Menu Centered */}
             <nav className="hidden md:flex space-x-6 text-lg font-semibold mx-auto">
-                <a href="/sadmin/dashboard" className="hover:text-blue-600">Dashboard</a>
+                <a href="/salonadmin/dashboard" className="hover:text-blue-600">Dashboard</a>
             </nav>
 
             {/* User Dropdown */}

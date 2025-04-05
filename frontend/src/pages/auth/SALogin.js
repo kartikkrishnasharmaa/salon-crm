@@ -33,7 +33,7 @@ const Login = () => {
       setSuccess(true);
 
       // Redirect to admin/dashboard after successful login
-      navigate('/sadmin/dashboard'); // Redirect using useNavigate
+      navigate('/salonadmin/dashboard'); // Redirect using useNavigate
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Invalid credentials';
       setError(errorMessage); // Store the error message

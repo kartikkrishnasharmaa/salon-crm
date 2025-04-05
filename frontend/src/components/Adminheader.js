@@ -63,55 +63,55 @@ const Adminheader = ({ toggleSidebar }) => {
 
       <nav className="hidden md:flex space-x-6 text-lg font-semibold mx-auto">
         <Link
-          to={getBranchLink("/sadmin/dashboard")}
+          to={getBranchLink("/salonadmin/dashboard")}
           className="hover:text-blue-600"
         >
           Dashboard
         </Link>
         <Link
-          to={getBranchLink("/sadmin/create-booking")}
+          to={getBranchLink("/salonadmin/create-booking")}
           className="hover:text-blue-600"
         >
           Calender
         </Link>
         <Link
-          to={getBranchLink("/sadmin/view-allcustomer")}
+          to={getBranchLink("/salonadmin/view-allcustomer")}
           className="hover:text-blue-600"
         >
           Client
         </Link>
         <Link
-          to={getBranchLink("/sadmin/report")}
+          to={getBranchLink("/salonadmin/report")}
           className="hover:text-blue-600"
         >
           Reports
         </Link>
         <Link
-          to={getBranchLink("/sadmin/dashboard")}
+          to={getBranchLink("/salonadmin/dashboard")}
           className="hover:text-blue-600"
         >
           Retention
         </Link>
         <Link
-          to={getBranchLink("/sadmin/dashboard")}
+          to={getBranchLink("/salonadmin/dashboard")}
           className="hover:text-blue-600"
         >
           Inventary
         </Link>
         <Link
-          to={getBranchLink("/sadmin/dashboard")}
+          to={getBranchLink("/salonadmin/dashboard")}
           className="hover:text-blue-600"
         >
           Sales
         </Link>
         <Link
-          to={getBranchLink("/sadmin/profile")}
+          to={getBranchLink("/salonadmin/profile")}
           className="hover:text-blue-600"
         >
           Account
         </Link>
         <Link
-          to={getBranchLink("/sadmin/dashboard")}
+          to={getBranchLink("/salonadmin/dashboard")}
           className="hover:text-blue-600"
         >
           Info
@@ -139,7 +139,7 @@ const Adminheader = ({ toggleSidebar }) => {
         </button>
         {isOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg overflow-hidden animate-fadeIn">
-            <Link to="/sadmin/profile">
+            <Link to="/salonadmin/profile">
               <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
                 Profile
               </button>
@@ -161,19 +161,19 @@ const Adminheader = ({ toggleSidebar }) => {
       {/* Mobile Menu Positioned Below Header */}
       {menuOpen && (
         <nav className="absolute top-24 left-0 w-full bg-white shadow-md flex flex-col md:hidden py-4 space-y-4 text-center z-40">
-          <Link to={"/sadmin/dashboard"} className="hover:text-blue-600">
+          <Link to={"/salonadmin/dashboard"} className="hover:text-blue-600">
             Dashboard
           </Link>
-          <Link to={"/sadmin/create-booking"} className="hover:text-blue-600">
+          <Link to={"/salonadmin/create-booking"} className="hover:text-blue-600">
             Bookings
           </Link>
-          <Link to={"/sadmin/employee"} className="hover:text-blue-600">
+          <Link to={"/salonadmin/employee"} className="hover:text-blue-600">
             Employees
           </Link>
-          <Link to={"/sadmin/report"} className="hover:text-blue-600">
+          <Link to={"/salonadmin/report"} className="hover:text-blue-600">
             Reports
           </Link>
-          <Link to={"/sadmin/settings"} className="hover:text-blue-600">
+          <Link to={"/salonadmin/settings"} className="hover:text-blue-600">
             Settings
           </Link>
         </nav>
@@ -245,31 +245,31 @@ export default Adminheader;
 
 //       {/* Desktop Menu Centered */}
 //       <nav className="hidden md:flex space-x-6 text-lg font-semibold mx-auto">
-//         <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/dashboard")} className="hover:text-blue-600">
 //           Dashboard
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/create-booking")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/create-booking")} className="hover:text-blue-600">
 //           Calender
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/view-allcustomer")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/view-allcustomer")} className="hover:text-blue-600">
 //           Client
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/report")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/report")} className="hover:text-blue-600">
 //           Reports
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/dashboard")} className="hover:text-blue-600">
 //           Retention
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/dashboard")} className="hover:text-blue-600">
 //           Inventary
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/dashboard")} className="hover:text-blue-600">
 //           Sales
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/profile")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/profile")} className="hover:text-blue-600">
 //           Account
 //         </Link>
-//         <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
+//         <Link to={getBranchLink("/salonadmin/dashboard")} className="hover:text-blue-600">
 //           Info
 //         </Link>
 //         <div className="mr-6 relative">
@@ -296,7 +296,7 @@ export default Adminheader;
 //         </button>
 //         {isOpen && (
 //           <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg overflow-hidden animate-fadeIn">
-//             <Link to="/sadmin/profile">
+//             <Link to="/salonadmin/profile">
 //               <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
 //                 Profile
 //               </button>
@@ -318,19 +318,19 @@ export default Adminheader;
 //       {/* Mobile Menu Positioned Below Header */}
 //       {menuOpen && (
 //         <nav className="absolute top-24 left-0 w-full bg-white shadow-md flex flex-col md:hidden py-4 space-y-4 text-center z-40">
-//           <Link to={getBranchLink("/sadmin/dashboard")} className="hover:text-blue-600">
+//           <Link to={getBranchLink("/salonadmin/dashboard")} className="hover:text-blue-600">
 //             Dashboard
 //           </Link>
-//           <Link to={getBranchLink("/sadmin/create-booking")} className="hover:text-blue-600">
+//           <Link to={getBranchLink("/salonadmin/create-booking")} className="hover:text-blue-600">
 //             Bookings
 //           </Link>
-//           <Link to={getBranchLink("/sadmin/employee")} className="hover:text-blue-600">
+//           <Link to={getBranchLink("/salonadmin/employee")} className="hover:text-blue-600">
 //             Employees
 //           </Link>
-//           <Link to={getBranchLink("/sadmin/report")} className="hover:text-blue-600">
+//           <Link to={getBranchLink("/salonadmin/report")} className="hover:text-blue-600">
 //             Reports
 //           </Link>
-//           <Link to={getBranchLink("/sadmin/settings")} className="hover:text-blue-600">
+//           <Link to={getBranchLink("/salonadmin/settings")} className="hover:text-blue-600">
 //             Settings
 //           </Link>
 //         </nav>

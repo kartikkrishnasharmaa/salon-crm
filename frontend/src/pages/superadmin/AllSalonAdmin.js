@@ -106,7 +106,7 @@ const SalonAdminTable = ({ superAdminToken }) => {
 
       // ✅ Redirect to Salon Admin Dashboard
       setTimeout(() => {
-        navigate("/sadmin/dashboard");
+        navigate("/salonadmin/dashboard");
       }, 1000);
   
     } catch (error) {

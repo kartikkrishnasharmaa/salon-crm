@@ -11,95 +11,95 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
   };
 
   const menuItems = [
-    { name: 'Business Details', icon: <FaTachometerAlt />, link: selectedBranch ? `/sadmin/dashboard?branchId=${selectedBranch}` : '/sadmin/dashboard' },
-    { name: 'Location', icon: <FaMapMarkerAlt  />, link: selectedBranch ? `/sadmin/main-branch?branchId=${selectedBranch}` : '/sadmin/main-branch' },
-    { name: 'Services', icon: <FaTools />, link: selectedBranch ? `/sadmin/view-services?branchId=${selectedBranch}` : '/sadmin/view-services' },
-    { name: 'Products', icon: <FaShoppingCart />, link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
+    { name: 'Business Details', icon: <FaTachometerAlt />, link: selectedBranch ? `/salonadmin/dashboard?branchId=${selectedBranch}` : '/salonadmin/dashboard' },
+    { name: 'Location', icon: <FaMapMarkerAlt  />, link: selectedBranch ? `/salonadmin/main-branch?branchId=${selectedBranch}` : '/salonadmin/main-branch' },
+    { name: 'Services', icon: <FaTools />, link: selectedBranch ? `/salonadmin/view-services?branchId=${selectedBranch}` : '/salonadmin/view-services' },
+    { name: 'Products', icon: <FaShoppingCart />, link: selectedBranch ? `/salonadmin/display-product?branchId=${selectedBranch}` : '/salonadmin/display-product' },
     // { name: 'Bookings', icon: <FaCalendarCheck />, subMenu: [
-    //   { name: 'Calender Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
-    //   { name: 'BTesting', link: selectedBranch ? `/sadmin/btesting?branchId=${selectedBranch}` : '/sadmin/btesting' },
-    //   { name: 'Add Ticket', link: selectedBranch ? `/sadmin/new-booking?branchId=${selectedBranch}` : '/sadmin/new-booking' },
-    //   { name: 'View Booking', link: selectedBranch ? `/sadmin/view-booking?branchId=${selectedBranch}` : '/sadmin/view-booking' }
+    //   { name: 'Calender Booking', link: selectedBranch ? `/salonadmin/create-booking?branchId=${selectedBranch}` : '/salonadmin/create-booking' },
+    //   { name: 'BTesting', link: selectedBranch ? `/salonadmin/btesting?branchId=${selectedBranch}` : '/salonadmin/btesting' },
+    //   { name: 'Add Ticket', link: selectedBranch ? `/salonadmin/new-booking?branchId=${selectedBranch}` : '/salonadmin/new-booking' },
+    //   { name: 'View Booking', link: selectedBranch ? `/salonadmin/view-booking?branchId=${selectedBranch}` : '/salonadmin/view-booking' }
     // ]},
     // { name: 'Services', icon: <FaTools />, subMenu: [
-    //   { name: 'Create Services', link: selectedBranch ? `/sadmin/create-service?branchId=${selectedBranch}` : '/sadmin/create-service' },
-    //   { name: 'View Services', link: selectedBranch ? `/sadmin/view-services?branchId=${selectedBranch}` : '/sadmin/view-services' },
-    //   { name: 'Assign Services', link: selectedBranch ? `/sadmin/assign-staff?branchId=${selectedBranch}` : '/sadmin/assign-staff' },
+    //   { name: 'Create Services', link: selectedBranch ? `/salonadmin/create-service?branchId=${selectedBranch}` : '/salonadmin/create-service' },
+    //   { name: 'View Services', link: selectedBranch ? `/salonadmin/view-services?branchId=${selectedBranch}` : '/salonadmin/view-services' },
+    //   { name: 'Assign Services', link: selectedBranch ? `/salonadmin/assign-staff?branchId=${selectedBranch}` : '/salonadmin/assign-staff' },
     // ]},
     // { name: 'Product', icon: <FaShoppingCart />, subMenu: [
-    //   { name: 'Create Catgeory', link: selectedBranch ? `/sadmin/create-category?branchId=${selectedBranch}` : '/sadmin/create-category' },
-    //   { name: 'Create Product', link: selectedBranch ? `/sadmin/create-product?branchId=${selectedBranch}` : '/sadmin/create-product' },
-    //   { name: 'Display All Products', link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
-    //   { name: 'Stock Management', link: selectedBranch ? `/sadmin/stock-management?branchId=${selectedBranch}` : '/sadmin/stock-management' }
+    //   { name: 'Create Catgeory', link: selectedBranch ? `/salonadmin/create-category?branchId=${selectedBranch}` : '/salonadmin/create-category' },
+    //   { name: 'Create Product', link: selectedBranch ? `/salonadmin/create-product?branchId=${selectedBranch}` : '/salonadmin/create-product' },
+    //   { name: 'Display All Products', link: selectedBranch ? `/salonadmin/display-product?branchId=${selectedBranch}` : '/salonadmin/display-product' },
+    //   { name: 'Stock Management', link: selectedBranch ? `/salonadmin/stock-management?branchId=${selectedBranch}` : '/salonadmin/stock-management' }
     // ]},
     // { name: 'Customers', icon: <FaUsers />, subMenu: [
-    //   { name: 'Create Customer', link: selectedBranch ? `/sadmin/create-customer?branchId=${selectedBranch}` : '/sadmin/create-customer' },
-    //   { name: 'All Customers', link: selectedBranch ? `/sadmin/view-allcustomer?branchId=${selectedBranch}` : '/sadmin/view-allcustomer' },
-    //   { name: 'Client Info', link: selectedBranch ? `/sadmin/view-allcustomer?branchId=${selectedBranch}` : '/sadmin/view-allcustomer' }
+    //   { name: 'Create Customer', link: selectedBranch ? `/salonadmin/create-customer?branchId=${selectedBranch}` : '/salonadmin/create-customer' },
+    //   { name: 'All Customers', link: selectedBranch ? `/salonadmin/view-allcustomer?branchId=${selectedBranch}` : '/salonadmin/view-allcustomer' },
+    //   { name: 'Client Info', link: selectedBranch ? `/salonadmin/view-allcustomer?branchId=${selectedBranch}` : '/salonadmin/view-allcustomer' }
     // ]},
     // { name: 'Employees', icon: <FaUsers />, subMenu: [
-    //   { name: 'Create Employee', link: selectedBranch ? `/sadmin/employee?branchId=${selectedBranch}` : '/sadmin/employee' },
-    //   { name: 'All Employees', link: selectedBranch ? `/sadmin/view-employee?branchId=${selectedBranch}` : '/sadmin/view-employee' },
-    //   { name: 'Assign Role', link: selectedBranch ? `/sadmin/assign-role?branchId=${selectedBranch}` : '/sadmin/assign-role' }
+    //   { name: 'Create Employee', link: selectedBranch ? `/salonadmin/employee?branchId=${selectedBranch}` : '/salonadmin/employee' },
+    //   { name: 'All Employees', link: selectedBranch ? `/salonadmin/view-employee?branchId=${selectedBranch}` : '/salonadmin/view-employee' },
+    //   { name: 'Assign Role', link: selectedBranch ? `/salonadmin/assign-role?branchId=${selectedBranch}` : '/salonadmin/assign-role' }
     // ]},
     // { name: 'Reports', icon: <FaChartBar />, subMenu: [
-    //   { name: 'All Reports', link: selectedBranch ? `/sadmin/report?branchId=${selectedBranch}` : '/sadmin/report' },
-    //   { name: 'Customer Report', link: selectedBranch ? `/sadmin/customer-report?branchId=${selectedBranch}` : '/sadmin/customer-report' },
-    //   { name: 'Employee Report', link: selectedBranch ? `/sadmin/employee-report?branchId=${selectedBranch}` : '/sadmin/employee-report' },
-    //   { name: 'Booking Report', link: selectedBranch ? `/sadmin/booking-report?branchId=${selectedBranch}` : '/sadmin/booking-report' }
+    //   { name: 'All Reports', link: selectedBranch ? `/salonadmin/report?branchId=${selectedBranch}` : '/salonadmin/report' },
+    //   { name: 'Customer Report', link: selectedBranch ? `/salonadmin/customer-report?branchId=${selectedBranch}` : '/salonadmin/customer-report' },
+    //   { name: 'Employee Report', link: selectedBranch ? `/salonadmin/employee-report?branchId=${selectedBranch}` : '/salonadmin/employee-report' },
+    //   { name: 'Booking Report', link: selectedBranch ? `/salonadmin/booking-report?branchId=${selectedBranch}` : '/salonadmin/booking-report' }
     // ]},
     // { name: 'Orders', icon: <FaMoneyBillWave />, subMenu: [
-    //   { name: 'All Orders', link: selectedBranch ? `/sadmin/all-orders?branchId=${selectedBranch}` : '/sadmin/all-orders' },
+    //   { name: 'All Orders', link: selectedBranch ? `/salonadmin/all-orders?branchId=${selectedBranch}` : '/salonadmin/all-orders' },
     // ]},
     // { name: 'Settings', icon: <FaCog />, subMenu: [
-    //   { name: 'Assign Branch', link: '/sadmin/assign-branch' }
+    //   { name: 'Assign Branch', link: '/salonadmin/assign-branch' }
     // ]}
   ];
 
   // const menuItems = [
-  //   { name: 'Dashboard', icon: <FaTachometerAlt />, link: selectedBranch ? `/sadmin/dashboard?branchId=${selectedBranch}` : '/sadmin/dashboard' },
+  //   { name: 'Dashboard', icon: <FaTachometerAlt />, link: selectedBranch ? `/salonadmin/dashboard?branchId=${selectedBranch}` : '/salonadmin/dashboard' },
   //   { name: 'Location', icon: <FaTools />, subMenu: [
-  //     { name: 'View Branch', link: '/sadmin/view-branch' },
-  //     { name: 'Assign Branch', link: '/sadmin/assign-branch' }
+  //     { name: 'View Branch', link: '/salonadmin/view-branch' },
+  //     { name: 'Assign Branch', link: '/salonadmin/assign-branch' }
   //   ]},
   //   { name: 'Bookings', icon: <FaCalendarCheck />, subMenu: [
-  //     { name: 'Calender Booking', link: selectedBranch ? `/sadmin/create-booking?branchId=${selectedBranch}` : '/sadmin/create-booking' },
-  //     { name: 'BTesting', link: selectedBranch ? `/sadmin/btesting?branchId=${selectedBranch}` : '/sadmin/btesting' },
-  //     { name: 'Add Ticket', link: selectedBranch ? `/sadmin/new-booking?branchId=${selectedBranch}` : '/sadmin/new-booking' },
-  //     { name: 'View Booking', link: selectedBranch ? `/sadmin/view-booking?branchId=${selectedBranch}` : '/sadmin/view-booking' }
+  //     { name: 'Calender Booking', link: selectedBranch ? `/salonadmin/create-booking?branchId=${selectedBranch}` : '/salonadmin/create-booking' },
+  //     { name: 'BTesting', link: selectedBranch ? `/salonadmin/btesting?branchId=${selectedBranch}` : '/salonadmin/btesting' },
+  //     { name: 'Add Ticket', link: selectedBranch ? `/salonadmin/new-booking?branchId=${selectedBranch}` : '/salonadmin/new-booking' },
+  //     { name: 'View Booking', link: selectedBranch ? `/salonadmin/view-booking?branchId=${selectedBranch}` : '/salonadmin/view-booking' }
   //   ]},
   //   { name: 'Services', icon: <FaTools />, subMenu: [
-  //     { name: 'Create Services', link: selectedBranch ? `/sadmin/create-service?branchId=${selectedBranch}` : '/sadmin/create-service' },
-  //     { name: 'View Services', link: selectedBranch ? `/sadmin/view-services?branchId=${selectedBranch}` : '/sadmin/view-services' },
-  //     { name: 'Assign Services', link: selectedBranch ? `/sadmin/assign-staff?branchId=${selectedBranch}` : '/sadmin/assign-staff' },
+  //     { name: 'Create Services', link: selectedBranch ? `/salonadmin/create-service?branchId=${selectedBranch}` : '/salonadmin/create-service' },
+  //     { name: 'View Services', link: selectedBranch ? `/salonadmin/view-services?branchId=${selectedBranch}` : '/salonadmin/view-services' },
+  //     { name: 'Assign Services', link: selectedBranch ? `/salonadmin/assign-staff?branchId=${selectedBranch}` : '/salonadmin/assign-staff' },
   //   ]},
   //   { name: 'Product', icon: <FaShoppingCart />, subMenu: [
-  //     { name: 'Create Catgeory', link: selectedBranch ? `/sadmin/create-category?branchId=${selectedBranch}` : '/sadmin/create-category' },
-  //     { name: 'Create Product', link: selectedBranch ? `/sadmin/create-product?branchId=${selectedBranch}` : '/sadmin/create-product' },
-  //     { name: 'Display All Products', link: selectedBranch ? `/sadmin/display-product?branchId=${selectedBranch}` : '/sadmin/display-product' },
-  //     { name: 'Stock Management', link: selectedBranch ? `/sadmin/stock-management?branchId=${selectedBranch}` : '/sadmin/stock-management' }
+  //     { name: 'Create Catgeory', link: selectedBranch ? `/salonadmin/create-category?branchId=${selectedBranch}` : '/salonadmin/create-category' },
+  //     { name: 'Create Product', link: selectedBranch ? `/salonadmin/create-product?branchId=${selectedBranch}` : '/salonadmin/create-product' },
+  //     { name: 'Display All Products', link: selectedBranch ? `/salonadmin/display-product?branchId=${selectedBranch}` : '/salonadmin/display-product' },
+  //     { name: 'Stock Management', link: selectedBranch ? `/salonadmin/stock-management?branchId=${selectedBranch}` : '/salonadmin/stock-management' }
   //   ]},
   //   { name: 'Customers', icon: <FaUsers />, subMenu: [
-  //     { name: 'Create Customer', link: selectedBranch ? `/sadmin/create-customer?branchId=${selectedBranch}` : '/sadmin/create-customer' },
-  //     { name: 'All Customers', link: selectedBranch ? `/sadmin/view-allcustomer?branchId=${selectedBranch}` : '/sadmin/view-allcustomer' },
-  //     { name: 'Client Info', link: selectedBranch ? `/sadmin/view-allcustomer?branchId=${selectedBranch}` : '/sadmin/view-allcustomer' }
+  //     { name: 'Create Customer', link: selectedBranch ? `/salonadmin/create-customer?branchId=${selectedBranch}` : '/salonadmin/create-customer' },
+  //     { name: 'All Customers', link: selectedBranch ? `/salonadmin/view-allcustomer?branchId=${selectedBranch}` : '/salonadmin/view-allcustomer' },
+  //     { name: 'Client Info', link: selectedBranch ? `/salonadmin/view-allcustomer?branchId=${selectedBranch}` : '/salonadmin/view-allcustomer' }
   //   ]},
   //   { name: 'Employees', icon: <FaUsers />, subMenu: [
-  //     { name: 'Create Employee', link: selectedBranch ? `/sadmin/employee?branchId=${selectedBranch}` : '/sadmin/employee' },
-  //     { name: 'All Employees', link: selectedBranch ? `/sadmin/view-employee?branchId=${selectedBranch}` : '/sadmin/view-employee' },
-  //     { name: 'Assign Role', link: selectedBranch ? `/sadmin/assign-role?branchId=${selectedBranch}` : '/sadmin/assign-role' }
+  //     { name: 'Create Employee', link: selectedBranch ? `/salonadmin/employee?branchId=${selectedBranch}` : '/salonadmin/employee' },
+  //     { name: 'All Employees', link: selectedBranch ? `/salonadmin/view-employee?branchId=${selectedBranch}` : '/salonadmin/view-employee' },
+  //     { name: 'Assign Role', link: selectedBranch ? `/salonadmin/assign-role?branchId=${selectedBranch}` : '/salonadmin/assign-role' }
   //   ]},
   //   { name: 'Reports', icon: <FaChartBar />, subMenu: [
-  //     { name: 'All Reports', link: selectedBranch ? `/sadmin/report?branchId=${selectedBranch}` : '/sadmin/report' },
-  //     { name: 'Customer Report', link: selectedBranch ? `/sadmin/customer-report?branchId=${selectedBranch}` : '/sadmin/customer-report' },
-  //     { name: 'Employee Report', link: selectedBranch ? `/sadmin/employee-report?branchId=${selectedBranch}` : '/sadmin/employee-report' },
-  //     { name: 'Booking Report', link: selectedBranch ? `/sadmin/booking-report?branchId=${selectedBranch}` : '/sadmin/booking-report' }
+  //     { name: 'All Reports', link: selectedBranch ? `/salonadmin/report?branchId=${selectedBranch}` : '/salonadmin/report' },
+  //     { name: 'Customer Report', link: selectedBranch ? `/salonadmin/customer-report?branchId=${selectedBranch}` : '/salonadmin/customer-report' },
+  //     { name: 'Employee Report', link: selectedBranch ? `/salonadmin/employee-report?branchId=${selectedBranch}` : '/salonadmin/employee-report' },
+  //     { name: 'Booking Report', link: selectedBranch ? `/salonadmin/booking-report?branchId=${selectedBranch}` : '/salonadmin/booking-report' }
   //   ]},
   //   { name: 'Orders', icon: <FaMoneyBillWave />, subMenu: [
-  //     { name: 'All Orders', link: selectedBranch ? `/sadmin/all-orders?branchId=${selectedBranch}` : '/sadmin/all-orders' },
+  //     { name: 'All Orders', link: selectedBranch ? `/salonadmin/all-orders?branchId=${selectedBranch}` : '/salonadmin/all-orders' },
   //   ]},
   //   { name: 'Settings', icon: <FaCog />, subMenu: [
-  //     { name: 'Assign Branch', link: '/sadmin/assign-branch' }
+  //     { name: 'Assign Branch', link: '/salonadmin/assign-branch' }
   //   ]}
   // ];
 

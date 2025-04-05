@@ -7,21 +7,21 @@ const reportPages = [
     { 
         title: "Customer Report", 
         description: "View and export customer details.", 
-        link: "/sadmin/customer-report", 
+        link: "/salonadmin/customer-report", 
         color: "bg-blue-500", 
         icon: <FileText size={40} className="text-white" /> 
     },
     { 
         title: "Booking Report", 
         description: "Check all bookings and export data.", 
-        link: "/sadmin/booking-report", 
+        link: "/salonadmin/booking-report", 
         color: "bg-green-500", 
         icon: <CalendarCheck size={40} className="text-white" /> 
     },
     { 
         title: "Employee Report", 
         description: "Manage employee records and reports.", 
-        link: "/sadmin/employee-report", 
+        link: "/salonadmin/employee-report", 
         color: "bg-red-500", 
         icon: <Users size={40} className="text-white" /> 
     },

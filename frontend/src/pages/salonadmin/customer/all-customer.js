@@ -30,7 +30,7 @@ function AllProducts() {
     };
 
     const handleSelect = (client) => {
-        navigate(`/sadmin/client-info/${client.id}`, { state: { client } }); // ✅ Correctly pass client data
+        navigate(`/salonadmin/client-info/${client.id}`, { state: { client } }); // ✅ Correctly pass client data
     };
 
     return (
