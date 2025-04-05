@@ -1,21 +1,21 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-import Dashboard from "../pages/admin/Dashboard";
-import Booking from "../pages/admin/ManageBookings";
-import Clients from "../pages/admin/ManageClients";
-import Alluser from "../pages/admin/Allusers";
-import Salonadmin from "../pages/admin/Salonadmin";
-import Viewalladmin from "../pages/admin/AllSalonAdmin";
-import Viewsingleadmin from "../pages/admin/Viewsingleadmin";
-import SalonBranchCreate from "../pages/admin/Branch";
-import Viewbranch from "../pages/admin/Viewbranch";
+import Dashboard from "../pages/superadmin/Dashboard";
+import Booking from "../pages/superadmin/ManageBookings";
+import Clients from "../pages/superadmin/ManageClients";
+import Alluser from "../pages/superadmin/Allusers";
+import Salonadmin from "../pages/superadmin/Salonadmin";
+import Viewalladmin from "../pages/superadmin/AllSalonAdmin";
+import Viewsingleadmin from "../pages/superadmin/Viewsingleadmin";
+import SalonBranchCreate from "../pages/superadmin/Branch";
+import Viewbranch from "../pages/superadmin/Viewbranch";
 
 const SuperAdminRoutes = () => {
   return (
     <Routes>
       <Route
-        path="/admin/dashboard"
+        path="/superadmin/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />
@@ -23,7 +23,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/salonadmin"
+        path="/superadmin/salonadmin"
         element={
           <ProtectedRoute>
             <Salonadmin />
@@ -31,7 +31,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/view-salonadmin"
+        path="/superadmin/view-salonadmin"
         element={
           <ProtectedRoute>
             <Viewalladmin />
@@ -39,7 +39,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/view-single-admin/:adminId"
+        path="/superadmin/view-single-admin/:adminId"
         element={
           <ProtectedRoute>
             <Viewsingleadmin />
@@ -47,7 +47,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/clients"
+        path="/superadmin/clients"
         element={
           <ProtectedRoute>
             <Clients />
@@ -55,7 +55,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/all-users"
+        path="/superadmin/all-users"
         element={
           <ProtectedRoute>
             <Alluser />
@@ -63,7 +63,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/bookings"
+        path="/superadmin/bookings"
         element={
           <ProtectedRoute>
             <Booking />
@@ -71,7 +71,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/create-branch"
+        path="/superadmin/create-branch"
         element={
           <ProtectedRoute>
             <SalonBranchCreate />
@@ -79,7 +79,7 @@ const SuperAdminRoutes = () => {
         }
       />
       <Route
-        path="/admin/view-branch"
+        path="/superadmin/view-branch"
         element={
           <ProtectedRoute>
             <Viewbranch />
