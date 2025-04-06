@@ -4,6 +4,7 @@ import SAAdminLayout from "../../../layouts/Salonadmin";
 import { FaBox, FaRupeeSign, FaBalanceScale } from "react-icons/fa";
 import Tabs from "rc-tabs"; // ✅ Fix: Import as default
 import "rc-tabs/assets/index.css";
+import { Link } from "react-router-dom";
 
 const hsnCodes = [
   { code: "3304", description: "Beauty/makeup preparations" },
@@ -92,11 +93,8 @@ function AllProducts() {
     <SAAdminLayout>
       <div className="flex justify-center items-center bg-gray-100 p-4">
         <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-7xl space-y-6">
-          <div className="flex justify-center mb-6">
-            <FaBox className="text-5xl text-blue-500" />
-          </div>
-          <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-            Add 🛒 Product
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+            Add Product 🛒
           </h1>
           {message && (
             <p className="text-red-500 text-center mb-4">{message}</p>
@@ -104,7 +102,7 @@ function AllProducts() {
 
           <Tabs
             defaultActiveKey="1"
-            className="custom-tabs" // Add this
+            className="custom-tabs p-5 space-x-4" // Add this
             items={[
               {
                 key: "1",
@@ -276,38 +274,65 @@ function AllProducts() {
                           />
                         </div>
                       </div>
-
-                      {/* Barcode */}
-                      <input
-                        type="text"
-                        placeholder="Barcode (optional)"
-                        value={barcode}
-                        onChange={(e) => setBarcode(e.target.value)}
-                        className="w-full p-3 border rounded-md mb-4"
-                      />
-
-                      {/* Tax and Product Type */}
-                      <div className="flex space-x-4 mb-4">
-                        <label className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            checked={inclusiveTax}
-                            onChange={(e) => setInclusiveTax(e.target.checked)}
-                            className="h-5 w-5"
-                          />
-                          <span>Price inclusive of tax</span>
+                      <div className="flex mb-4 ">
+                        <label className="block text-gray-700 font-medium mb-2">
+                          <FaBox className="inline mr-2" />
+                          Consumable
                         </label>
-
-                        <select
-                          className="p-3 border rounded-md"
-                          value={isConsumable}
-                          onChange={(e) => setIsConsumable(e.target.value)}
-                          required
-                        >
-                          <option value="">Product Type</option>
-                          <option value="true">Consumable</option>
-                          <option value="false">Non-Consumable</option>
-                        </select>
+                        <div className="flex items-center ml-5 space-x-4">
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              className="form-radio h-4 w-4 text-blue-600"
+                              name="consumable"
+                              value="yes"
+                              checked={isConsumable === "yes"}
+                              onChange={(e) => setIsConsumable(e.target.value)}
+                            />
+                            <span className="ml-2">Yes</span>
+                          </label>
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              className="form-radio h-4 w-4 text-blue-600"
+                              name="consumable"
+                              value="no"
+                              checked={isConsumable === "no"}
+                              onChange={(e) => setIsConsumable(e.target.value)}
+                            />
+                            <span className="ml-2">No</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="flex mb-4 ">
+                        <label className="block text-gray-700 font-medium mb-2">
+                          <FaBox className="inline mr-2" />
+                          Retail
+                        </label>
+                        <div className="flex items-center ml-5 space-x-4">
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              className="form-radio h-4 w-4 text-blue-600"
+                              name="consumable"
+                              value="yes"
+                              checked={isConsumable === "yes"}
+                              onChange={(e) => setIsConsumable(e.target.value)}
+                            />
+                            <span className="ml-2">Yes</span>
+                          </label>
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              className="form-radio h-4 w-4 text-blue-600"
+                              name="consumable"
+                              value="no"
+                              checked={isConsumable === "no"}
+                              onChange={(e) => setIsConsumable(e.target.value)}
+                            />
+                            <span className="ml-2">No</span>
+                          </label>
+                        </div>
                       </div>
 
                       <button
@@ -327,9 +352,11 @@ function AllProducts() {
                   <div>
                     <div>
                       <div>
-                        <h2 className="text-xl font-bold mb-4">
-                          Product Name: {name}
-                        </h2>
+                        <div className="flex items-center mb-4">
+                          <h2 className="text-xl font-bold mb-4">
+                            Product Name: {name}
+                          </h2>
+                        </div>
                         <table className="w-full border-collapse border border-gray-300">
                           <thead>
                             <tr className="bg-gray-200">
@@ -383,6 +410,17 @@ function AllProducts() {
                           </tbody>
                         </table>
                       </div>
+                    </div>
+                    <div className="flex space-x-4 ml-4 mt-7 mb-6">
+                      <Link className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                        Save
+                      </Link>
+                      <Link
+                        to="/salonadmin/view-services"
+                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                      >
+                        Cancel
+                      </Link>
                     </div>
                   </div>
                 ),

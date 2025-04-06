@@ -76,9 +76,9 @@ const saveCategory = async () => {
 };
   return (
     <SAAdminLayout>
-      <div className="flex justify-center min-h-screen bg-gray-100 py-4 px-6">
+      <div className="flex justify-center min-h-screen bg-gray-100 py-4 px-4">
         <div className="bg-white shadow-lg rounded-lg w-full p-8 space-y-6">
-          <h1 className="text-2xl font-bold text-gray-800">Create Product Category</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Add Service Category</h1>
 
           {error && <p className="text-red-500">{error}</p>}
 
@@ -124,8 +124,8 @@ const saveCategory = async () => {
             >
               {loading ? "Saving..." : "Save"}
             </button>
-            <Link
-              to="/salonadmin/display-product"
+            <Link 
+            to="/salonadmin/view-services" 
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
             >
               Cancel

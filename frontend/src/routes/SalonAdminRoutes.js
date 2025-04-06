@@ -18,15 +18,14 @@ import CreateService from "../pages/salonadmin/service/createservice";
 import ViewService from "../pages/salonadmin/service/viewservice";
 import CreateProduct from "../pages/salonadmin/product/createproduct";
 import AllProduct from "../pages/salonadmin/product/allproduct";
-import Stockmangement from "../pages/salonadmin/product/stockmanagement";
 import Assignrole from "../pages/salonadmin/employee/assignrole";
-import AssignStaff from "../pages/salonadmin/service/assignstaff";
 import ViewServicee from "../pages/salonadmin/service/viewservice";
 import ViewBranch from "../pages/salonadmin/branch/view-branch";
 import MainbranchPage from "../pages/salonadmin/branch/main";
 import SalonNewBooking from "../pages/salonadmin/booking/newbooking";
 import Allorders from "../pages/salonadmin/orders/allorders";
 import CreateCategory from "../pages/salonadmin/product/createcategory";
+import CreateServiceCategory from "../pages/salonadmin/service/createcategory";
 import SalonCalendardummy from "../pages/salonadmin/booking/SalonCalendar";
 import ClientDetails from "../pages/salonadmin/customer/client-info";
 
@@ -79,6 +78,14 @@ const SalonAdminRoutes = () => {
         element={
           <ProtectedRoute>
             <CreateService />
+          </ProtectedRoute>
+        }
+      />
+         <Route
+        path="/salonadmin/create-service-category"
+        element={
+          <ProtectedRoute>
+            <CreateServiceCategory />
           </ProtectedRoute>
         }
       />
@@ -213,14 +220,6 @@ const SalonAdminRoutes = () => {
         }
       />
       <Route
-        path="/salonadmin/stock-management"
-        element={
-          <ProtectedRoute>
-            <Stockmangement />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/salonadmin/assign-role"
         element={
           <ProtectedRoute>
@@ -228,14 +227,7 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/salonadmin/assign-staff"
-        element={
-          <ProtectedRoute>
-            <AssignStaff />
-          </ProtectedRoute>
-        }
-      />
+      
       <Route
         path="/salonadmin/all-orders"
         element={

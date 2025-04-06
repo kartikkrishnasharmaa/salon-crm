@@ -141,13 +141,13 @@ const ViewServices = () => {
         {/* Buttons Row */}
         <div className="flex flex-wrap gap-4 mb-6">
           <Link 
-            to="/salonadmin/services/add-new-service" 
+            to="/salonadmin/create-service" 
             className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-md"
           >
             <FiPlus className="text-lg" /> Add New Service
           </Link>
           <Link 
-            to="/salonadmin/services/add-new-category" 
+            to="/salonadmin/create-service-category" 
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-md"
           >
             <FiPlus className="text-lg" /> Add New Category
