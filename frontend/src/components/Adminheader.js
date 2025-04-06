@@ -69,7 +69,7 @@ const Adminheader = ({ toggleSidebar }) => {
           Dashboard
         </Link>
         <Link
-          to={getBranchLink("/salonadmin/create-booking")}
+          to={getBranchLink("/salonadmin/btesting")}
           className="hover:text-blue-600"
         >
           Calender
