@@ -10,6 +10,9 @@
 @import 'react-big-calendar/lib/addons/dragAndDrop/styles';
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+.custom-rc-tabs .rc-tabs-content {
+  padding: 0 16px;
+}
 .App {
   text-align: center;
 }

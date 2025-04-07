@@ -13,6 +13,38 @@ function ClientDetails() {
   const location = useLocation();
   const navigate = useNavigate();
   const client = location.state?.client;
+  
+  const tabsStyle = `
+  .custom-rc-tabs {
+    margin: 0 16px;
+  }
+  .custom-rc-tabs .rc-tabs-tab {
+    padding: 8px 16px;
+    margin: 0 8px !important;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.3s;
+    border: none !important;
+  }
+  .custom-rc-tabs .rc-tabs-tab:first-child {
+    margin-left: 0 !important;
+  }
+  .custom-rc-tabs .rc-tabs-tab-active {
+    background: #1890ff;
+    color: white !important;
+  }
+  .custom-rc-tabs .rc-tabs-tab:not(.rc-tabs-tab-active) {
+    background: #f5f5f5;
+    color: #666;
+  }
+  .custom-rc-tabs .rc-tabs-ink-bar {
+    background: #1890ff;
+    height: 3px !important;
+  }
+  .custom-rc-tabs .rc-tabs-nav {
+    margin-bottom: 16px;
+    border-bottom: none !important;
+  }
+`;
 
   if (!client) {
     return (
@@ -334,10 +366,12 @@ function AdvancePayment({ client }) {
 
           <div className="flex justify-center">
             <div className="w-full">
+          <style>{tabsStyle}</style>
+
               <Tabs
                 defaultActiveKey="info"
                 tabPosition="top"
-                className="flex justify-center gap-8"
+                className="custom-rc-tabs"
                 items={tabItems.map(({ key, label, content }) => ({
                   key,
                   label,

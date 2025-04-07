@@ -20,6 +20,38 @@ function AllProducts() {
   const [inclusiveTax, setInclusiveTax] = useState(false);
   const [isConsumable, setIsConsumable] = useState("");
 
+  const tabsStyle = `
+  .custom-rc-tabs {
+    margin: 0 16px;
+  }
+  .custom-rc-tabs .rc-tabs-tab {
+    padding: 8px 16px;
+    margin: 0 8px !important;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.3s;
+    border: none !important;
+  }
+  .custom-rc-tabs .rc-tabs-tab:first-child {
+    margin-left: 0 !important;
+  }
+  .custom-rc-tabs .rc-tabs-tab-active {
+    background: #1890ff;
+    color: white !important;
+  }
+  .custom-rc-tabs .rc-tabs-tab:not(.rc-tabs-tab-active) {
+    background: #f5f5f5;
+    color: #666;
+  }
+  .custom-rc-tabs .rc-tabs-ink-bar {
+    background: #1890ff;
+    height: 3px !important;
+  }
+  .custom-rc-tabs .rc-tabs-nav {
+    margin-bottom: 16px;
+    border-bottom: none !important;
+  }
+`;
+
   const [operationHours, setOperationHours] = useState(
     [
       "Monday",
@@ -82,10 +114,12 @@ function AllProducts() {
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Office Location Details
           </h1>
+          <style>{tabsStyle}</style>
 
           <Tabs
             defaultActiveKey="1"
-            className="custom-tabs gap-5"
+            className="custom-rc-tabs"
+
             items={[
               {
                 key: "1",
@@ -324,7 +358,6 @@ function AllProducts() {
                 label: "Service & Price Setting",
                 children: (
                   <div>
-                    <h2 className="text-xl font-bold mt-9">Location name</h2>
 
                     {/* Table with Dummy Data */}
                     <div className="mt-6 overflow-x-auto">
@@ -434,8 +467,6 @@ function AllProducts() {
                 label: "Product & Price Setting",
                 children: (
                   <div>
-                    <h2 className="text-xl font-bold mt-9">Product Management</h2>
-                    
                     {/* Product Table */}
                     <div className="mt-6 overflow-x-auto">
                       <table className="w-full border-collapse">
