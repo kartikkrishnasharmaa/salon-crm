@@ -1,6 +1,6 @@
 import React, { useState } from "react"; // Import useState hook
 import SAAdminLayout from "../../../layouts/Salonadmin";
-import { FaMapMarkerAlt,FaPhone, FaRupeeSign } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaRupeeSign } from "react-icons/fa";
 import Tabs from "rc-tabs";
 import "rc-tabs/assets/index.css";
 
@@ -20,12 +20,33 @@ function AllProducts() {
   const [inclusiveTax, setInclusiveTax] = useState(false);
   const [isConsumable, setIsConsumable] = useState("");
 
+  const [operationHours, setOperationHours] = useState(
+    [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ].reduce((acc, day) => {
+      acc[day] = { open: "09:00", close: "17:00", isSelected: true };
+      return acc;
+    }, {})
+  );
+
+  const handleTimeChange = (day, field, value) => {
+    setOperationHours((prev) => ({
+      ...prev,
+      [day]: { ...prev[day], [field]: value },
+    }));
+  };
   const statesWithCities = {
     Maharashtra: ["Mumbai", "Pune", "Nagpur"],
     Karnataka: ["Bangalore", "Mysore", "Mangalore"],
     Gujarat: ["Ahmedabad", "Surat", "Vadodara"],
-    Rajasthan: ["Jaipur", "Udaipur", "Jodhpur"]
-  }; 
+    Rajasthan: ["Jaipur", "Udaipur", "Jodhpur"],
+  };
 
   const citiesWithAreas = {
     Mumbai: ["Andheri", "Bandra", "Dadar"],
@@ -38,7 +59,7 @@ function AllProducts() {
     Vadodara: ["Alkapuri", "Fatehgunj", "Akota"],
     Jaipur: ["Malviya Nagar", "Vaishali Nagar", "Bani Park"],
     Udaipur: ["Fateh Sagar", "Hiran Magri", "Sukhadia Circle"],
-    Jodhpur: ["Ratanada", "Shastri Nagar", "Basni"]
+    Jodhpur: ["Ratanada", "Shastri Nagar", "Basni"],
   };
 
   const handleStateChange = (e) => {
@@ -103,7 +124,7 @@ function AllProducts() {
                       className="w-full p-3 border rounded-md mb-4"
                       required
                     />
-                    
+
                     {/* State Dropdown */}
                     <select
                       className="w-full p-3 border rounded-md mb-4"
@@ -180,6 +201,120 @@ function AllProducts() {
                 children: (
                   <div>
                     <h2 className="text-xl font-bold mt-9">Location name</h2>
+                    <div className="mt-4">
+                      {/* Select All Checkbox */}
+                      <div className="mb-2 flex items-center">
+                        <input
+                          type="checkbox"
+                          id="selectAll"
+                          className="mr-2"
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setOperationHours((prev) => {
+                              const updated = {};
+                              Object.keys(prev).forEach((day) => {
+                                updated[day] = {
+                                  ...prev[day],
+                                  isSelected: isChecked,
+                                };
+                              });
+                              return updated;
+                            });
+                          }}
+                        />
+                        <label htmlFor="selectAll">Select All</label>
+                      </div>
+
+                      {/* Table */}
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-gray-100">
+                            <th className="border p-2 text-left">Day</th>
+                            <th className="border p-2 text-left">
+                              Opening Time
+                            </th>
+                            <th className="border p-2 text-left">
+                              Closing Time
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(operationHours).map(
+                            ([day, { open, close, isSelected }]) => (
+                              <tr key={day} className="border">
+                                <td className="border p-2 flex items-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    className="mr-2"
+                                    onChange={(e) => {
+                                      setOperationHours((prev) => ({
+                                        ...prev,
+                                        [day]: {
+                                          ...prev[day],
+                                          isSelected: e.target.checked,
+                                        },
+                                      }));
+                                    }}
+                                  />
+                                  {day}
+                                </td>
+                                <td className="border p-2">
+                                  <input
+                                    type="time"
+                                    value={open}
+                                    disabled={!isSelected}
+                                    className={`w-full p-1 border rounded ${
+                                      !isSelected ? "bg-gray-100" : ""
+                                    }`}
+                                    onChange={(e) =>
+                                      handleTimeChange(
+                                        day,
+                                        "open",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td className="border p-2">
+                                  <input
+                                    type="time"
+                                    value={close}
+                                    disabled={!isSelected}
+                                    className={`w-full p-1 border rounded ${
+                                      !isSelected ? "bg-gray-100" : ""
+                                    }`}
+                                    onChange={(e) =>
+                                      handleTimeChange(
+                                        day,
+                                        "close",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </table>
+
+                      {/* Save/Cancel Buttons */}
+                      <div className="flex justify-end mt-4 space-x-2">
+                        <button
+                          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                          onClick={() => console.log("Cancelled")}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                          onClick={() => console.log("Saved", operationHours)}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ),
               },
@@ -190,16 +325,193 @@ function AllProducts() {
                 children: (
                   <div>
                     <h2 className="text-xl font-bold mt-9">Location name</h2>
+
+                    {/* Table with Dummy Data */}
+                    <div className="mt-6 overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-gray-100">
+                            <th className="border p-3 text-left">Category</th>
+                            <th className="border p-3 text-left">
+                              Sub Category
+                            </th>
+                            <th className="border p-3 text-left">
+                              Service Name
+                            </th>
+                            <th className="border p-3 text-left">
+                              Member Price ($)
+                            </th>
+                            <th className="border p-3 text-left">
+                              Non-Member Price ($)
+                            </th>
+                            <th className="border p-3 text-left">Active</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {/* Dummy Data Rows */}
+                          {[
+                            {
+                              id: 1,
+                              category: "Hair",
+                              subCategory: "Cut & Style",
+                              serviceName: "Men's Haircut",
+                              memberPrice: 25,
+                              nonMemberPrice: 35,
+                              isActive: true,
+                            },
+                            {
+                              id: 2,
+                              category: "Hair",
+                              subCategory: "Coloring",
+                              serviceName: "Full Highlights",
+                              memberPrice: 80,
+                              nonMemberPrice: 100,
+                              isActive: true,
+                            },
+                            {
+                              id: 3,
+                              category: "Spa",
+                              subCategory: "Massage",
+                              serviceName: "Deep Tissue (30 mins)",
+                              memberPrice: 45,
+                              nonMemberPrice: 60,
+                              isActive: false,
+                            },
+                          ].map((service) => (
+                            <tr
+                              key={service.id}
+                              className="border hover:bg-gray-50"
+                            >
+                              <td className="border p-3">{service.category}</td>
+                              <td className="border p-3">
+                                {service.subCategory}
+                              </td>
+                              <td className="border p-3">
+                                {service.serviceName}
+                              </td>
+                              <td className="border p-3">
+                                <input
+                                  type="number"
+                                  defaultValue={service.memberPrice}
+                                  className="w-20 p-1 border rounded"
+                                />
+                              </td>
+                              <td className="border p-3">
+                                <input
+                                  type="number"
+                                  defaultValue={service.nonMemberPrice}
+                                  className="w-20 p-1 border rounded"
+                                />
+                              </td>
+                              <td className="border p-3 text-center">
+                                <input
+                                  type="checkbox"
+                                  defaultChecked={service.isActive}
+                                  className="h-4 w-4"
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex justify-end mt-6 space-x-3">
+                      <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
+                        Cancel
+                      </button>
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Save Changes
+                      </button>
+                    </div>
                   </div>
                 ),
               },
               {
-                key: "4",
+                key: "4", // Change key as needed
                 className: "ml-4",
                 label: "Product & Price Setting",
                 children: (
                   <div>
-                    <h2 className="text-xl font-bold mt-9">Location name</h2>
+                    <h2 className="text-xl font-bold mt-9">Product Management</h2>
+                    
+                    {/* Product Table */}
+                    <div className="mt-6 overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-gray-100">
+                            <th className="border p-3 text-left">Category</th>
+                            <th className="border p-3 text-left">Sub Category</th>
+                            <th className="border p-3 text-left">Product Name</th>
+                            <th className="border p-3 text-left">Price ($)</th>
+                            <th className="border p-3 text-left">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {/* Dummy Product Data */}
+                          {[
+                            {
+                              id: 1,
+                              category: "Skincare",
+                              subCategory: "Cleansers",
+                              productName: "Foaming Face Wash",
+                              price: 12.99,
+                              isEnabled: true,
+                            },
+                            {
+                              id: 2,
+                              category: "Haircare",
+                              subCategory: "Shampoo",
+                              productName: "Anti-Dandruff Shampoo",
+                              price: 15.50,
+                              isEnabled: false,
+                            },
+                            {
+                              id: 3,
+                              category: "Makeup",
+                              subCategory: "Lipstick",
+                              productName: "Matte Red Lipstick",
+                              price: 8.99,
+                              isEnabled: true,
+                            },
+                          ].map((product) => (
+                            <tr key={product.id} className="border hover:bg-gray-50">
+                              <td className="border p-3">{product.category}</td>
+                              <td className="border p-3">{product.subCategory}</td>
+                              <td className="border p-3">{product.productName}</td>
+                              <td className="border p-3">
+                                <input
+                                  type="number"
+                                  defaultValue={product.price}
+                                  disabled={!product.isEnabled}
+                                  className={`w-20 p-1 border rounded ${
+                                    !product.isEnabled ? "bg-gray-100" : ""
+                                  }`}
+                                />
+                              </td>
+                              <td className="border p-3 text-center">
+                                <input
+                                  type="checkbox"
+                                  defaultChecked={product.isEnabled}
+                                  className="h-4 w-4"
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+              
+                    {/* Action Buttons */}
+                    <div className="flex justify-end mt-6 space-x-3">
+                      <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
+                        Cancel
+                      </button>
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Save Changes
+                      </button>
+                    </div>
                   </div>
                 ),
               },
