@@ -7,9 +7,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const Home = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [submenuOpen, setSubmenuOpen] = useState(false);
-  const sliderSettings = {
+const [menuOpen, setMenuOpen] = useState(false);
+const [submenuOpen, setSubmenuOpen] = useState(false);
+const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
@@ -30,7 +30,7 @@ const Home = () => {
             transition={{ duration: 0.5 }}
           >
             SalonCRM
-          </motion.h1>
+          </motion.h1>l\
           <nav className="hidden md:flex space-x-8 text-lg font-semibold">
             <a href="#pricing" className="hover:text-gray-300 transition duration-300">Pricing</a>
             <a href="#features" className="hover:text-gray-300 transition duration-300">Features</a>
