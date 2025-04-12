@@ -68,7 +68,6 @@ const sliderSettings = {
           <a href="/signup" className="bg-pink-500 px-6 py-3 text-white rounded-lg shadow-lg hover:bg-pink-600">Get Started</a>
         </motion.div>
       </section>
-      
       {/* Services Section */}
       <section className="py-16 bg-white text-center" id="services">
         <h2 className="text-4xl font-bold mb-10 text-gray-800">Our Services</h2>
@@ -114,34 +113,6 @@ const sliderSettings = {
           ))}
         </div>
       </section>
-      
-      {/* Testimonials Section */}
-      <section className="py-20 bg-white text-center" id="testimonials">
-        <h2 className="text-5xl font-bold mb-12 text-gray-800">What Our Clients Say</h2>
-        <Slider {...sliderSettings} className="w-full max-w-5xl mx-auto">
-          {[
-            { name: "Priyanka Chopra", review: "Absolutely love the service! The staff is professional and friendly. They take care of every small detail and ensure a relaxing experience.", image: "https://www.usmagazine.com/wp-content/uploads/2018/05/priyanka-chopra.jpg?crop=0px%2C0px%2C1800px%2C1018px&resize=1600%2C900&quality=40&strip=all" },
-            { name: "Salman Khan", review: "Best salon experience I’ve had. Highly recommend! The ambiance is soothing, and the hairstylists are very skilled. Definitely my go-to place!", image: "https://mayankshekhar.com/wp-content/uploads/2013/03/Salman-Khan-2.jpg" },
-            { name: "Kartik Sharma", review: "Great ambiance and skilled professionals. My go-to salon! The services are top-notch, and they truly listen to the customer's needs.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiURqNrATWg20mrCWdHjfyWRk4pF0zyI1FEg&s" },
-          ].map((client, index) => (
-            <div key={index}>
-              <motion.div 
-                className="flex flex-col md:flex-row items-center bg-gray-100 shadow-xl p-10 rounded-lg"
-                initial={{ opacity: 0, scale: 0.9 }} 
-                animate={{ opacity: 1, scale: 1 }} 
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <img src={client.image} alt={client.name} className="w-64 h-64 rounded-full shadow-lg mb-6 md:mb-0 md:mr-8" />
-                <div className="text-left ml-16 max-w-lg">
-                  <h3 className="text-3xl font-semibold text-gray-700 mb-4">{client.name}</h3>
-                  <p className="text-lg text-gray-600 italic">"{client.review}"</p>
-                </div>
-              </motion.div>
-            </div>
-          ))}
-        </Slider>
-      </section>
-
       <div className="absolute bg-black opacity-50"></div>
       <div className="relative max-auto mb-6 flex justify-center items-center">
         <div className="bg-white shadow-lg p-8 rounded-md shadow-cyan-600 hover:shadow-indigo-700 transition duration-200">
