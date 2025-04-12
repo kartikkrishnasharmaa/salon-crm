@@ -106,7 +106,7 @@ function CreateBranch() {
 
   return (
     <AdminLayout>
-      <div className="max-w-3xl mx-auto p-6 shadow-lg rounded-lg bg-white">
+      <div className="mx-auto p-6 shadow-lg rounded-lg bg-white">
         <h1 className="text-4xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-lg shadow-blue-500/50 transform transition duration-300 hover:scale-105">
           Create ✂️ Salon Branch
         </h1>

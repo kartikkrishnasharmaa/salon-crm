@@ -34,7 +34,7 @@ const Login = () => {
         toast.success("Login Successful!");
 
         setTimeout(() => {
-          navigate("/admin/dashboard"); // ✅ Dashboard pe redirect karega
+          navigate("/superadmin/dashboard"); // ✅ Dashboard pe redirect karega
         }, 2000);
       } else {
         toast.error("Invalid response from server");

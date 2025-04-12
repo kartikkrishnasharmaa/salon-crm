@@ -1,78 +1,97 @@
-import React, { useState } from "react"; // Import useState hook
+import React, { useState, useEffect } from "react";
 import SAAdminLayout from "../../../layouts/Salonadmin";
-import { FaMapMarkerAlt, FaPhone, FaRupeeSign } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 import Tabs from "rc-tabs";
 import "rc-tabs/assets/index.css";
+import axios from "../../../api/axiosConfig";
 
-function AllProducts() {
-  // Initialize state for all required variables
-  const [name, setName] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
-  const [hsnCode, setHsnCode] = useState("");
-  const [unit, setUnit] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState("");
-  const [mrp, setMrp] = useState("");
-  const [barcode, setBarcode] = useState("");
-  const [inclusiveTax, setInclusiveTax] = useState(false);
-  const [isConsumable, setIsConsumable] = useState("");
-
-  const tabsStyle = `
-  .custom-rc-tabs {
-    margin: 0 16px;
-  }
-  .custom-rc-tabs .rc-tabs-tab {
-    padding: 8px 16px;
-    margin: 0 8px !important;
-    border-radius: 6px 6px 0 0;
-    transition: all 0.3s;
-    border: none !important;
-  }
-  .custom-rc-tabs .rc-tabs-tab:first-child {
-    margin-left: 0 !important;
-  }
-  .custom-rc-tabs .rc-tabs-tab-active {
-    background: #1890ff;
-    color: white !important;
-  }
-  .custom-rc-tabs .rc-tabs-tab:not(.rc-tabs-tab-active) {
-    background: #f5f5f5;
-    color: #666;
-  }
-  .custom-rc-tabs .rc-tabs-ink-bar {
-    background: #1890ff;
-    height: 3px !important;
-  }
-  .custom-rc-tabs .rc-tabs-nav {
-    margin-bottom: 16px;
-    border-bottom: none !important;
-  }
-`;
+function BranchMainPage() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [formData, setFormData] = useState({
+    locationName: "",
+    businessName: "",
+    address: "",
+    state: "",
+    city: "",
+    area: "",
+    phone: ""
+  });
 
   const [operationHours, setOperationHours] = useState(
-    [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ].reduce((acc, day) => {
+    ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].reduce((acc, day) => {
       acc[day] = { open: "09:00", close: "17:00", isSelected: true };
       return acc;
     }, {})
   );
 
+  const token = localStorage.getItem("token");
+  const salonAdminData = JSON.parse(localStorage.getItem("salonAdmin"));
+  const salonAdminId = salonAdminData?._id;
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        if (!salonAdminId || !token) {
+          throw new Error("Authentication data missing");
+        }
+
+        const response = await axios.get(`/branch/get-salon/${salonAdminId}/branches`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.data?.branches) {
+          throw new Error("Invalid response format");
+        }
+
+        setBranches(response.data.branches);
+        
+        if (response.data.branches.length > 0) {
+          handleBranchSelect(response.data.branches[0]);
+        }
+      } catch (err) {
+        setError(err.message || "Failed to fetch branches");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBranches();
+  }, [token, salonAdminId]);
+
+  const handleBranchSelect = (branch) => {
+    setSelectedBranch(branch);
+    setFormData({
+      locationName: branch.branchName || "",
+      businessName: branch.businessName || "",
+      address: branch.address || "",
+      state: branch.state || "",
+      city: branch.city || "",
+      area: branch.area || "",
+      phone: branch.phone || ""
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleTimeChange = (day, field, value) => {
-    setOperationHours((prev) => ({
+    setOperationHours(prev => ({
       ...prev,
       [day]: { ...prev[day], [field]: value },
     }));
   };
+
   const statesWithCities = {
     Maharashtra: ["Mumbai", "Pune", "Nagpur"],
     Karnataka: ["Bangalore", "Mysore", "Mangalore"],
@@ -96,13 +115,96 @@ function AllProducts() {
 
   const handleStateChange = (e) => {
     const state = e.target.value;
-    setSelectedState(state);
-    setSelectedCity(""); // Reset city when state changes
+    setFormData(prev => ({
+      ...prev,
+      state: state,
+      city: "",
+      area: ""
+    }));
   };
 
   const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      city: e.target.value,
+      area: ""
+    }));
   };
+
+  const handleAreaChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      area: e.target.value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+  };
+
+  const tabsStyle = `
+    .custom-rc-tabs {
+      margin: 0 16px;
+    }
+    .custom-rc-tabs .rc-tabs-tab {
+      padding: 8px 16px;
+      margin: 0 8px !important;
+      border-radius: 6px 6px 0 0;
+      transition: all 0.3s;
+      border: none !important;
+    }
+    .custom-rc-tabs .rc-tabs-tab:first-child {
+      margin-left: 0 !important;
+    }
+    .custom-rc-tabs .rc-tabs-tab-active {
+      background: #1890ff;
+      color: white !important;
+    }
+    .custom-rc-tabs .rc-tabs-tab:not(.rc-tabs-tab-active) {
+      background: #f5f5f5;
+      color: #666;
+    }
+    .custom-rc-tabs .rc-tabs-ink-bar {
+      background: #1890ff;
+      height: 3px !important;
+    }
+    .custom-rc-tabs .rc-tabs-nav {
+      margin-bottom: 16px;
+      border-bottom: none !important;
+    }
+  `;
+
+  if (loading) {
+    return (
+      <SAAdminLayout>
+        <div className="flex justify-center items-center h-screen">
+          <p>Loading branches...</p>
+        </div>
+      </SAAdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <SAAdminLayout>
+        <div className="flex justify-center items-center h-screen">
+          <p className="text-red-500">Error: {error}</p>
+        </div>
+      </SAAdminLayout>
+    );
+  }
+
+  if (!branches || branches.length === 0) {
+    return (
+      <SAAdminLayout>
+        <div className="flex justify-center items-center h-screen">
+          <p>No branches found</p>
+        </div>
+      </SAAdminLayout>
+    );
+  }
+
 
   return (
     <SAAdminLayout>
@@ -114,47 +216,75 @@ function AllProducts() {
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Office Location Details
           </h1>
+          
+          {loading ? (
+            <p className="text-center text-gray-500 text-xl">Loading branches...</p>
+          ) : (
+            <div className="mb-6">
+              <label htmlFor="branch-select" className="block text-sm font-medium text-gray-700 mb-2">
+                Select Branch
+              </label>
+              <select
+                id="branch-select"
+                onChange={(e) => {
+                  const branch = branches.find(b => b._id === e.target.value);
+                  if (branch) handleBranchSelect(branch);
+                }}
+                className="w-full p-3 border rounded-md"
+                value={selectedBranch?._id || ''}
+              >
+                {branches.map((branch) => (
+                  <option key={branch._id} value={branch._id}>
+                    {branch.branchName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <style>{tabsStyle}</style>
 
           <Tabs
             defaultActiveKey="1"
             className="custom-rc-tabs"
-
             items={[
               {
                 key: "1",
                 label: "Info",
                 children: (
-                  <form className="p-6">
+                  <form className="p-6" onSubmit={handleSubmit}>
                     <input
                       type="text"
+                      name="locationName"
                       placeholder="Location Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={formData.locationName}
+                      onChange={handleInputChange}
                       className="w-full text-black-900 p-3 border rounded-md mb-4"
                       required
                     />
                     <input
                       type="text"
+                      name="businessName"
                       placeholder="Business Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={formData.businessName}
+                      onChange={handleInputChange}
                       className="w-full p-3 border rounded-md mb-4"
                       required
                     />
                     <input
                       type="text"
+                      name="address"
                       placeholder="Address"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={formData.address}
+                      onChange={handleInputChange}
                       className="w-full p-3 border rounded-md mb-4"
                       required
                     />
 
-                    {/* State Dropdown */}
                     <select
                       className="w-full p-3 border rounded-md mb-4"
-                      value={selectedState}
+                      name="state"
+                      value={formData.state}
                       onChange={handleStateChange}
                       required
                     >
@@ -166,16 +296,16 @@ function AllProducts() {
                       ))}
                     </select>
 
-                    {/* City Dropdown - only shown when a state is selected */}
-                    {selectedState && (
+                    {formData.state && (
                       <select
                         className="w-full p-3 border rounded-md mb-4"
-                        value={selectedCity}
+                        name="city"
+                        value={formData.city}
                         onChange={handleCityChange}
                         required
                       >
                         <option value="">Select City</option>
-                        {statesWithCities[selectedState].map((city) => (
+                        {statesWithCities[formData.state].map((city) => (
                           <option key={city} value={city}>
                             {city}
                           </option>
@@ -183,14 +313,16 @@ function AllProducts() {
                       </select>
                     )}
 
-                    {/* Area Dropdown - only shown when a city is selected */}
-                    {selectedCity && citiesWithAreas[selectedCity] && (
+                    {formData.city && citiesWithAreas[formData.city] && (
                       <select
                         className="w-full p-3 border rounded-md mb-4"
+                        name="area"
+                        value={formData.area}
+                        onChange={handleAreaChange}
                         required
                       >
                         <option value="">Select Area</option>
-                        {citiesWithAreas[selectedCity].map((area) => (
+                        {citiesWithAreas[formData.city].map((area) => (
                           <option key={area} value={area}>
                             {area}
                           </option>
@@ -204,9 +336,13 @@ function AllProducts() {
                           <FaPhone className="text-gray-400" />
                         </div>
                         <input
-                          type="number"
+                          type="tel"
+                          name="phone"
                           placeholder="Phone Number"
+                          value={formData.phone}
+                          onChange={handleInputChange}
                           className="w-full p-3 border rounded-md pl-10"
+                          required
                         />
                       </div>
                     </div>
@@ -222,13 +358,11 @@ function AllProducts() {
               },
               {
                 key: "2",
-                className: "ml-4",
                 label: "Operation Hour",
                 children: (
                   <div>
                     <h2 className="text-xl font-bold mt-9">Location name</h2>
                     <div className="mt-4">
-                      {/* Select All Checkbox */}
                       <div className="mb-2 flex items-center">
                         <input
                           type="checkbox"
@@ -251,17 +385,12 @@ function AllProducts() {
                         <label htmlFor="selectAll">Select All</label>
                       </div>
 
-                      {/* Table */}
                       <table className="w-full border-collapse">
                         <thead>
                           <tr className="bg-gray-100">
                             <th className="border p-2 text-left">Day</th>
-                            <th className="border p-2 text-left">
-                              Opening Time
-                            </th>
-                            <th className="border p-2 text-left">
-                              Closing Time
-                            </th>
+                            <th className="border p-2 text-left">Opening Time</th>
+                            <th className="border p-2 text-left">Closing Time</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -325,17 +454,14 @@ function AllProducts() {
                         </tbody>
                       </table>
 
-                      {/* Save/Cancel Buttons */}
                       <div className="flex justify-end mt-4 space-x-2">
                         <button
                           className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                          onClick={() => console.log("Cancelled")}
                         >
                           Cancel
                         </button>
                         <button
                           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                          onClick={() => console.log("Saved", operationHours)}
                         >
                           Save
                         </button>
@@ -346,34 +472,22 @@ function AllProducts() {
               },
               {
                 key: "3",
-                className: "ml-4",
                 label: "Service & Price Setting",
                 children: (
                   <div>
-
-                    {/* Table with Dummy Data */}
                     <div className="mt-6 overflow-x-auto">
                       <table className="w-full border-collapse">
                         <thead>
                           <tr className="bg-gray-100">
                             <th className="border p-3 text-left">Category</th>
-                            <th className="border p-3 text-left">
-                              Sub Category
-                            </th>
-                            <th className="border p-3 text-left">
-                              Service Name
-                            </th>
-                            <th className="border p-3 text-left">
-                              Member Price ($)
-                            </th>
-                            <th className="border p-3 text-left">
-                              Non-Member Price ($)
-                            </th>
+                            <th className="border p-3 text-left">Sub Category</th>
+                            <th className="border p-3 text-left">Service Name</th>
+                            <th className="border p-3 text-left">Member Price ($)</th>
+                            <th className="border p-3 text-left">Non-Member Price ($)</th>
                             <th className="border p-3 text-left">Active</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {/* Dummy Data Rows */}
                           {[
                             {
                               id: 1,
@@ -408,12 +522,8 @@ function AllProducts() {
                               className="border hover:bg-gray-50"
                             >
                               <td className="border p-3">{service.category}</td>
-                              <td className="border p-3">
-                                {service.subCategory}
-                              </td>
-                              <td className="border p-3">
-                                {service.serviceName}
-                              </td>
+                              <td className="border p-3">{service.subCategory}</td>
+                              <td className="border p-3">{service.serviceName}</td>
                               <td className="border p-3">
                                 <input
                                   type="number"
@@ -441,7 +551,6 @@ function AllProducts() {
                       </table>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex justify-end mt-6 space-x-3">
                       <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
                         Cancel
@@ -454,12 +563,10 @@ function AllProducts() {
                 ),
               },
               {
-                key: "4", // Change key as needed
-                className: "ml-4",
+                key: "4",
                 label: "Product & Price Setting",
                 children: (
                   <div>
-                    {/* Product Table */}
                     <div className="mt-6 overflow-x-auto">
                       <table className="w-full border-collapse">
                         <thead>
@@ -472,7 +579,6 @@ function AllProducts() {
                           </tr>
                         </thead>
                         <tbody>
-                          {/* Dummy Product Data */}
                           {[
                             {
                               id: 1,
@@ -526,7 +632,6 @@ function AllProducts() {
                       </table>
                     </div>
               
-                    {/* Action Buttons */}
                     <div className="flex justify-end mt-6 space-x-3">
                       <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
                         Cancel
@@ -546,4 +651,4 @@ function AllProducts() {
   );
 }
 
-export default AllProducts;
+export default BranchMainPage;
