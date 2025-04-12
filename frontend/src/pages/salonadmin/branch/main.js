@@ -131,20 +131,12 @@ function AllProducts() {
                       placeholder="Location Name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full p-3 border rounded-md mb-4"
+                      className="w-full text-black-900 p-3 border rounded-md mb-4"
                       required
                     />
                     <input
                       type="text"
                       placeholder="Business Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full p-3 border rounded-md mb-4"
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="Brand Name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full p-3 border rounded-md mb-4"
