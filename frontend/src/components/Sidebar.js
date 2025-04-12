@@ -10,14 +10,14 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: <FaTachometerAlt />, link: '/admin/dashboard' },
+    { name: 'Dashboard', icon: <FaTachometerAlt />, link: '/superadmin/dashboard' },
     { name: 'Salon Admin', icon: <FaUserShield />, subMenu: [
-      { name: 'Add Salon Admin', link: '/admin/salonadmin' },
-      { name: 'View Salon Admin', link: '/admin/view-salonadmin' }
+      { name: 'Add Salon Admin', link: '/superadmin/salonadmin' },
+      { name: 'View Salon Admin', link: '/superadmin/view-salonadmin' }
     ]},
     { name: 'Manage Branch', icon: <FaUsers />, subMenu: [
-      { name: 'Add Branch', link: '/admin/create-branch' },
-      { name: 'View Branch', link: '/admin/view-branch' }
+      { name: 'Create Branch', link: '/superadmin/create-branch' },
+      { name: 'View Branch', link: '/superadmin/view-branch' }
     ]}
   ];
 
