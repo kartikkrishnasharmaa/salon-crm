@@ -136,6 +136,10 @@ const TestingCalendarr = () => {
   const staffList = [
     { _id: "64f1a2b3c4d5e6f7a8b9c0d3", name: "Emily Davis" },
     { _id: "64f1a2b3c4d5e6f7a8b9c0d4", name: "John Doe" },
+    { _id: "64f1a2b3c4d5e6f7a8b9c0d5", name: "Jane Smith" },
+    { _id: "64f1a2b3c4d5e6f7a8b9c0d6", name: "Michael Brown" },
+    { _id: "64f1a2b3c4d5e6f7a8b9c0d7", name: "Sarah Johnson" },
+    { _id: "64f1a2b3c4d5e6f7a8b9c0d8", name: "David Wilson" },
   ];
   
   const handleModalButtonClick = (type) => {
@@ -826,6 +830,13 @@ const TestingCalendarr = () => {
             <FaCalendarPlus className="text-purple-500 text-2xl" />
             <span className="ml-4 text-lg font-medium">Add Ticket</span>
           </button>
+          <button
+            className="flex items-center space-x-6 p-3 w-max rounded-lg hover:bg-gray-200"
+            onClick={() => handleModalButtonClick("ticket")}
+          >
+            <FaCalendarPlus className="text-purple-500 text-2xl" />
+            <span className="ml-4 text-lg font-medium">Add Ticket</span>
+          </button>
         </div>
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl"
@@ -1092,7 +1103,7 @@ const TestingCalendarr = () => {
           </div>
         ) : (
           <form onSubmit={handleBookingSubmit} className="flex flex-wrap gap-4">
-            <h2 className="text-lg font-bold mb-3">New Booking</h2>
+            <h2 className="text-lg font-bold mb-3">New Bookingg</h2>
 
             <div className="w-full p-6">
               <div className="grid grid-cols-1 overflow-y-auto h-auto md:grid-cols-4 gap-6">

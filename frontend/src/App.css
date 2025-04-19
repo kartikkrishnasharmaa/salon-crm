@@ -17,6 +17,25 @@
   text-align: center;
 }
 
+/* Example override */
+.rbc-time-content {
+  overflow: visible !important;
+  position: relative;
+}
+
+.rbc-event {
+  overflow: visible !important;
+  z-index: auto;
+}
+
+.calendar-container,
+.rbc-calendar {
+  overflow: visible !important;
+  position: relative;
+}
+
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

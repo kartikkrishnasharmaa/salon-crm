@@ -1,332 +1,153 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import axios from "../../api/axiosConfig";
+import React, { useState } from "react";
 import SAAdminLayout from "../../layouts/Salonadmin";
-import moment from "moment";
-import { FaArrowUp, FaUserTie, FaChartLine, FaUsers, FaMoneyBillWave } from "react-icons/fa";
 import BranchSelector from "../../components/BranchSelector";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  BarChart,
-  Bar,
+  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  AreaChart,
-  Area,
 } from "recharts";
 
 const SADashboard = () => {
-  const [appointments, setAppointments] = useState([]);
-  const [loadingAppointments, setLoadingAppointments] = useState(true);
-  const [errorAppointments, setErrorAppointments] = useState(null);
-  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
-  const [showScroll, setShowScroll] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [withTax, setWithTax] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filteredResult, setFilteredResult] = useState(null);
 
-  const fetchAppointments = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const res = await axios.get(
-        `/booking/get-appointments?branchId=${selectedBranch}`,
-        { headers }
-      );
-
-      const sortedAppointments = res.data.appointments
-        .sort((a, b) => {
-          const dateComparison = new Date(b.date) - new Date(a.date);
-          if (dateComparison !== 0) return dateComparison;
-          const timeA = moment(a.time, 'HH:mm').format('HH:mm');
-          const timeB = moment(b.time, 'HH:mm').format('HH:mm');
-          return timeB.localeCompare(timeA);
-        })
-        .slice(0, 5);
-
-      const formattedAppointments = sortedAppointments.map((appt, index) => ({
-        id: appt._id,
-        serialNo: index + 1,
-        customer: `${appt.customer?.name || 'Unknown'} ${appt.customer?.lastName || ''}`,
-        phone: appt.customer?.mobile || 'N/A',
-        services: appt.services?.map(s => s.name).join(", ") || 'No services',
-        date: moment(appt.date).format("DD MMM, YYYY"),
-        time: moment(appt.time, 'HH:mm').format("h:mm A"),
-        status: appt.status || 'Pending',
-        paymentStatus: appt.paymentStatus || 'Pending',
-        totalPrice: appt.totalPrice || 0
-      }));
-
-      setAppointments(formattedAppointments);
-      setErrorAppointments(null);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      setErrorAppointments(error.response?.data?.message || "Failed to load recent appointments");
-    } finally {
-      setLoadingAppointments(false);
-    }
+  const totalServices = {
+    total: 849,
+    male: 400,
+    female: 449,
   };
 
-  useEffect(() => {
-    if (selectedBranch) {
-      fetchAppointments();
-    }
-  }, [selectedBranch]);
+  const ticketSize = {
+    male: 0,
+    female: 1061,
+  };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScroll(window.pageYOffset > 300);
+  const stockWorth = {
+    total: 45841414,
+    retail: 1974289,
+    consumable: 2609824,
+  };
+
+  const inHandCash = {
+    total: 26342,
+    retail: 81974289,
+    consumable: 2609824,
+  };
+
+  const handleSearch = () => {
+    const result = {
+      message: `Search for "${search}" from ${startDate} to ${endDate} (with tax: ${withTax})`,
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setFilteredResult(result);
   };
+
+  const walkinAppointmentData = [
+    { name: "Walk-in Male", value: 300 },
+    { name: "Walk-in Female", value: 350 },
+    { name: "Appointment Male", value: 100 },
+    { name: "Appointment Female", value: 99 },
+  ];
+
+  const staffRevenueData = [
+    { name: "Staff A", value: 5000 },
+    { name: "Staff B", value: 8000 },
+    { name: "Staff C", value: 3000 },
+    { name: "Staff D", value: 7000 },
+  ];
+
+  const salesData = [
+    { date: "Apr 01", sales: 10000 },
+    { date: "Apr 02", sales: 12000 },
+    { date: "Apr 03", sales: 8000 },
+    { date: "Apr 04", sales: 15000 },
+    { date: "Apr 05", sales: 9000 },
+    { date: "Apr 06", sales: 16000 },
+  ];
 
   const revenueData = [
-    { month: "Jan", revenue: 5000 },
-    { month: "Feb", revenue: 7000 },
-    { month: "Mar", revenue: 8000 },
-    { month: "Apr", revenue: 6000 },
-    { month: "May", revenue: 9000 },
+    { date: "Apr 01", revenue: 12000 },
+    { date: "Apr 02", revenue: 15000 },
+    { date: "Apr 03", revenue: 10000 },
+    { date: "Apr 04", revenue: 18000 },
+    { date: "Apr 05", revenue: 14000 },
+    { date: "Apr 06", revenue: 20000 },
   ];
 
-  const appointmentsData = [
-    { date: "1 Feb", count: 10 },
-    { date: "2 Feb", count: 12 },
-    { date: "3 Feb", count: 15 },
-    { date: "4 Feb", count: 8 },
-    { date: "5 Feb", count: 18 },
-  ];
-
-  const serviceData = [
-    { name: "Haircut", value: 40 },
-    { name: "Facial", value: 25 },
-    { name: "Manicure", value: 15 },
-    { name: "Pedicure", value: 10 },
-    { name: "Massage", value: 10 },
-  ];
-
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A569BD"];
-
-  const customerGrowthData = [
-    { month: "Jan", customers: 200 },
-    { month: "Feb", customers: 250 },
-    { month: "Mar", customers: 300 },
-    { month: "Apr", customers: 400 },
-    { month: "May", customers: 500 },
-  ];
+  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50"];
 
   return (
     <SAAdminLayout>
-      <BranchSelector />
-      <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6">
-        <div className="bg-blue-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaChartLine className="text-blue-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Total Bookings</p>
-            <h3 className="text-xl font-bold">320</h3>
-          </div>
-        </div>
-        <div className="bg-green-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaMoneyBillWave className="text-green-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Revenue</p>
-            <h3 className="text-xl font-bold">₹ 15,400</h3>
-          </div>
-        </div>
-        <div className="bg-yellow-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaUserTie className="text-yellow-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Employees</p>
-            <h3 className="text-xl font-bold">12</h3>
-          </div>
-        </div>
-        <div className="bg-purple-100 p-4 rounded-lg shadow-md flex items-center">
-          <FaUsers className="text-purple-600 text-3xl mr-3" />
-          <div>
-            <p className="text-gray-600">Customers</p>
-            <h3 className="text-xl font-bold">1,200</h3>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white p-4 shadow-lg rounded-lg">
-          <h3 className="text-lg font-bold mb-3">Monthly Revenue</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenueData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="revenue"
-                stroke="#8884d8"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4 items-end">
+        <div className="w-full">
+          <label className="text-sm text-gray-600 block mb-1 text-start">
+            Select Branch
+          </label>
+          <BranchSelector />
         </div>
 
-        <div className="bg-white p-4 shadow-lg rounded-lg">
-          <h3 className="text-lg font-bold mb-3">Appointments Trend</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={appointmentsData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="count" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-4 shadow-lg rounded-lg">
-          <h3 className="text-lg font-bold mb-3">Service Popularity</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={serviceData}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-                label={(entry) => entry.name}
-              >
-                {serviceData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="flex flex-wrap justify-center mt-4">
-            {serviceData.map((entry, index) => (
-              <div key={index} className="flex items-center mx-2">
-                <div
-                  className="w-3 h-3 rounded-full mr-2"
-                  style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                ></div>
-                <p className="text-sm font-medium">{entry.name}</p>
-              </div>
-            ))}
-          </div>
+        <div className="w-full">
+          <label className="text-sm text-gray-600">Start Date</label>
+          <input
+            type="date"
+            className="w-full border border-gray-300 p-2 rounded"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
         </div>
 
-        <div className="bg-white p-4 shadow-lg rounded-lg">
-          <h3 className="text-lg font-bold mb-3">Customer Growth Trend</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={customerGrowthData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="customers"
-                stroke="#82ca9d"
-                fill="#82ca9d"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="bg-white p-4 shadow-lg rounded-lg mt-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-gray-800">
-            Recent Appointments
-          </h3>
-          {appointments.length > 0 && (
-            <span className="text-sm text-gray-500">
-              Showing {appointments.length} most recent
-            </span>
-          )}
+        <div className="w-full">
+          <label className="text-sm text-gray-600">End Date</label>
+          <input
+            type="date"
+            className="w-full border border-gray-300 p-2 rounded"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
         </div>
 
-        {loadingAppointments ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
-        ) : errorAppointments ? (
-          <div className="p-4 text-center text-red-500 bg-red-50 rounded">
-            {errorAppointments}
-          </div>
-        ) : appointments.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-left">
-                  <th className="p-3 text-sm font-medium text-gray-600">
-                    Customer
-                  </th>
-                  <th className="p-3 text-sm font-medium text-gray-600">
-                    Services
-                  </th>
-                  <th className="p-3 text-sm font-medium text-gray-600">
-                    Date & Time
-                  </th>
-                  <th className="p-3 text-sm font-medium text-gray-600">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointments.map((appointment) => (
-                  <tr
-                    key={appointment.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="p-3">
-                      <div className="font-medium text-gray-800">
-                        {appointment.customer}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {appointment.phone}
-                      </div>
-                    </td>
-                    <td className="p-3 text-sm text-gray-700 max-w-xs truncate">
-                      {appointment.services}
-                    </td>
-                    <td className="p-3 text-sm text-gray-700">
-                      <div>{appointment.date}</div>
-                      <div className="text-xs text-gray-500">
-                        {appointment.time}
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          appointment.status === "Completed"
-                            ? "bg-green-100 text-green-800"
-                            : appointment.status === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {appointment.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="p-6 text-center">
+        <div className="w-full relative">
+          <label className="text-sm text-gray-600 block mb-1 text-start">
+            Tax
+          </label>
+          <select
+            value={withTax ? "withTax" : "withoutTax"}
+            onChange={(e) => setWithTax(e.target.value === "withTax")}
+            className="appearance-none border border-gray-300 p-2 pr-8 rounded w-full bg-white"
+          >
+            <option value="withTax">w/Tax</option>
+            <option value="withoutTax">w/o Tax</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
+
+        <div className="w-9">
+          <button
+            onClick={handleSearch}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded flex justify-center items-center"
+          >
+            {/* Search icon SVG */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -335,23 +156,263 @@ const SADashboard = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <p className="mt-2 text-sm text-gray-600">
-              No recent appointments found
-            </p>
-          </div>
-        )}
+          </button>
+        </div>
       </div>
 
-      <div className={`fixed bottom-5 left-5 z-[9999] transition-opacity duration-300 ${showScroll ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <button 
-          onClick={scrollToTop}
-          className="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
-        >
-          <FaArrowUp className="text-lg" />
-        </button>
+      {filteredResult && (
+        <div className="bg-yellow-100 text-yellow-800 p-4 mt-4 rounded">
+          {filteredResult.message}
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-4 mt-6">
+        <div className="bg-gray-100 p-4 rounded shadow w-full sm:w-60">
+          <h3 className="text-sm font-semibold mb-1">
+            Total Service Guests (w/Tax)
+          </h3>
+          <div className="text-xl font-bold">Total: {totalServices.total}</div>
+          <div className="text-blue-600 text-sm">
+            Male: {totalServices.male}
+          </div>
+          <div className="text-pink-600 text-sm">
+            Female: {totalServices.female}
+          </div>
+        </div>
+
+        <div className="bg-blue-100 p-4 rounded shadow w-full sm:w-60">
+          <h3 className="text-sm font-semibold mb-1">
+            Avg Ticket Size (w/Tax)
+          </h3>
+          <div className="text-pink-600 text-sm">
+            Female: ₹{ticketSize.female}
+          </div>
+          <div className="text-blue-600 text-sm">Male: ₹{ticketSize.male}</div>
+        </div>
+
+        <div className="bg-green-100 p-4 rounded shadow w-full sm:w-60">
+          <h3 className="text-sm font-semibold mb-1">
+            Stock Worth (as on date)
+          </h3>
+          <div className="font-bold text-lg">₹{stockWorth.total}</div>
+          <div className="text-green-600 text-sm">
+            Retail: ₹{stockWorth.retail}
+          </div>
+          <div className="text-purple-600 text-sm">
+            Consumable: ₹{stockWorth.consumable}
+          </div>
+        </div>
+
+        <div className="bg-rose-100 p-4 rounded shadow w-full sm:w-60">
+          <h3 className="text-sm font-semibold mb-1">
+            In-Hand Cash (as on date)
+          </h3>
+          <div className="font-bold text-lg">₹{inHandCash.total}</div>
+          <div className="text-green-600 text-sm">
+            Retail: ₹{inHandCash.retail}
+          </div>
+          <div className="text-purple-600 text-sm">
+            Consumable: ₹{inHandCash.consumable}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="text-lg font-semibold mb-4">Sales (w/Tax)</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={salesData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis tickFormatter={(v) => `₹${v}`} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="sales" fill="#60a5fa" name="Sales (w/Tax)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="text-lg font-semibold mb-4">Revenue (w/Tax)</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={revenueData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis tickFormatter={(v) => `₹${v}`} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="revenue" fill="#34d399" name="Revenue (w/Tax)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="text-lg font-semibold mb-4">
+            Walk-ins & Appointments
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={walkinAppointmentData}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+                label
+              >
+                {walkinAppointmentData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="text-lg font-semibold mb-4">Staff Revenue</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={staffRevenueData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis tickFormatter={(v) => `₹${v}`} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#f87171" name="Revenue" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      {/* Staff-wise Service Revenue (w/Tax) */}
+      <div className="bg-white p-4 rounded shadow mt-8">
+        <h2 className="text-lg font-semibold mb-4">
+          Staff-wise Service Revenue (w/Tax)
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={staffRevenueData}
+            margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis
+              tickFormatter={(v) => `₹${v}`}
+              interval={0}
+              domain={[0, "auto"]}
+              tickCount={6}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="value"
+              fill="#38bdf8"
+              name="Service Revenue (w/Tax)"
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Category-wise Service Revenue (w/Tax) */}
+      <div className="bg-white p-4 rounded shadow mt-8">
+        <h2 className="text-lg font-semibold mb-4">
+          Category-wise Service Revenue (w/Tax)
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={[
+              { category: "Bleach", value: 4000 },
+              { category: "Detan", value: 2500 },
+              { category: "Hair Cut", value: 7000 },
+              { category: "Nail", value: 1500 },
+            ]}
+            margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="category" />
+            <YAxis
+              tickFormatter={(v) => `₹${v}`}
+              interval={0}
+              domain={[0, "auto"]}
+              tickCount={6}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="value"
+              fill="#a78bfa"
+              name="Service Revenue (w/Tax)"
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Collection Breakdown */}
+      <div className="bg-white p-4 rounded shadow mt-8">
+        <h2 className="text-lg font-semibold mb-4">Collection Breakdown</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={[
+              { mode: "Cash", value: 6000 },
+              { mode: "Credit Card", value: 9000 },
+              { mode: "Google Pay", value: 7500 },
+            ]}
+            margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="mode" />
+            <YAxis
+              tickFormatter={(v) => `₹${v}`}
+              interval={0}
+              domain={[0, "auto"]}
+              tickCount={6}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#34d399" name="Collection Amount" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      {/* Total Customers (Male vs Female) */}
+      <div className="bg-white p-4 rounded shadow mt-8">
+        <h2 className="text-lg font-semibold mb-4">Total Customers (w/Tax)</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={[
+              { gender: "Male", value: totalServices.male },
+              { gender: "Female", value: totalServices.female },
+            ]}
+            margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="gender" />
+            <YAxis
+              tickFormatter={(v) => `₹${v}`}
+              interval={0}
+              domain={[0, "auto"]}
+              tickCount={6}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#f472b6" name="Total Customers" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </SAAdminLayout>
   );
