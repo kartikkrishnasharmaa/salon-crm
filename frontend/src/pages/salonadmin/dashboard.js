@@ -169,56 +169,103 @@ const SADashboard = () => {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-4 mt-6">
-        <div className="bg-gray-100 p-4 rounded shadow w-full sm:w-60">
-          <h3 className="text-sm font-semibold mb-1">
-            Total Service Guests (w/Tax)
-          </h3>
-          <div className="text-xl font-bold">Total: {totalServices.total}</div>
-          <div className="text-blue-600 text-sm">
-            Male: {totalServices.male}
-          </div>
-          <div className="text-pink-600 text-sm">
-            Female: {totalServices.female}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        {[
+          {
+            title: "Total Service Guests (w/Tax)",
+            total: `Total: ${totalServices.total}`,
+            details: [
+              {
+                label: "Male",
+                value: totalServices.male,
+                color: "text-blue-600",
+              },
+              {
+                label: "Female",
+                value: totalServices.female,
+                color: "text-pink-600",
+              },
+            ],
+            bg: "bg-gray-100",
+          },
+          {
+            title: "Avg Ticket Size (w/Tax)",
+            total: "",
+            details: [
+              {
+                label: "Female",
+                value: `₹${ticketSize.female}`,
+                color: "text-pink-600",
+              },
+              {
+                label: "Male",
+                value: `₹${ticketSize.male}`,
+                color: "text-blue-600",
+              },
+            ],
+            bg: "bg-blue-100",
+          },
+          {
+            title: "Stock Worth (as on date)",
+            total: `₹${stockWorth.total}`,
+            details: [
+              {
+                label: "Retail",
+                value: `₹${stockWorth.retail}`,
+                color: "text-green-600",
+              },
+              {
+                label: "Consumable",
+                value: `₹${stockWorth.consumable}`,
+                color: "text-purple-600",
+              },
+            ],
+            bg: "bg-green-100",
+          },
+          {
+            title: "In-Hand Cash (as on date)",
+            total: `₹${inHandCash.total}`,
+            details: [
+              {
+                label: "Retail",
+                value: `₹${inHandCash.retail}`,
+                color: "text-green-600",
+              },
+              {
+                label: "Consumable",
+                value: `₹${inHandCash.consumable}`,
+                color: "text-purple-600",
+              },
+            ],
+            bg: "bg-rose-100",
+          },
+        ].map((card, index) => (
+          <div
+            key={index}
+            className={`${card.bg} p-4 rounded shadow flex flex-col justify-between h-48 
+                  transition duration-300 transform hover:-translate-y-1 hover:shadow-lg`}
+          >
+            <h3 className="text-sm font-semibold text-center mb-2">
+              {card.title}
+            </h3>
 
-        <div className="bg-blue-100 p-4 rounded shadow w-full sm:w-60">
-          <h3 className="text-sm font-semibold mb-1">
-            Avg Ticket Size (w/Tax)
-          </h3>
-          <div className="text-pink-600 text-sm">
-            Female: ₹{ticketSize.female}
-          </div>
-          <div className="text-blue-600 text-sm">Male: ₹{ticketSize.male}</div>
-        </div>
+            {card.total && (
+              <div className="text-xl font-bold text-center mb-2">
+                {card.total}
+              </div>
+            )}
 
-        <div className="bg-green-100 p-4 rounded shadow w-full sm:w-60">
-          <h3 className="text-sm font-semibold mb-1">
-            Stock Worth (as on date)
-          </h3>
-          <div className="font-bold text-lg">₹{stockWorth.total}</div>
-          <div className="text-green-600 text-sm">
-            Retail: ₹{stockWorth.retail}
+            <div className="flex justify-between text-sm mt-auto">
+              {card.details.map((item, i) => (
+                <div key={i} className={`${item.color}`}>
+                  {item.label}: {item.value}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="text-purple-600 text-sm">
-            Consumable: ₹{stockWorth.consumable}
-          </div>
-        </div>
-
-        <div className="bg-rose-100 p-4 rounded shadow w-full sm:w-60">
-          <h3 className="text-sm font-semibold mb-1">
-            In-Hand Cash (as on date)
-          </h3>
-          <div className="font-bold text-lg">₹{inHandCash.total}</div>
-          <div className="text-green-600 text-sm">
-            Retail: ₹{inHandCash.retail}
-          </div>
-          <div className="text-purple-600 text-sm">
-            Consumable: ₹{inHandCash.consumable}
-          </div>
-        </div>
+        ))}
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-lg font-semibold mb-4">Sales (w/Tax)</h2>
