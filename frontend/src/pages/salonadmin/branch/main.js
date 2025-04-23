@@ -1,4 +1,5 @@
-import React, { useState } from "react"; // Import useState hook
+import React, { useEffect, useState } from "react";
+import axios from "../../../api/axiosConfig";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import { FaMapMarkerAlt, FaPhone, FaRupeeSign } from "react-icons/fa";
 import Tabs from "rc-tabs";
@@ -6,6 +7,9 @@ import "rc-tabs/assets/index.css";
 
 function AllProducts() {
   // Initialize state for all required variables
+   const [branches, setBranches] = useState([]);
+ 
+  const [selectedBranch, setSelectedBranch] = useState(null);
   const [name, setName] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -28,6 +32,11 @@ function AllProducts() {
     area: "",
     phone: "",
   });
+const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+  const salonAdminData = JSON.parse(localStorage.getItem("salonAdmin"));
+  const salonAdminId = salonAdminData?._id;
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -138,6 +147,30 @@ function AllProducts() {
     e.preventDefault();
     console.log("Form submitted:", formData);
   };
+
+  useEffect(() => {
+    if (!salonAdminId || !token) {
+      console.error("🚨 SalonAdminId or Token missing! API calls will not proceed.");
+      setLoading(false);
+      return;
+    }
+
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get(`/branch/get-salon/${salonAdminId}/branches`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBranches(response.data.branches);
+      } catch (error) {
+        console.error("❌ Error fetching branches:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBranches();
+  }, [token, salonAdminId]);
+
 
   return (
     <SAAdminLayout>

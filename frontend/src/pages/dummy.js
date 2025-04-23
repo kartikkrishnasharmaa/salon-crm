@@ -22,7 +22,7 @@ function AllProducts() {
                 label: "Info",
                 children: (
                   <>
-                    <h2 className="text-xl font-bold mt-9">brancd name </h2>
+                    <h2 className="text-xl font-bold mt-9">branch name </h2>
                   </>
                 ),
               },

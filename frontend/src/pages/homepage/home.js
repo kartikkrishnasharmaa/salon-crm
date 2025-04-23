@@ -65,54 +65,10 @@ const sliderSettings = {
         <motion.div className="relative z-10 text-white" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
           <h2 className="text-5xl font-bold mb-4">Transform Your Salon Business</h2>
           <p className="text-lg mb-6">Manage appointments, employees, and customers with ease.</p>
-          <a href="/signup" className="bg-pink-500 px-6 py-3 text-white rounded-lg shadow-lg hover:bg-pink-600">Get Started</a>
+          <a href="/salon-admin/login" className="px-6 py-2 bg-red-500 text-white rounded-lg mb-4 w-auto">SALON ADMIN LOGIN</a>
         </motion.div>
       </section>
-      {/* Services Section */}
-      <section className="py-16 bg-white text-center" id="services">
-        <h2 className="text-4xl font-bold mb-10 text-gray-800">Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 px-10">
-          {[
-            { icon: FaScissors, title: "Professional Haircuts", desc: "Get a trendy haircut from our expert stylists." },
-            { icon: FaSpa, title: "Relaxing Spa Treatments", desc: "Experience ultimate relaxation with our spa treatments." },
-            { icon: FaPaintBrush, title: "Makeup & Beauty", desc: "Enhance your beauty with our expert makeup artists." },
-            { icon: FaUserTie, title: "Grooming Services", desc: "Premium grooming for men, including beard styling." },
-            { icon: FaHandSparkles, title: "Manicure & Pedicure", desc: "Get your nails perfectly done with our manicure services." },
-            { icon: FaHeart, title: "Bridal Packages", desc: "Exclusive bridal packages to make your day special." },
-          ].map((service, index) => (
-            <motion.div key={index} className="p-6 bg-gray-100 shadow-lg rounded-lg flex flex-col items-center text-center"
-              initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.2 }}>
-              <service.icon className="text-5xl text-pink-500 mb-4" />
-              <h3 className="text-2xl font-semibold text-gray-700 mb-3">{service.title}</h3>
-              <p className="text-gray-600">{service.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-      {/* Pricing Section */}
-      <section className="py-16 bg-gray-200 text-center" id="plans">
-        <h2 className="text-4xl font-bold mb-10 text-gray-800">Our Plans</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 px-10">
-          {[
-            { title: "Basic Plan", price: "$29/month", features: ["Haircuts", "Basic Styling", "Beard Trim"] },
-            { title: "Premium Plan", price: "$49/month", features: ["Haircuts & Styling", "Spa Treatment", "Facial & Grooming"] },
-            { title: "Luxury Plan", price: "$79/month", features: ["All Salon Services", "VIP Treatment", "Exclusive Discounts"] },
-          ].map((plan, index) => (
-            <motion.div key={index} className="p-6 bg-white shadow-lg rounded-lg flex flex-col items-center text-center"
-              initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.2 }}>
-              <h3 className="text-2xl font-semibold text-gray-700 mb-3">{plan.title}</h3>
-              <p className="text-xl font-bold text-pink-500 mb-4">{plan.price}</p>
-              <ul className="text-gray-600 space-y-2">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center justify-center">
-                    <FaCheckCircle className="text-green-500 mr-2" /> {feature}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+  
       <div className="absolute bg-black opacity-50"></div>
       <div className="relative max-auto mb-6 flex justify-center items-center">
         <div className="bg-white shadow-lg p-8 rounded-md shadow-cyan-600 hover:shadow-indigo-700 transition duration-200">

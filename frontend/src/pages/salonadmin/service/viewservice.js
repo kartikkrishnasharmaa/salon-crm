@@ -333,35 +333,34 @@ const ViewServices = () => {
             </div>
 
             <div className="flex flex-col justify-end">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Category of Service
-  </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category of Service
+              </label>
 
-  <div
-    onClick={() =>
-      setFilters((prev) => ({
-        ...prev,
-        status: prev.status === "active" ? "inactive" : "active",
-      }))
-    }
-    className={`w-16 h-8 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors duration-300 ${
-      filters.status === "active" ? "bg-blue-600" : "bg-gray-300"
-    }`}
-  >
-    <div
-      className={`bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out ${
-        filters.status === "active" ? "translate-x-8" : "translate-x-0"
-      }`}
-    ></div>
-  </div>
+              <div
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    status: prev.status === "active" ? "inactive" : "active",
+                  }))
+                }
+                className={`w-16 h-8 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors duration-300 ${
+                  filters.status === "active" ? "bg-blue-600" : "bg-gray-300"
+                }`}
+              >
+                <div
+                  className={`bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out ${
+                    filters.status === "active"
+                      ? "translate-x-8"
+                      : "translate-x-0"
+                  }`}
+                ></div>
+              </div>
 
-  <span className="mt-1 text-sm text-gray-600">
-    {filters.status === "active" ? "ON" : "OFF"}
-  </span>
-</div>
-
-
-
+              <span className="mt-1 text-sm text-gray-600">
+                {filters.status === "active" ? "ON" : "OFF"}
+              </span>
+            </div>
           </div>
         </div>
 

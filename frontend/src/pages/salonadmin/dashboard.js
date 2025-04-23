@@ -29,6 +29,7 @@ const SADashboard = () => {
   };
 
   const ticketSize = {
+    total: 1061,
     male: 0,
     female: 1061,
   };
@@ -190,7 +191,7 @@ const SADashboard = () => {
           },
           {
             title: "Avg Ticket Size (w/Tax)",
-            total: "",
+            total:` Total: ${ticketSize.total}`,
             details: [
               {
                 label: "Female",
