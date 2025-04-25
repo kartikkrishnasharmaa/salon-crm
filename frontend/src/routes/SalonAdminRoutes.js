@@ -28,6 +28,7 @@ import CreateCategory from "../pages/salonadmin/product/createcategory";
 import CreateServiceCategory from "../pages/salonadmin/service/createcategory";
 import SalonCalendardummy from "../pages/salonadmin/booking/SalonCalendar";
 import ClientDetails from "../pages/salonadmin/customer/client-info";
+import Branchlist from "../pages/salonadmin/branch/branchlist";
 
 const SalonAdminRoutes = () => {
   return (
@@ -177,7 +178,14 @@ const SalonAdminRoutes = () => {
           </ProtectedRoute>
         }
       />
-
+ <Route
+        path="/salonadmin/all-branch"
+        element={
+          <ProtectedRoute>
+            <Branchlist />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/salonadmin/view-branch"

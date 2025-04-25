@@ -177,8 +177,8 @@ exports.createBranch = async (req, res) => {
     }
 
     const existingBranches = await Branch.find({ salonAdminId });
-    if (existingBranches.length >= 6) {
-      return res.status(400).json({ message: "Maximum of 6 branches can be created" });
+    if (existingBranches.length >= 4){
+      return res.status(400).json({ message: "Maximum of 4 branches can be created" });
     }
 
     const newBranch = new Branch({

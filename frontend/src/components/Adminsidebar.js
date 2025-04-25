@@ -52,8 +52,8 @@ const Adminsidebar = ({ isSidebarOpen, toggleSidebar }) => {
       name: "Location",
       icon: <FaMapMarkerAlt />,
       link: selectedBranch
-        ? `/salonadmin/main-branch?branchId=${selectedBranch}`
-        : "/salonadmin/main-branch",
+        ? `/salonadmin/all-branch?branchId=${selectedBranch}`
+        : "/salonadmin/all-branch",
     },
     {
       name: "Services",

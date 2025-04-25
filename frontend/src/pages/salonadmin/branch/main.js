@@ -176,10 +176,7 @@ const [loading, setLoading] = useState(true);
     <SAAdminLayout>
       <div className="flex justify-center items-center bg-gray-100 p-4">
         <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-7xl space-y-6">
-          <div className="flex justify-center mb-6">
-            <FaMapMarkerAlt className="text-5xl text-blue-500" />
-          </div>
-          <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-6">
             Office Location Details
           </h1>
           <style>{tabsStyle}</style>
