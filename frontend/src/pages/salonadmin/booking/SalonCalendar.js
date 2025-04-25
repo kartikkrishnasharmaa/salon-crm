@@ -17,9 +17,74 @@ moment.locale('en', { week: { dow: 1 } });
 const localizer = momentLocalizer(moment);
 Modal.setAppElement("#root");
 
+const defaultResources = [
+  { resourceId: 1, title: 'Hair Station 1', color: '#a4c2f4' },
+  { resourceId: 2, title: 'Hair Station 2', color: '#b4a7d6' },
+  { resourceId: 3, title: 'Nail Station', color: '#f9cb9c' },
+  { resourceId: 4, title: 'Massage Room', color: '#b6d7a8' },
+  { resourceId: 5, title: 'Waxing Room', color: '#ea9999' }
+];
+
+const staffResources = [
+  { section: "Hair Section", staff: ["Ravi", "Priya"], color: "#a4c2f4" },
+  { section: "Nail Section", staff: ["Neha", "Ankit"], color: "#f9cb9c" },
+  { section: "Massage Section", staff: ["Arjun", "Riya"], color: "#b6d7a8" }
+];
+
+const flattenStaffResources = () => {
+  return staffResources.flatMap((group, groupIndex) =>
+    group.staff.map((member, memberIndex) => ({
+      resourceId: `${groupIndex}-${memberIndex}`,
+      title: `${group.section}: ${member}`,
+      color: group.color
+    }))
+  );
+};
+
+const CustomToolbar = ({ view, onView, viewMode, setViewMode, label }) => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
+      <div>
+        <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+          <option value="staff">Staff</option>
+          <option value="resources">Resources</option>
+          <option value="default">Default View</option>
+        </select>
+      </div>
+      <div>{label}</div>
+      <div>
+        {['month', 'week', 'day', 'agenda'].map((v) => (
+          <button
+            key={v}
+            onClick={() => onView(v)}
+            style={{ marginLeft: 5, background: view === v ? '#4e73df' : '#eee', color: view === v ? '#fff' : '#000' }}>
+            {v.toUpperCase()}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const CustomResourceHeader = ({ resource }) => {
+  return (
+    <div style={{
+      background: resource.color,
+      padding: 5,
+      borderRadius: 5,
+      textAlign: 'center',
+      color: '#fff',
+      fontWeight: 'bold'
+    }}>
+      {resource.title}
+    </div>
+  );
+};
+
 const SalonCalendar = () => {
   const [events, setEvents] = useState([]);
   const [view, setView] = useState("month");
+  const [viewMode, setViewMode] = useState("default");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -94,7 +159,8 @@ const SalonCalendar = () => {
                 status: appointment.status || "Pending",
                 allDay: false,
                 paymentStatus: appointment.paymentStatus || "Pending",
-                totalPrice: appointment.totalPrice || 0
+                totalPrice: appointment.totalPrice || 0,
+                resourceId: appointment.resourceId || 1 // Default to first resource if not specified
               };
             } catch (error) {
               console.error('Error formatting appointment:', error, appointment);
@@ -118,20 +184,33 @@ const SalonCalendar = () => {
   useEffect(() => { fetchAppointments(); }, [selectedBranch, token]);
 
   const eventPropGetter = (event) => {
-    let style = {
-      backgroundColor: "#fff",
-      color: "#000",
-      borderRadius: "4px",
-      border: "none",
-      opacity: event.status === "Cancelled" ? 0.7 : 1,
-      boxShadow: "0 2px 2px rgba(0,0,0,0.1)",
-    };
+    if (viewMode === "default") {
+      let style = {
+        backgroundColor: "#fff",
+        color: "#000",
+        borderRadius: "4px",
+        border: "none",
+        opacity: event.status === "Cancelled" ? 0.7 : 1,
+        boxShadow: "0 2px 2px rgba(0,0,0,0.1)",
+      };
 
-    if (event?.status === "Pending") style.backgroundColor = "#Ffff00";
-    else if (event?.status === "Completed" || event?.status === "Scheduled") style.backgroundColor = "#ccffcc";
-    else if (event?.status === "Cancelled") { style.backgroundColor = "#ff6666"; style.color = "#fff"; }
+      if (event?.status === "Pending") style.backgroundColor = "#Ffff00";
+      else if (event?.status === "Completed" || event?.status === "Scheduled") style.backgroundColor = "#ccffcc";
+      else if (event?.status === "Cancelled") { style.backgroundColor = "#ff6666"; style.color = "#fff"; }
 
-    return { style };
+      return { style };
+    } else {
+      const room = resourcesList.find(r => r.resourceId === event.resourceId);
+      return {
+        style: {
+          backgroundColor: room?.color || '#3174ad',
+          color: '#fff',
+          borderRadius: '4px',
+          border: 'none',
+          opacity: event.status === "Cancelled" ? 0.7 : 1,
+        }
+      };
+    }
   };
 
   const handleEventSelect = (event) => {
@@ -175,6 +254,9 @@ const SalonCalendar = () => {
     }
   };
 
+  const resourcesList = viewMode === "resources" ? defaultResources : 
+                       viewMode === "staff" ? flattenStaffResources() : [];
+
   return (
     <SAAdminLayout>
       <div style={{ position: "relative", padding: "20px", textAlign: "center" }}>
@@ -208,7 +290,17 @@ const SalonCalendar = () => {
             onView={setView}
             selectable
             onSelectSlot={() => setModalIsOpen(true)}
-            components={{ event: (props) => <CustomEvent {...props} onSelect={handleEventSelect} /> }}
+            components={{
+              event: (props) => <CustomEvent {...props} onSelect={handleEventSelect} />,
+              toolbar: (props) => (
+                <CustomToolbar 
+                  {...props} 
+                  viewMode={viewMode} 
+                  setViewMode={setViewMode} 
+                />
+              ),
+              resourceHeader: viewMode !== "default" ? CustomResourceHeader : undefined
+            }}
             eventPropGetter={eventPropGetter}
             defaultDate={new Date()}
             scrollToTime={new Date(1970, 1, 1, 8)}
@@ -218,6 +310,9 @@ const SalonCalendar = () => {
             timeslots={4}
             showMultiDayTimes
             dayLayoutAlgorithm="no-overlap"
+            resources={viewMode !== "default" ? resourcesList : undefined}
+            resourceIdAccessor="resourceId"
+            resourceTitleAccessor="title"
           />
         </div>
       </div>

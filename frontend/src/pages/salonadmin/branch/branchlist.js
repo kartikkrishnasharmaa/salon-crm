@@ -1,103 +1,130 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import { FaPencilAlt } from "react-icons/fa";
+import axios from "../../../api/axiosConfig";
 
 function Branchlist() {
-  const [branches, setBranches] = useState([
-    {
-      id: 1,
-      state: "California",
-      city: "Los Angeles",
-      branch: "Downtown Salon",
-      branchManager: "Sarah Johnson",
-      address: "123 Main St, Los Angeles, CA 90015",
-    },
-    {
-      id: 2,
-      state: "New York",
-      city: "Manhattan",
-      branch: "Midtown Beauty",
-      branchManager: "Michael Chen",
-      address: "456 Broadway, New York, NY 10001",
-    },
-    {
-      id: 3,
-      state: "Texas",
-      city: "Austin",
-      branch: "South Lamar Spa",
-      branchManager: "David Rodriguez",
-      address: "789 Lamar Blvd, Austin, TX 78704",
-    },
-  ]);
+  const [branches, setBranches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+  const salonAdminData = JSON.parse(localStorage.getItem("salonAdmin"));
+  const salonAdminId = salonAdminData?._id;
+
+  useEffect(() => {
+    if (!salonAdminId || !token) {
+      console.error(
+        "🚨 SalonAdminId or Token missing! API calls will not proceed."
+      );
+      setLoading(false);
+      return;
+    }
+
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get(
+          `/branch/get-salon/${salonAdminId}/branches`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setBranches(response.data.branches);
+      } catch (error) {
+        console.error("❌ Error fetching branches:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBranches();
+  }, [token, salonAdminId]);
 
   return (
     <SAAdminLayout>
       <div className="flex justify-center items-start bg-gray-50 p-4 min-h-screen">
         <div className="bg-white shadow-xl rounded-xl p-6 w-full max-w-6xl space-y-6">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Branch Management</h1>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Branch Management
+            </h1>
           </div>
-          
-          <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200">
-            <table className="w-full divide-y divide-gray-200">
-              <thead className="bg-gradient-to-r from-blue-500 to-indigo-600">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    State
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    City
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Branch
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Branch Manager
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Address
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {branches.map((branch) => (
-                  <tr key={branch.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {branch.state}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {branch.city}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">
-                      {branch.branch}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {branch.branchManager}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {branch.address}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link
-                        to={`/salonadmin/main-branch`}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
-                      >
-                        <FaPencilAlt className="h-3 w-3 mr-1" />
-                        Edit
-                      </Link>
-                    </td>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">Loading branches...</p>
+            </div>
+          ) : (
+            <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200">
+              <table className="w-full divide-y divide-gray-200">
+                <thead className="bg-gradient-to-r from-blue-500 to-indigo-600">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      Branch Name
+                    </th>
+
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      Address
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      City
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      State
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      Manager Phone
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      Created At
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {branches.map((branch) => (
+                    <tr
+                      key={branch._id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">
+                        {branch.branchName}
+                      </td>
+
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {branch.address}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {branch.city}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {branch.state}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {branch.phone}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(branch.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Link
+                          to={`/salonadmin/main-branch`}
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
+                        >
+                          <FaPencilAlt className="h-3 w-3 mr-1" />
+                          Edit
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
           {/* Empty state */}
-          {branches.length === 0 && (
+          {!loading && branches.length === 0 && (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
                 <svg
@@ -115,7 +142,9 @@ function Branchlist() {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900">No branches found</h3>
+              <h3 className="text-lg font-medium text-gray-900">
+                No branches found
+              </h3>
               <p className="mt-1 text-sm text-gray-500">
                 Get started by adding a new branch location.
               </p>
