@@ -654,7 +654,7 @@ const BookingFormModal = ({
         {/* Booking Summary */}
         {bookingSummary.length > 0 ? (
           <div className="w-full bg-gray-100 p-4 rounded-md shadow-md mb-4">
-            <h3 className="text-lg font-bold mb-2">Booking Summary</h3>
+            <h3 className="text-lg font-bold mb-2">Bookingg Summary</h3>
             <table className="w-full border-collapse border border-gray-300">
               <thead className="bg-gray-200">
                 <tr>
