@@ -26,30 +26,44 @@ const defaultResources = [
 ];
 
 const staffResources = [
-  { section: "Hair Section", staff: ["Ravi", "Priya"], color: "#a4c2f4" },
-  { section: "Nail Section", staff: ["Neha", "Ankit"], color: "#f9cb9c" },
-  { section: "Massage Section", staff: ["Arjun", "Riya"], color: "#b6d7a8" }
+  { staff: "Ravi", color: "#a4c2f4" },
+  { staff: "Priya", color: "#b4a7d6" },
+  { staff: "Neha", color: "#f9cb9c" },
+  { staff: "Ankit", color: "#b6d7a8" },
+  { staff: "Arjun", color: "#ea9999" },
+  { staff: "Riya", color: "#d5a6bd" }
 ];
 
 const flattenStaffResources = () => {
-  return staffResources.flatMap((group, groupIndex) =>
-    group.staff.map((member, memberIndex) => ({
-      resourceId: `${groupIndex}-${memberIndex}`,
-      title: `${group.section}: ${member}`,
-      color: group.color
-    }))
-  );
+  return staffResources.map((staff, index) => ({
+    resourceId: index + 1,
+    title: staff.staff,
+    color: staff.color
+  }));
 };
 
 const CustomToolbar = ({ view, onView, viewMode, setViewMode, label }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
       <div>
-        <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-          <option value="staff">Staff</option>
-          <option value="resources">Resources</option>
-          <option value="default">Default View</option>
-        </select>
+        <button
+          onClick={() => setViewMode("default")}
+          style={{ marginRight: 5, background: viewMode === "default" ? '#4e73df' : '#eee', color: viewMode === "default" ? '#fff' : '#000' }}
+        >
+          Default
+        </button>
+        <button
+          onClick={() => setViewMode("staff")}
+          style={{ marginRight: 5, background: viewMode === "staff" ? '#4e73df' : '#eee', color: viewMode === "staff" ? '#fff' : '#000' }}
+        >
+          Staff
+        </button>
+        <button
+          onClick={() => setViewMode("resources")}
+          style={{ background: viewMode === "resources" ? '#4e73df' : '#eee', color: viewMode === "resources" ? '#fff' : '#000' }}
+        >
+          Resources
+        </button>
       </div>
       <div>{label}</div>
       <div>
@@ -160,7 +174,7 @@ const SalonCalendar = () => {
                 allDay: false,
                 paymentStatus: appointment.paymentStatus || "Pending",
                 totalPrice: appointment.totalPrice || 0,
-                resourceId: appointment.resourceId || 1 // Default to first resource if not specified
+                resourceId: appointment.resourceId || 1
               };
             } catch (error) {
               console.error('Error formatting appointment:', error, appointment);
