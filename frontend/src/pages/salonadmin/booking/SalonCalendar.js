@@ -331,7 +331,7 @@ const SalonCalendar = () => {
           </div>
         )}
         
-        <div style={{ height: "80vh", width: "100%", background: "white", borderRadius: "10px", padding: "10px" }}>
+        <div style={{ height: "80vh", width: "100%", background: "white", borderRadius: "10px", padding: "5px" }}>
           <Calendar
             localizer={localizer}
             events={events}
