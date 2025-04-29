@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import SAAdminLayout from "../../../layouts/Salonadmin";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,6 +11,7 @@ import AddTicketModal from "./AddTicketModal";
 import AppointmentDetailsModal from "./AppointmentDetailsModal";
 import BookingFormModal from "./BookingFormModal";
 import CustomEvent from "./CustomEvent";
+import Adminheader from "../../../components/Adminheader";
 
 moment.locale('en', { week: { dow: 1 } });
 const localizer = momentLocalizer(moment);
@@ -26,55 +26,89 @@ const defaultResources = [
 ];
 
 const staffResources = [
-  { staff: "Ravi", color: "#a4c2f4" },
-  { staff: "Priya", color: "#b4a7d6" },
-  { staff: "Neha", color: "#f9cb9c" },
-  { staff: "Ankit", color: "#b6d7a8" },
-  { staff: "Arjun", color: "#ea9999" },
-  { staff: "Riya", color: "#d5a6bd" }
+  { resourceId: 6, title: 'Ravi', color: '#a4c2f4' },
+  { resourceId: 7, title: 'Priya', color: '#b4a7d6' },
+  { resourceId: 8, title: 'Neha', color: '#f9cb9c' },
+  { resourceId: 9, title: 'Ankit', color: '#b6d7a8' },
+  { resourceId: 10, title: 'Arjun', color: '#ea9999' },
+  { resourceId: 11, title: 'Riya', color: '#d5a6bd' }
 ];
-
-const flattenStaffResources = () => {
-  return staffResources.map((staff, index) => ({
-    resourceId: index + 1,
-    title: staff.staff,
-    color: staff.color
-  }));
-};
 
 const CustomToolbar = ({ view, onView, viewMode, setViewMode, label }) => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
-      <div>
-        <button
-          onClick={() => setViewMode("default")}
-          style={{ marginRight: 5, background: viewMode === "default" ? '#4e73df' : '#eee', color: viewMode === "default" ? '#fff' : '#000' }}
-        >
-          Default
-        </button>
-        <button
-          onClick={() => setViewMode("staff")}
-          style={{ marginRight: 5, background: viewMode === "staff" ? '#4e73df' : '#eee', color: viewMode === "staff" ? '#fff' : '#000' }}
-        >
-          Staff
-        </button>
-        <button
-          onClick={() => setViewMode("resources")}
-          style={{ background: viewMode === "resources" ? '#4e73df' : '#eee', color: viewMode === "resources" ? '#fff' : '#000' }}
-        >
-          Resources
-        </button>
-      </div>
-      <div>{label}</div>
-      <div>
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center',
+      padding: '10px 15px',
+      backgroundColor: '#f8f9fa',
+      borderRadius: '8px',
+      marginBottom: '10px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+    }}>
+      <span style={{ 
+        fontWeight: 'bold', 
+        fontSize: '1.1rem',
+      }}>
+        {label}
+      </span>
+
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        gap: '5px' // Add some space between buttons
+      }}>
         {['month', 'week', 'day', 'agenda'].map((v) => (
           <button
             key={v}
             onClick={() => onView(v)}
-            style={{ marginLeft: 5, background: view === v ? '#4e73df' : '#eee', color: view === v ? '#fff' : '#000' }}>
-            {v.toUpperCase()}
+            style={{ 
+              padding: '6px 12px',
+              background: view === v ? '#4e73df' : 'transparent', 
+              color: view === v ? '#fff' : '#495057',
+              fontWeight: view === v ? '600' : '500',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '0.9rem',
+              transition: 'all 0.2s'
+            }}>
+            {v.charAt(0).toUpperCase() + v.slice(1)}
           </button>
         ))}
+        
+        <button
+          onClick={() => setViewMode("resources")}
+          style={{ 
+            padding: '6px 12px',
+            background: viewMode === "resources" ? '#4e73df' : 'transparent', 
+            color: viewMode === "resources" ? '#fff' : '#495057',
+            fontWeight: viewMode === "resources" ? '600' : '500',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          Resources
+        </button>
+        <button
+          onClick={() => setViewMode("staff")}
+          style={{ 
+            padding: '6px 12px',
+            background: viewMode === "staff" ? '#4e73df' : 'transparent', 
+            color: viewMode === "staff" ? '#fff' : '#495057',
+            fontWeight: viewMode === "staff" ? '600' : '500',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          Staff
+        </button>
       </div>
     </div>
   );
@@ -84,11 +118,13 @@ const CustomResourceHeader = ({ resource }) => {
   return (
     <div style={{
       background: resource.color,
-      padding: 5,
-      borderRadius: 5,
+      padding: '8px 5px',
+      borderRadius: '5px',
       textAlign: 'center',
       color: '#fff',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      fontSize: '0.85rem',
+      margin: '2px 0'
     }}>
       {resource.title}
     </div>
@@ -97,8 +133,8 @@ const CustomResourceHeader = ({ resource }) => {
 
 const SalonCalendar = () => {
   const [events, setEvents] = useState([]);
-  const [view, setView] = useState("month");
-  const [viewMode, setViewMode] = useState("default");
+  const [view, setView] = useState("week");
+  const [viewMode, setViewMode] = useState("resources");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -160,6 +196,13 @@ const SalonCalendar = () => {
                 .map(s => s?.name || 'Unknown Service')
                 .join(', ') || 'No Services';
 
+              // Assign resourceId based on staff or default resource
+              let resourceId = 1; // Default to first resource
+              if (appointment.staff && appointment.staff.length > 0) {
+                const staffMember = staffResources.find(s => s.title === appointment.staff[0]);
+                resourceId = staffMember ? staffMember.resourceId : resourceId;
+              }
+
               return {
                 id,
                 title: `${customerName} - ${servicesList}`,
@@ -174,7 +217,7 @@ const SalonCalendar = () => {
                 allDay: false,
                 paymentStatus: appointment.paymentStatus || "Pending",
                 totalPrice: appointment.totalPrice || 0,
-                resourceId: appointment.resourceId || 1
+                resourceId: resourceId
               };
             } catch (error) {
               console.error('Error formatting appointment:', error, appointment);
@@ -198,33 +241,30 @@ const SalonCalendar = () => {
   useEffect(() => { fetchAppointments(); }, [selectedBranch, token]);
 
   const eventPropGetter = (event) => {
-    if (viewMode === "default") {
-      let style = {
-        backgroundColor: "#fff",
-        color: "#000",
-        borderRadius: "4px",
-        border: "none",
-        opacity: event.status === "Cancelled" ? 0.7 : 1,
-        boxShadow: "0 2px 2px rgba(0,0,0,0.1)",
-      };
-
-      if (event?.status === "Pending") style.backgroundColor = "#Ffff00";
-      else if (event?.status === "Completed" || event?.status === "Scheduled") style.backgroundColor = "#ccffcc";
-      else if (event?.status === "Cancelled") { style.backgroundColor = "#ff6666"; style.color = "#fff"; }
-
-      return { style };
-    } else {
-      const room = resourcesList.find(r => r.resourceId === event.resourceId);
-      return {
-        style: {
-          backgroundColor: room?.color || '#3174ad',
-          color: '#fff',
-          borderRadius: '4px',
-          border: 'none',
-          opacity: event.status === "Cancelled" ? 0.7 : 1,
-        }
-      };
+    const resource = viewMode === "staff" 
+      ? staffResources.find(r => r.resourceId === event.resourceId)
+      : defaultResources.find(r => r.resourceId === event.resourceId);
+    
+    let backgroundColor = resource?.color || '#3174ad';
+    
+    if (event.status === "Cancelled") {
+      backgroundColor = '#ff6666';
+    } else if (event.status === "Pending") {
+      backgroundColor = '#Ffff00';
+    } else if (event.status === "Completed" || event.status === "Scheduled") {
+      backgroundColor = '#ccffcc';
     }
+
+    return {
+      style: {
+        backgroundColor,
+        color: '#000',
+        borderRadius: '4px',
+        border: 'none',
+        opacity: event.status === "Cancelled" ? 0.7 : 1,
+        boxShadow: '0 2px 2px rgba(0,0,0,0.1)'
+      }
+    };
   };
 
   const handleEventSelect = (event) => {
@@ -268,11 +308,11 @@ const SalonCalendar = () => {
     }
   };
 
-  const resourcesList = viewMode === "resources" ? defaultResources : 
-                       viewMode === "staff" ? flattenStaffResources() : [];
+  const resourcesList = viewMode === "staff" ? staffResources : defaultResources;
 
   return (
-    <SAAdminLayout>
+    <div>
+      <Adminheader title="Salon Calendar" />
       <div style={{ position: "relative", padding: "20px", textAlign: "center" }}>
         {loading && (
           <div style={{
@@ -300,7 +340,7 @@ const SalonCalendar = () => {
             style={{ height: "100%", width: "100%" }}
             view={view}
             views={["month", "week", "day", "agenda"]}
-            defaultView="month"
+            defaultView="week"
             onView={setView}
             selectable
             onSelectSlot={() => setModalIsOpen(true)}
@@ -313,18 +353,18 @@ const SalonCalendar = () => {
                   setViewMode={setViewMode} 
                 />
               ),
-              resourceHeader: viewMode !== "default" ? CustomResourceHeader : undefined
+              resourceHeader: CustomResourceHeader
             }}
             eventPropGetter={eventPropGetter}
             defaultDate={new Date()}
             scrollToTime={new Date(1970, 1, 1, 8)}
             min={new Date(1970, 1, 1, 8, 0, 0)}
             max={new Date(1970, 1, 1, 22, 0, 0)}
-            step={15}
-            timeslots={4}
+            step={30} 
+            timeslots={2} 
             showMultiDayTimes
             dayLayoutAlgorithm="no-overlap"
-            resources={viewMode !== "default" ? resourcesList : undefined}
+            resources={resourcesList}
             resourceIdAccessor="resourceId"
             resourceTitleAccessor="title"
           />
@@ -354,7 +394,7 @@ const SalonCalendar = () => {
       />
 
       <ToastContainer position="top-right" autoClose={3000} />
-    </SAAdminLayout>
+    </div>
   );
 };
 

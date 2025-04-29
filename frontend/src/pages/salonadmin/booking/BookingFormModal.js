@@ -715,19 +715,55 @@ const BookingFormModal = ({
           </div>
         )}
 
-        <div className="w-full mt-4 flex justify-center gap-4">
+        <div className="w-full mt-4 flex flex-wrap justify-center gap-4">
+          <button
+            type="button"
+            className="bg-purple-500 text-white py-2 px-4 rounded"
+          >
+            Send Msg
+          </button>
           <button
             type="submit"
-            className="bg-green-500 text-white py-2 px-4 rounded"
+            className="bg-yellow-500 text-white py-2 px-4 rounded"
           >
-            Book Appointment
+            Ticket
+          </button>
+          <button
+            type="button"
+            className="bg-teal-500 text-white py-2 px-4 rounded"
+          >
+            Check In
+          </button>
+          <button
+            type="button"
+            className="bg-orange-500 text-white py-2 px-4 rounded"
+          >
+            No Show
+          </button>
+          <button
+            type="button"
+            className="bg-gray-700 text-white py-2 px-4 rounded"
+          >
+            Merge
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-500 text-white py-2 px-4 rounded"
+          >
+            History
+          </button>
+          <button
+            type="button"
+            className="bg-pink-500 text-white py-2 px-4 rounded"
+          >
+            Insta Bill
           </button>
           <button
             type="button"
             onClick={generateBill}
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-gray-500 text-white py-2 px-4 rounded"
           >
-            Generate Bill
+            Bill
           </button>
           <button
             type="button"
