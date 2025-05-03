@@ -18,11 +18,11 @@ const localizer = momentLocalizer(moment);
 Modal.setAppElement("#root");
 
 const defaultResources = [
-  { resourceId: 1, title: 'Hair Station 1', color: '#a4c2f4' },
-  { resourceId: 2, title: 'Hair Station 2', color: '#b4a7d6' },
-  { resourceId: 3, title: 'Nail Station', color: '#f9cb9c' },
-  { resourceId: 4, title: 'Massage Room', color: '#b6d7a8' },
-  { resourceId: 5, title: 'Waxing Room', color: '#ea9999' }
+  { resourceId: 1, title: 'Room 1', color: '#3044ef' },
+  { resourceId: 2, title: 'Room 2', color: '#8135d7' },
+  { resourceId: 3, title: 'Room 3', color: '#e07b16' },
+  { resourceId: 4, title: 'Room 4', color: '#b511ee' },
+  { resourceId: 5, title: 'Room 5', color: '#ec322a' }
 ];
 
 const staffResources = [
