@@ -171,7 +171,7 @@ const SalonAdminRoutes = () => {
         }/>
 
 <Route
-        path="/salonadmin/main-branch"
+        path="/salonadmin/main-branch/:branchId"
         element={
           <ProtectedRoute>
             <MainbranchPage />
@@ -212,7 +212,7 @@ const SalonAdminRoutes = () => {
         }
       />
       <Route
-        path="/salonadmin/create-category"
+        path="/salonadmin/create-product-category"
         element={
           <ProtectedRoute>
             <CreateCategory />

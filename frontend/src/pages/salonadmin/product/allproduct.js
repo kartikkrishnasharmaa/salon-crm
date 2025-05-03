@@ -236,7 +236,7 @@ const ViewProducts = () => {
             <FiPlus className="text-lg" /> Add New Product
           </Link>
           <Link
-            to="/salonadmin/create-category"
+            to="/salonadmin/create-product-category"
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-md"
           >
             <FiPlus className="text-lg" /> Add New Category

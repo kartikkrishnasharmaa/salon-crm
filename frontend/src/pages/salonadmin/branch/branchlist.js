@@ -13,9 +13,7 @@ function Branchlist() {
 
   useEffect(() => {
     if (!salonAdminId || !token) {
-      console.error(
-        "🚨 SalonAdminId or Token missing! API calls will not proceed."
-      );
+      console.error("🚨 SalonAdminId or Token missing! API calls will not proceed.");
       setLoading(false);
       return;
     }
@@ -44,9 +42,7 @@ function Branchlist() {
       <div className="flex justify-center items-start bg-gray-50 p-4 min-h-screen">
         <div className="bg-white shadow-xl rounded-xl p-6 w-full max-w-6xl space-y-6">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Branch Management
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-800">Branch Management</h1>
           </div>
 
           {loading ? (
@@ -61,7 +57,6 @@ function Branchlist() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Branch Name
                     </th>
-
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Address
                     </th>
@@ -84,14 +79,10 @@ function Branchlist() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {branches.map((branch) => (
-                    <tr
-                      key={branch._id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
+                    <tr key={branch._id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">
                         {branch.branchName}
                       </td>
-
                       <td className="px-6 py-4 text-sm text-gray-500">
                         {branch.address}
                       </td>
@@ -109,7 +100,7 @@ function Branchlist() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <Link
-                          to={`/salonadmin/main-branch`}
+                          to={`/salonadmin/main-branch/${branch._id}`}
                           className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
                         >
                           <FaPencilAlt className="h-3 w-3 mr-1" />
@@ -123,7 +114,6 @@ function Branchlist() {
             </div>
           )}
 
-          {/* Empty state */}
           {!loading && branches.length === 0 && (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
@@ -142,9 +132,7 @@ function Branchlist() {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900">
-                No branches found
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">No branches found</h3>
               <p className="mt-1 text-sm text-gray-500">
                 Get started by adding a new branch location.
               </p>

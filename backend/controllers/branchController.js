@@ -2,6 +2,7 @@ const Branch = require("../models/branch");
 const mongoose = require("mongoose");
 const Employee = require("../models/employee")
 
+// specific salon login krne pr uske branches ko dikhana hai table ki form mai
 exports.getSalonBranches = async (req, res) => {
   try {
     const { salonAdminId } = req.params;
@@ -25,6 +26,42 @@ exports.getSalonBranches = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// salon admin can update self branch details
+
+exports.updateBranch = async (req, res) => {
+  try {
+    const { branchId } = req.params;
+    const updateData = req.body;
+
+    // Validate branchId
+    if (!branchId) {
+      return res.status(400).json({ error: "Branch ID is required" });
+    }
+
+    // Validate update data
+    if (!updateData || Object.keys(updateData).length === 0) {
+      return res.status(400).json({ error: "Update data is required" });
+    }
+
+    // Update branch
+    const updatedBranch = await Branch.findByIdAndUpdate(
+      new mongoose.Types.ObjectId(branchId),
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedBranch) {
+      return res.status(404).json({ error: "Branch not found" });
+    }
+
+    res.status(200).json({ branch: updatedBranch });
+  } catch (error) {
+    console.error("❌ Error updating branch:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 exports.assignEmployeeToBranch = async (req, res) => {
   try {
