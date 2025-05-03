@@ -1,5 +1,107 @@
 const Service = require("../models/service");
 const Branch = require("../models/branch");
+const ServiceCategory = require("../models/ServiceCategory");
+const upload = require("../middleware/upload");
+const fs = require("fs");
+const path = require("path");
+
+// 🏷️ CREATE SERVICE CATEGORY WITH IMAGE - Salon Admin Only
+exports.createServiceCategory = [
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const { name, parentCategory, branchId } = req.body;
+
+      // Validate required fields
+      if (!name || !branchId) {
+        // Remove uploaded file if validation fails
+        if (req.file) {
+          fs.unlinkSync(req.file.path);
+        }
+        return res.status(400).json({ 
+          message: "Name and branch ID are required" 
+        });
+      }
+
+      // Check if the branch exists and belongs to the salon admin
+      const branch = await Branch.findOne({ 
+        _id: branchId, 
+        salonAdminId: req.user._id 
+      });
+      if (!branch) {
+        // Remove uploaded file if branch not found
+        if (req.file) {
+          fs.unlinkSync(req.file.path);
+        }
+        return res.status(404).json({ 
+          message: "Branch not found or unauthorized" 
+        });
+      }
+
+      // Check if parent category exists if provided
+      if (parentCategory) {
+        const parentExists = await ServiceCategory.findOne({ 
+          _id: parentCategory,
+          branchId
+        });
+        if (!parentExists) {
+          // Remove uploaded file if parent not found
+          if (req.file) {
+            fs.unlinkSync(req.file.path);
+          }
+          return res.status(404).json({ 
+            message: "Parent category not found in this branch" 
+          });
+        }
+      }
+
+      // Check if category name already exists in this branch
+      const existingCategory = await ServiceCategory.findOne({ 
+        name, 
+        branchId 
+      });
+      if (existingCategory) {
+        // Remove uploaded file if category exists
+        if (req.file) {
+          fs.unlinkSync(req.file.path);
+        }
+        return res.status(400).json({ 
+          message: "Category with this name already exists in the branch" 
+        });
+      }
+
+      // Create image URL if file was uploaded
+      const imageUrl = req.file 
+        ? `/uploads/${req.file.filename}`
+        : "";
+
+      // Create new service category
+      const newCategory = new ServiceCategory({
+        name,
+        parentCategory: parentCategory || null,
+        branchId,
+        imageUrl
+      });
+
+      await newCategory.save();
+
+      res.status(201).json({ 
+        message: "Service category created successfully", 
+        category: newCategory 
+      });
+
+    } catch (error) {
+      // Remove uploaded file if error occurs
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      console.error("Service Category Creation Error:", error.message);
+      res.status(500).json({ 
+        message: "Internal server error" 
+      });
+    }
+  }
+];
 
 // 🎯 CREATE SERVICE - Salon Admin Only
 exports.createservice = async (req, res) => {

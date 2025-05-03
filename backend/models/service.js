@@ -1,21 +1,118 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const serviceSchema = new mongoose.Schema(
-  {
-    salonAdminId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin", required: true },
-    branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch", required: true },
-    category: { type: String, enum: ["Hair", "Skin", "Nails", "Spa", "Makeup","Facial","Massage","Waxing","Manicure","Eyebrow Shaping","Other"], required: true },
-    name: { type: String, required: true }, 
-    description: { type: String },
-    type: { type: String, enum: ["Basic", "Premium", "Luxury"], required: true },
-    price: { type: Number, required: true },
-    duration: { type: Number, required: true }, // Duration in minutes
-    startTime: { type: String, required: true }, // Example: "10:00 AM"
-    endTime: { type: String, required: true },   // Example: "11:00 AM"
-    assignedEmployee: { type: mongoose.Schema.Types.ObjectId, ref: "Employee",},
-    status: { type: String, enum: ["Active", "Inactive"], default: "Active" }
+
+const ServiceSchema = new mongoose.Schema({
+  // Basic Info
+  serviceName: {
+    type: String,
+    required: [true, 'Service name is required'],
+    trim: true
   },
-  { timestamps: true }
-);
+  serviceCode: {
+    type: String,
+    required: [true, 'Service code is required'],
+    unique: true
+  },
 
-module.exports = mongoose.model("Service", serviceSchema);
+  // Category References (from ServiceCategory model)
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ServiceCategory',
+    required: [true, 'Category reference is required']
+  },
+  subCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ServiceCategory',
+    required: [true, 'Sub-category reference is required'],
+    validate: {
+      validator: async function(value) {
+        const parent = await mongoose.model('ServiceCategory').findOne({ _id: this.category });
+        return parent && parent.subcategories.some(sub => sub._id.equals(value));
+      },
+      message: 'Sub-category must belong to the selected parent category'
+    }
+  },
+
+  // Business Info
+  businessUnit: {
+    type: String,
+    enum: ['Spa', 'Salon', 'Spa and Salon', 'Ayurveda Gram'],
+    required: [true, 'Business unit is required']
+  },
+  description: String,
+
+  // Pricing
+  memberPrice: {
+    type: Number,
+    required: [true, 'Member price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  nonMemberPrice: {
+    type: Number,
+    required: [true, 'Non-member price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  duration: {
+    type: String,
+    required: [true, 'Duration is required']
+  },
+
+  // Tax Info
+  hsnCode: {
+    type: String,
+    required: [true, 'HSN code is required']
+  },
+  gstCategory: {
+    type: String,
+    enum: ['GST 5%', 'GST 12%', 'GST 18%', 'GST 28%', 'Custom'],
+    required: [true, 'GST category is required']
+  },
+  cgst: {
+    type: Number,
+    required: [true, 'CGST is required'],
+    min: [0, 'CGST cannot be negative']
+  },
+  sgst: {
+    type: Number,
+    required: [true, 'SGST is required'],
+    min: [0, 'SGST cannot be negative']
+  },
+
+  // Calculated Fields
+  memberPriceWithTax: {
+    type: Number,
+    required: [true, 'Member price with tax is required']
+  },
+  nonMemberPriceWithTax: {
+    type: Number,
+    required: [true, 'Non-member price with tax is required']
+  },
+
+  // System Fields
+  branchId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Branch',
+    required: [true, 'Branch ID is required']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Calculate tax-inclusive prices before saving
+ServiceSchema.pre('save', function(next) {
+  const totalTax = (this.cgst + this.sgst) / 100;
+  
+  this.memberPriceWithTax = this.memberPrice + (this.memberPrice * totalTax);
+  this.nonMemberPriceWithTax = this.nonMemberPrice + (this.nonMemberPrice * totalTax);
+  
+  this.updatedAt = Date.now();
+  next();
+});
+
+module.exports = mongoose.model('Service', ServiceSchema);
