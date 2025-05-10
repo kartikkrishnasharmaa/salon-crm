@@ -103,6 +103,78 @@ exports.createServiceCategory = [
   }
 ];
 
+// 🏷️ GET SERVICE CATEGORIES - Salon Admi
+// 🏷️ GET SERVICE CATEGORIES - Salon Admin Only
+exports.getServiceCategories = async (req, res) => {
+  try {
+    const { branchId } = req.query;
+
+    // Validate required fields
+    if (!branchId) {
+      return res.status(400).json({ 
+        message: "Branch ID is required" 
+      });
+    }
+
+    // Check if the branch exists and belongs to the salon admin
+    const branch = await Branch.findOne({ 
+      _id: branchId, 
+      salonAdminId: req.user._id 
+    });
+    
+    if (!branch) {
+      return res.status(404).json({ 
+        message: "Branch not found or unauthorized" 
+      });
+    }
+
+    // Fetch categories with parent-child relationships
+    const categories = await ServiceCategory.find({ branchId })
+      .populate({
+        path: 'parentCategory',
+        select: 'name'
+      })
+      .sort({ createdAt: -1 });
+
+    // Transform categories into hierarchical structure
+    const categoryMap = {};
+    const rootCategories = [];
+
+    // First pass: map all categories
+    categories.forEach(category => {
+      categoryMap[category._id] = {
+        ...category.toObject(),
+        children: []
+      };
+    });
+
+    // Second pass: build hierarchy
+    categories.forEach(category => {
+      if (category.parentCategory) {
+        if (categoryMap[category.parentCategory._id]) {
+          categoryMap[category.parentCategory._id].children.push(
+            categoryMap[category._id]
+          );
+        }
+      } else {
+        rootCategories.push(categoryMap[category._id]);
+      }
+    });
+
+    res.status(200).json({ 
+      success: true,
+      categories: rootCategories,
+      flatCategories: categories // Also return flat list for easy reference
+    });
+
+  } catch (error) {
+    console.error("Get Service Categories Error:", error.message);
+    res.status(500).json({ 
+      message: "Internal server error" 
+    });
+  }
+};
+
 // 🎯 CREATE SERVICE - Salon Admin Only
 exports.createservice = async (req, res) => {
   try {
