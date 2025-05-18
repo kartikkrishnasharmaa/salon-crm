@@ -1,9 +1,11 @@
+const mongoose = require('mongoose');
 const Service = require("../models/service");
 const Branch = require("../models/branch");
 const ServiceCategory = require("../models/ServiceCategory");
 const upload = require("../middleware/upload");
 const fs = require("fs");
 const path = require("path");
+
 
 
 //completed
@@ -185,6 +187,7 @@ exports.createservice = async (req, res) => {
   try {
     const { 
       branchId,
+      status = 'active', // Default to active
       serviceName,
       serviceCode,
       category,
@@ -233,11 +236,15 @@ exports.createservice = async (req, res) => {
     const calculatedNonMemberPriceWithTax = nonMemberPriceWithTax || 
       (parseFloat(nonMemberPrice) * (1 + (parseFloat(cgst || 0) + parseFloat(sgst || 0)) / 100).toFixed(2));
 
+ if (status && !['active', 'inactive'].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
     // 🚀 Create New Service
     const newService = new Service({
-      salonAdminId: req.user._id,
+      salonAdminId: new mongoose.Types.ObjectId(req.user._id), // Convert to ObjectId
       branchId,
       serviceName,
+      status,
       serviceCode: serviceCode || serviceName.replace(/\s+/g, '-').toUpperCase().substring(0, 10),
       category,
       subCategory,
@@ -268,26 +275,74 @@ exports.createservice = async (req, res) => {
 };
 
 exports.getServicesByBranch = async (req, res) => {
-  try {
-    const { branchId } = req.query;
+ try {
+    const { branchId, status } = req.query;
+    const salonAdminId = new mongoose.Types.ObjectId(req.user._id);
 
-    // Build query based on optional branchId
-    const query = { salonAdminId: req.user._id };
-    if (branchId) {
-      query.branchId = branchId;
+    // Validate inputs
+    if (!mongoose.Types.ObjectId.isValid(salonAdminId)) {
+      return res.status(400).json({ message: "Invalid salon admin ID" });
     }
 
-    const services = await Service.find(query).sort({ createdAt: -1 });
+    // Build base query
+    const query = { 
+      salonAdminId,
+      ...(branchId && { branchId: new mongoose.Types.ObjectId(branchId) }),
+      ...(status && { status: { $in: status.split(',') } })
+    };
+
+    // Fetch services with populated data
+    const services = await Service.find(query)
+      .populate({
+        path: 'category',
+        model: 'ServiceCategory',
+        select: 'name'
+      })
+      .populate({
+        path: 'subCategory',
+        model: 'ServiceCategory',
+        select: 'name'
+      })
+      .populate({
+        path: 'branchId',
+        model: 'Branch',
+        select: 'branchName'
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Format response
+    const formattedServices = services.map(service => ({
+      _id: service._id,
+      serviceName: service.serviceName,
+      serviceCode: service.serviceCode,
+      category: service.category?.name || 'Uncategorized',
+      subCategory: service.subCategory?.name || 'Uncategorized',
+      businessUnit: service.businessUnit,
+      duration: service.duration,
+      memberPrice: service.memberPrice,
+      nonMemberPrice: service.nonMemberPrice,
+      status: service.status,
+      location: service.branchId?.branchName || 'Unknown',
+      startTime: service.startTime,
+      endTime: service.endTime,
+      createdAt: service.createdAt
+    }));
 
     res.status(200).json({
       message: "Services fetched successfully",
-      services,
+      services: formattedServices
     });
+
   } catch (error) {
-    console.error("Fetch Services Error:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error('[SERVICE ERROR]', error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 };
+
 
 // 👥 GET ALL EMPLOYEES WITH SERVICES
 exports.getAllEmployeesWithServices = async (req, res) => {

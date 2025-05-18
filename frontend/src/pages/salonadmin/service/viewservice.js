@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import SAAdminLayout from "../../../layouts/Salonadmin";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux"; // To access the selected branch
+import axios from "../../../api/axiosConfig";
+
 import {
   FiPlus,
   FiTrash2,
@@ -14,107 +17,8 @@ import {
 } from "react-icons/fi";
 
 const ViewServices = () => {
-  // Dummy data structure with categories, subcategories and services
-  const dummyData = [
-    {
-      category: "Hair Services",
-      subcategories: [
-        {
-          name: "Cutting & Styling",
-          services: [
-            {
-              id: 1,
-              serviceName: "Haircut",
-              time: "45 mins",
-              memberPrice: "₹500",
-              nonMemberPrice: "₹600",
-              active: true,
-              location: "Delhi",
-            },
-            {
-              id: 2,
-              serviceName: "Haircut + Beard",
-              time: "60 mins",
-              memberPrice: "₹800",
-              nonMemberPrice: "₹950",
-              active: true,
-              location: "Mumbai",
-            },
-          ],
-        },
-        {
-          name: "Coloring",
-          services: [
-            {
-              id: 3,
-              serviceName: "Global Hair Color",
-              time: "90 mins",
-              memberPrice: "₹1200",
-              nonMemberPrice: "₹1500",
-              active: true,
-              location: "Bangalore",
-            },
-            {
-              id: 4,
-              serviceName: "Highlights",
-              time: "120 mins",
-              memberPrice: "₹1800",
-              nonMemberPrice: "₹2200",
-              active: false,
-              location: "Delhi",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      category: "Skin Care",
-      subcategories: [
-        {
-          name: "Facials",
-          services: [
-            {
-              id: 5,
-              serviceName: "Basic Facial",
-              time: "60 mins",
-              memberPrice: "₹800",
-              nonMemberPrice: "₹1000",
-              active: true,
-              location: "Mumbai",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      category: "Beard Grooming",
-      subcategories: [
-        {
-          name: "Beard Services",
-          services: [
-            {
-              id: 6,
-              serviceName: "Beard Trim",
-              time: "30 mins",
-              memberPrice: "₹300",
-              nonMemberPrice: "₹400",
-              active: true,
-              location: "Bangalore",
-            },
-            {
-              id: 7,
-              serviceName: "Beard Spa",
-              time: "45 mins",
-              memberPrice: "₹600",
-              nonMemberPrice: "₹750",
-              active: true,
-              location: "Delhi",
-            },
-          ],
-        },
-      ],
-    },
-  ];
+  // Access the selected branch from Redux store
+  const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -127,62 +31,108 @@ const ViewServices = () => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [expandedSubcategories, setExpandedSubcategories] = useState({});
   const [filteredServices, setFilteredServices] = useState([]);
+  const [categoriesData, setCategoriesData] = useState([]); // State to hold structured category data
 
-  // Initialize with dummy data
-  useEffect(() => {
+  // Function to fetch services from the API
+  const fetchServices = async () => {
+    if (!selectedBranch) return; // Don't fetch if no branch is selected
     setLoading(true);
+    setError("");
     try {
-      // Flatten the dummyData to create a services array
-      const allServices = dummyData.flatMap((category) =>
-        category.subcategories.flatMap((subcategory) =>
-          subcategory.services.map((service) => ({
-            ...service,
-            category: category.category,
-            subcategory: subcategory.name,
-            status: service.active ? "active" : "inactive",
-          }))
-        )
-      );
-      setServices(allServices);
-      setFilteredServices(allServices);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`/service/get-services`, {
+        params: { branchId: selectedBranch },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const fetchedServices = response.data.services;
+      setServices(fetchedServices);
+      // Structure the fetched services into categories and subcategories
+      const structuredData = structureServices(fetchedServices);
+      setCategoriesData(structuredData);
       setLoading(false);
     } catch (err) {
       setError("Failed to load services");
+      console.error("Error fetching services:", err);
       setLoading(false);
     }
-  }, []);
+  };
+
+  // useEffect to fetch services when the component mounts or selectedBranch changes
+  useEffect(() => {
+    fetchServices();
+  }, [selectedBranch]);
+
+  // Function to structure the flat service list into categories and subcategories
+  const structureServices = (services) => {
+    const structured = {};
+    services.forEach((service) => {
+      if (!structured[service.category]) {
+        structured[service.category] = {
+          category: service.category,
+          subcategories: {},
+        };
+      }
+      if (!structured[service.category].subcategories[service.subcategory]) {
+        structured[service.category].subcategories[service.subcategory] = {
+          name: service.subcategory,
+          services: [],
+        };
+      }
+      structured[service.category].subcategories[
+        service.subcategory
+      ].services.push({
+        ...service,
+        status: service.active ? "active" : "inactive", // Add status for filtering
+      });
+    });
+
+    // Convert the structured object into an array for rendering
+    return Object.values(structured).map((categoryObj) => ({
+      ...categoryObj,
+      subcategories: Object.values(categoryObj.subcategories),
+    }));
+  };
 
   // Apply filters and search
   useEffect(() => {
-    let result = services;
+    let result = [];
+    categoriesData.forEach((category) => {
+      category.subcategories.forEach((subcategory) => {
+        let filteredSubcategoryServices = subcategory.services;
 
-    // Apply location filter
-    if (filters.location !== "all") {
-      result = result.filter(
-        (service) => service.location === filters.location
-      );
-    }
+        // Apply location filter
+        if (filters.location !== "all") {
+          filteredSubcategoryServices = filteredSubcategoryServices.filter(
+            (service) => service.branchId === filters.location // Assuming your service object has branchId
+          );
+        }
 
-    // Apply status filter
-    if (filters.status !== "all") {
-      result = result.filter((service) =>
-        filters.status === "active" ? service.active : !service.active
-      );
-    }
+        // Apply status filter
+        if (filters.status !== "all") {
+          filteredSubcategoryServices = filteredSubcategoryServices.filter(
+            (service) =>
+              filters.status === "active" ? service.active : !service.active
+          );
+        }
 
-    // Apply search
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      result = result.filter(
-        (service) =>
-          service.serviceName.toLowerCase().includes(term) ||
-          service.category.toLowerCase().includes(term) ||
-          service.subcategory.toLowerCase().includes(term)
-      );
-    }
+        // Apply search
+        if (searchTerm) {
+          const term = searchTerm.toLowerCase();
+          filteredSubcategoryServices = filteredSubcategoryServices.filter(
+            (service) =>
+              service.serviceName.toLowerCase().includes(term) ||
+              service.category.toLowerCase().includes(term) ||
+              service.subcategory.toLowerCase().includes(term)
+          );
+        }
 
+        if (filteredSubcategoryServices.length > 0) {
+          result = result.concat(filteredSubcategoryServices);
+        }
+      });
+    });
     setFilteredServices(result);
-  }, [filters, searchTerm, services]);
+  }, [filters, searchTerm, categoriesData]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -219,32 +169,45 @@ const ViewServices = () => {
     }));
   };
 
-  const handleStatusChange = (serviceId) => {
-    setServices((prevServices) =>
-      prevServices.map((service) =>
-        service.id === serviceId
-          ? { ...service, active: !service.active }
-          : service
-      )
+  const handleStatusChange = async (serviceId) => {
+    const token = localStorage.getItem("token");
+    const serviceToUpdate = services.find(
+      (service) => service._id === serviceId
     );
+    if (!serviceToUpdate) return;
+
+    try {
+      await axios.put(
+        `/service/update-service/${serviceId}`, // Replace with your actual update endpoint
+        { active: !serviceToUpdate.active },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // After successful update, refetch services to update the UI
+      fetchServices();
+    } catch (error) {
+      console.error("Error updating service status:", error);
+      setError("Failed to update service status");
+    }
   };
 
   const handleEdit = (serviceId) => {
     console.log(`Edit service ${serviceId}`);
-    // Implement edit functionality here
+    // Implement edit functionality here, likely navigate to an edit page
   };
 
-  const handleUpdate = (serviceId) => {
-    console.log(`Update service ${serviceId}`);
-    // Implement update functionality here
-  };
-
-  const handleDelete = (serviceId) => {
-    console.log(`Delete service ${serviceId}`);
-    // Implement delete functionality here
-    setServices((prevServices) =>
-      prevServices.filter((service) => service.id !== serviceId)
-    );
+  const handleDelete = async (serviceId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(`/service/delete-service/${serviceId}`, {
+        // Replace with your actual delete endpoint
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // After successful deletion, refetch services to update the UI
+      fetchServices();
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      setError("Failed to delete service");
+    }
   };
 
   return (
@@ -289,9 +252,14 @@ const ViewServices = () => {
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="all">All Locations</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Bangalore">Bangalore</option>
+                {/* Assuming your service object has branchId */}
+                {Array.from(
+                  new Set(services.map((service) => service.branchId))
+                ).map((location) => (
+                  <option key={location} value={location}>
+                    {location}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -331,35 +299,23 @@ const ViewServices = () => {
               </div>
             </div>
 
-            <div className="flex flex-col justify-end">
+            {/* Category Filter (using toggle - can be adapted to a dropdown if needed) */}
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category of Service
+                Category
               </label>
-
-              <div
-                onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    status: prev.status === "active" ? "inactive" : "active",
-                  }))
-                }
-                className={`w-16 h-8 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors duration-300 ${
-                  filters.status === "active" ? "bg-blue-600" : "bg-gray-300"
-                }`}
+              <select
+                // Add necessary props and options based on your category data
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <div
-                  className={`bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out ${
-                    filters.status === "active"
-                      ? "translate-x-8"
-                      : "translate-x-0"
-                  }`}
-                ></div>
-              </div>
-
-              <span className="mt-1 text-sm text-gray-600">
-                {filters.status === "active" ? "ON" : "OFF"}
-              </span>
-            </div>
+                <option value="all">All Categories</option>
+                {Array.from(new Set(services.map((service) => service.category))).map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div> */}
           </div>
         </div>
 
@@ -374,12 +330,12 @@ const ViewServices = () => {
           </div>
         ) : (
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-            {filteredServices.length === 0 ? (
+            {categoriesData.length === 0 && !loading ? (
               <div className="p-6 text-center text-gray-500">
-                No services found matching your criteria.
+                No services available for the selected branch.
               </div>
             ) : (
-              dummyData.map((categoryData) => (
+              categoriesData.map((categoryData) => (
                 <div
                   key={categoryData.category}
                   className="border-b border-gray-200"
@@ -409,10 +365,11 @@ const ViewServices = () => {
                     <div className="divide-y divide-gray-200">
                       {categoryData.subcategories.map((subcategory) => {
                         const subKey = `${categoryData.category}-${subcategory.name}`;
-                        const subcategoryServices = filteredServices.filter(
+                        const subcategoryServices = subcategory.services.filter(
                           (service) =>
-                            service.category === categoryData.category &&
-                            service.subcategory === subcategory.name
+                            filteredServices.some(
+                              (fs) => fs._id === service._id
+                            ) // Ensure only filtered services are shown
                         );
 
                         if (subcategoryServices.length === 0) return null;
@@ -509,7 +466,7 @@ const ViewServices = () => {
                                             >
                                               <FiEdit2 size={16} />
                                             </button>
-                                            <button
+                                            {/* <button
                                               onClick={() =>
                                                 handleUpdate(service.id)
                                               }
@@ -517,7 +474,7 @@ const ViewServices = () => {
                                               title="Update"
                                             >
                                               <FiCheck size={16} />
-                                            </button>
+                                            </button> */}
                                             <button
                                               onClick={() =>
                                                 handleDelete(service.id)

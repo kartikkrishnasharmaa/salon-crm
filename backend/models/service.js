@@ -93,7 +93,15 @@ endTime: { type: String },
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active'
   }
+},
+{
+  timestamps: true
 });
 
 // Calculate tax-inclusive prices before saving
