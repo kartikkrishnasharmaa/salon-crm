@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-
-
 const ServiceSchema = new mongoose.Schema({
   // Basic Info
   serviceName: {
@@ -23,14 +21,6 @@ const ServiceSchema = new mongoose.Schema({
   subCategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ServiceCategory',
-    required: [true, 'Sub-category reference is required'],
-    validate: {
-      validator: async function(value) {
-        const parent = await mongoose.model('ServiceCategory').findOne({ _id: this.category });
-        return parent && parent.subcategories.some(sub => sub._id.equals(value));
-      },
-      message: 'Sub-category must belong to the selected parent category'
-    }
   },
 
   // Business Info
@@ -56,6 +46,8 @@ const ServiceSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Duration is required']
   },
+  startTime: { type: String },
+endTime: { type: String },
 
   // Tax Info
   hsnCode: {

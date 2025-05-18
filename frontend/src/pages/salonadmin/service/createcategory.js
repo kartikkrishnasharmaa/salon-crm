@@ -9,15 +9,15 @@ import "rc-tabs/assets/index.css";
 const CreateCategory = () => {
   const selectedBranch = useSelector((state) => state.branch.selectedBranch);
   const [formData, setFormData] = useState({
-    name: "",
-    parentCategory: "",
-    image: null,
+    name: "",  
+    parentCategory: "",  
+    image: null,  
   });
   const [categories, setCategories] = useState([]);
   const [errors, setErrors] = useState({
-    name: "",
-    branch: "",
-    general: "",
+    name: "",   
+    branch: "",    
+    general: "",   
   });
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState("");

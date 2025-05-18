@@ -35,9 +35,9 @@ const Adminheader = ({ toggleSidebar }) => {
 
   // Handle phone icon click to open the modal
   const handlePhoneIconClick = () => {
-    // Logic to decide the status, here it is hardcoded to 'Pending' but you can modify it.
-    setStatus("Pending"); // You can dynamically change the status based on the appointment status
-    setModalOpen(true); // Open modal
+
+    setStatus("Pending");
+    setModalOpen(true); 
   };
 
   return (

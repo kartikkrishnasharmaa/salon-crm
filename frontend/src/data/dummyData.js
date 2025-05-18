@@ -41,7 +41,7 @@ export const dummyAppointments = [
   { id: 210, customer: 'Nidhi Saxena', employee: 'Jyoti Sharma', branch: 'branch5', date: '2025-02-29' },
 ];
 
-export const dummyBranches = [
+export const dummyBranches =     [
   { id: 'branch1', name: 'Salon X - Delhi' },
   { id: 'branch2', name: 'Salon X - Mumbai' },
   { id: 'branch3', name: 'Salon X - Bangalore' },
