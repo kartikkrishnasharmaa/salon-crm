@@ -34,28 +34,45 @@ const ViewServices = () => {
   const [categoriesData, setCategoriesData] = useState([]); // State to hold structured category data
 
   // Function to fetch services from the API
-  const fetchServices = async () => {
-    if (!selectedBranch) return; // Don't fetch if no branch is selected
-    setLoading(true);
-    setError("");
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`/service/get-services`, {
-        params: { branchId: selectedBranch },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const fetchedServices = response.data.services;
-      setServices(fetchedServices);
-      // Structure the fetched services into categories and subcategories
+ const fetchServices = async () => {
+  if (!selectedBranch) return;
+  setLoading(true);
+  setError("");
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`/service/get-services`, {
+      params: { branchId: selectedBranch },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Debugging: Check actual response structure
+    console.log('API Response:', response.data);
+    
+    const fetchedServices = response.data.services;
+    
+    // Debugging: Verify received services
+    console.log('Fetched Services:', fetchedServices);
+    
+    // Clear previous data
+    setServices(fetchedServices);
+    
+    // Structure services only if array is not empty
+    if (fetchedServices.length > 0) {
       const structuredData = structureServices(fetchedServices);
+      console.log('Structured Data:', structuredData); // Debug structure
       setCategoriesData(structuredData);
-      setLoading(false);
-    } catch (err) {
-      setError("Failed to load services");
-      console.error("Error fetching services:", err);
-      setLoading(false);
+    } else {
+      console.warn('Received empty services array');
+      setCategoriesData([]);
     }
-  };
+    
+    setLoading(false);
+  } catch (err) {
+    setError("Failed to load services");
+    console.error("Error fetching services:", err);
+    setLoading(false);
+  }
+};
 
   // useEffect to fetch services when the component mounts or selectedBranch changes
   useEffect(() => {

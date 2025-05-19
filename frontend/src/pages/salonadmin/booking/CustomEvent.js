@@ -37,10 +37,10 @@ const CustomEvent = ({ event, onSelect }) => {
   // Inline styles for the tooltip content and z-index fix
   const tooltipStyle = {
     fontSize: "14px",
-    padding: "10px",
+    padding: "2px",
     color: event.status === "Cancelled" ? "#fff" : "#000",
     background: getStatusColor(event.status),
-    borderRadius: "8px",
+    borderRadius: "2px",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
     lineHeight: 1.6,
     maxWidth: "260px",
@@ -61,7 +61,7 @@ const CustomEvent = ({ event, onSelect }) => {
     placement="top"
     delay={[100, 0]}
     arrow={true}
-    theme="light"
+    theme="dark"
     interactive={true}
     appendTo={document.body}  // <<== important line
   >
@@ -69,12 +69,11 @@ const CustomEvent = ({ event, onSelect }) => {
         onClick={handleEventClick}
         style={{
           backgroundColor: "#fff",
-          color: "#000",
-          borderRadius: "4px",
+          borderRadius: "2px",
           border: "none",
           opacity: event.status === "Cancelled" ? 0.7 : 1,
           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-          padding: "10px",
+          padding: "6px",
           cursor: "pointer",
         }}
       >

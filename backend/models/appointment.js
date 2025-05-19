@@ -5,14 +5,14 @@ const AppointmentSchema = new mongoose.Schema(
     // Customer Details
     customer: {
       name: { type: String, required: true },
-      email: { type: String, required: true },
+      email: { type: String,},
       mobile: { type: String, required: true },
       gender: {
         type: String,
         enum: ["Male", "Female", "Other"],
         required: true,
       },
-      lastName: { type: String, required: true },
+      lastName: { type: String },
     },
     // Salon and Branch Details
     salonAdminId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin" }, // To track which salon booked this appointment
@@ -26,7 +26,7 @@ const AppointmentSchema = new mongoose.Schema(
       {
         name: { type: String, required: true },
         price: { type: Number, required: true }, // Price of the service
-        time: { type: String, required: true }, // Duration of the service
+        time: { type: String, }, // Duration of the service
       },
     ],
     // Staff Details
