@@ -275,71 +275,28 @@ exports.createservice = async (req, res) => {
 };
 
 exports.getServicesByBranch = async (req, res) => {
- try {
-    const { branchId, status } = req.query;
-    const salonAdminId = new mongoose.Types.ObjectId(req.user._id);
+  try {
+    const { branchId } = req.query;
 
-    // Validate inputs
-    if (!mongoose.Types.ObjectId.isValid(salonAdminId)) {
-      return res.status(400).json({ message: "Invalid salon admin ID" });
+    // 🔐 Verify branch belongs to the logged-in salon admin
+    const branch = await Branch.findOne({ _id: branchId, salonAdminId: req.user._id });
+    if (!branch) {
+      return res.status(404).json({ message: "Branch not found or unauthorized" });
     }
 
-    // Build base query
-    const query = { 
-      salonAdminId,
-      ...(branchId && { branchId: new mongoose.Types.ObjectId(branchId) }),
-      ...(status && { status: { $in: status.split(',') } })
-    };
-
-    // Fetch services with populated data
-    const services = await Service.find(query)
-      .populate({
-        path: 'category',
-        model: 'ServiceCategory',
-        select: 'name'
-      })
-      .populate({
-        path: 'subCategory',
-        model: 'ServiceCategory',
-        select: 'name'
-      })
-      .populate({
-        path: 'branchId',
-        model: 'Branch',
-        select: 'branchName'
-      })
-      .sort({ createdAt: -1 })
-      .lean();
-
-    // Format response
-    const formattedServices = services.map(service => ({
-      _id: service._id,
-      serviceName: service.serviceName,
-      serviceCode: service.serviceCode,
-      category: service.category?.name || 'Uncategorized',
-      subCategory: service.subCategory?.name || 'Uncategorized',
-      businessUnit: service.businessUnit,
-      duration: service.duration,
-      memberPrice: service.memberPrice,
-      nonMemberPrice: service.nonMemberPrice,
-      status: service.status,
-      location: service.branchId?.branchName || 'Unknown',
-      startTime: service.startTime,
-      endTime: service.endTime,
-      createdAt: service.createdAt
-    }));
+    // 📦 Fetch services for the given branch
+    const services = await Service.find({ branchId })
+      .populate('category', 'name')       // Replace 'name' with the actual field from ServiceCategory model
+      .populate('subCategory', 'name')    // If needed
+      .sort({ createdAt: -1 });           // Optional: latest first
 
     res.status(200).json({
       message: "Services fetched successfully",
-      services: formattedServices
+      services
     });
-
   } catch (error) {
-    console.error('[SERVICE ERROR]', error);
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message
-    });
+    console.error("Fetch Services Error:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
