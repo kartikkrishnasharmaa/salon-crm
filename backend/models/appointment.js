@@ -10,7 +10,6 @@ const AppointmentSchema = new mongoose.Schema(
       gender: {
         type: String,
         enum: ["Male", "Female", "Other"],
-        required: true,
       },
       lastName: { type: String },
     },

@@ -4,6 +4,10 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "../../../api/axiosConfig";
 import { FaWindowClose } from "react-icons/fa";
+import ServiceSection from "./ServiceSection";
+import StaffSelection from "./StaffSelection";
+import CustomerInfo from "./CustomerInfo";
+import BookingSummary from "./BookingSummary";
 
 const BookingFormModal = ({
   isOpen,
@@ -11,9 +15,7 @@ const BookingFormModal = ({
   selectedBranch,
   fetchAppointments,
 }) => {
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
+  const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
   const [selectedTime, setSelectedTime] = useState(moment().format("HH:mm"));
   const [mobile, setMobile] = useState("");
   const [customerType, setCustomerType] = useState("walkin");
@@ -40,120 +42,6 @@ const BookingFormModal = ({
     history: false,
   });
   const token = localStorage.getItem("token");
-  
-const frequentServices = [
-  { id: 1, name: "Hair Cut", duration: "30 mins", price: "₹300", frequency: "Daily" },
-  { id: 2, name: "Hair Color", duration: "60 mins", price: "₹800", frequency: "Weekly" },
-  { id: 3, name: "Hair Spa", duration: "45 mins", price: "₹600", frequency: "Daily" }
-];
-
-const allServices = [
-  { id: 1, name: "Hair Cut",  price: "₹300" },
-  { id: 2, name: "Hair Color", price: "₹800" },
-  { id: 3, name: "Hair Spa",  price: "₹600" }
-];
-
-const previousVisits = [
-  { id: 1, date: "15/05/2023", services: "Hair Cut", status: "Completed" },
-  { id: 2, date: "10/05/2023", services: "Hair Color",status: "Completed" },
-  { id: 3, date: "05/05/2023", services: "Facial", status: "Completed" },
-];
-
-const ServiceTable = ({ title, data, columns, onServiceSelect }) => {
-  return (
-    <div style={{ marginBottom: '20px' }}>
-      <h3 style={{ 
-        backgroundColor: '#343a40', 
-        color: 'white', 
-        padding: '10px',
-        borderRadius: '5px 5px 0 0',
-        margin: 0
-      }}>
-        {title}
-      </h3>
-      <div style={{ 
-        border: '1px solid #dee2e6',
-        borderRadius: '0 0 5px 5px',
-        overflow: 'hidden'
-      }}>
-        <table style={{ 
-          width: '100%', 
-          borderCollapse: 'collapse',
-          backgroundColor: 'white'
-        }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f8f9fa' }}>
-              {columns.map((column, index) => (
-                <th key={index} style={{ 
-                  padding: '12px 15px', 
-                  textAlign: 'left', 
-                  borderBottom: '1px solid #dee2e6',
-                  fontWeight: '600'
-                }}>
-                  {column}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item) => (
-              <tr 
-                key={item.id} 
-                style={{ 
-                  borderBottom: '1px solid #dee2e6',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: '#f8f9fa'
-                  }
-                }}
-                onClick={() => onServiceSelect && onServiceSelect(item)}
-              >
-                {Object.values(item).map((value, index) => (
-                  <td key={index} style={{ 
-                    padding: '12px 15px', 
-                    borderBottom: '1px solid #dee2e6'
-                  }}>
-                    {value}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-const ServiceSection = ({ onServiceSelect }) => {
-  return (
-    <div style={{ 
-      display: 'grid',
-      gridTemplateColumns: '2fr 2fr 2fr',
-      gap: '25px',
-      marginBottom: '20px'
-    }}>
-      <ServiceTable 
-        title="Frequently Used Services" 
-        data={frequentServices} 
-        columns={['Sr. No','Service', 'Duration', 'Price','Frequency']}
-        onServiceSelect={onServiceSelect}
-      />
-      <ServiceTable 
-        title="All Services" 
-        data={allServices} 
-        columns={['Sr. No','Service Name','Price']}
-        onServiceSelect={onServiceSelect}
-      />
-      <ServiceTable 
-        title="Previous Visits" 
-        data={previousVisits} 
-        columns={['Sr. No','Date', 'Services', 'Status']}
-      />
-    </div>
-  );
-};
-
 
   const staffList = [
     { _id: "64f1a2b3c4d5e6f7a8b9c0d3", name: "Emily Davis" },
@@ -322,90 +210,99 @@ const ServiceSection = ({ onServiceSelect }) => {
     updateBookingSummary(updatedServices);
   };
 
-  const handleBookingSubmit = async (e) => {
-    e.preventDefault();
+const handleBookingSubmit = async (e) => {
+  e.preventDefault();
 
-    if (
-      !selectedBranch ||
-      !mobile ||
-      !customerData.name ||
-      !selectedServices.length ||
-      !selectedStaff.length
-    ) {
-      toast.error(
-        "Please fill all required fields and select at least one service and staff member."
-      );
-      return;
-    }
+  // Add validation for gender
+  if (!customerData.gender) {
+    toast.error("Please select customer gender");
+    return;
+  }
 
-    const newBooking = {
-      customer: {
-        name: customerData.name,
-        email: customerData.email,
-        mobile: mobile,
-        gender: customerData.gender,
-        lastName: customerData.lastName,
-      },
-      services: selectedServices.map((service) => ({
-        name: service.name,
-        price: parseFloat(service.price.replace(/[^0-9.-]+/g, "")),
-        time: service.time,
-      })),
-      staff: selectedStaff,
-      date: selectedDate,
-      time: selectedTime,
-      customerType: customerType,
-      staffType: staffType,
-      appointmentNote: appointmentNote,
-      clientNote: clientNote,
-      branchId: selectedBranch,
-    };
+  if (
+    !selectedBranch ||
+    !mobile ||
+    !customerData.name ||
+    !selectedServices.length ||
+    !selectedStaff.length
+  ) {
+    toast.error(
+      "Please fill all required fields and select at least one service and staff member."
+    );
+    return;
+  }
 
-    try {
-      const response = await axios.post(`/booking/create-booking`, newBooking, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.data.success) {
-        toast.success("Booking created successfully!");
-        fetchAppointments();
-        resetBookingForm();
-        onClose();
-      }
-    } catch (error) {
-      console.error("Booking Error:", error);
-      const errorMsg =
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to create booking";
-      toast.error(errorMsg);
-    }
+  const newBooking = {
+    customer: {
+      name: customerData.name,
+      email: customerData.email,
+      mobile: mobile,
+      gender: customerData.gender, // Make sure this is included
+      lastName: customerData.lastName,
+    },
+    services: selectedServices.map((service) => ({
+      name: service.name,
+      price: parseFloat(service.price.replace(/[^0-9.-]+/g, "")),
+      time: service.time,
+    })),
+    staff: selectedStaff,
+    date: selectedDate,
+    time: selectedTime,
+    customerType: customerType,
+    staffType: staffType,
+    appointmentNote: appointmentNote,
+    clientNote: clientNote,
+    branchId: selectedBranch,
   };
+
+  try {
+    const response = await axios.post(`/booking/create-booking`, newBooking, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.data.success) {
+      toast.success("Booking created successfully!");
+      fetchAppointments();
+      resetBookingForm();
+      onClose();
+    }
+  } catch (error) {
+    console.error("Booking Error:", error);
+    const errorMsg =
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to create booking";
+    toast.error(errorMsg);
+  }
+};
 
   const resetBookingForm = () => {
-    setSelectedServices([]);
-    setBookingSummary([]);
-    setCustomerData({ name: "", email: "", gender: "", lastName: "" });
-    setMobile("");
-    setAppointmentNote("");
-    setClientNote("");
-    setSelectedStaff([]);
-    setSelectedDate(moment().format("YYYY-MM-DD"));
-    setSelectedTime(moment().format("HH:mm"));
-    setCustomerType("walkin");
-    setStaffType("single");
-  };
+  setSelectedServices([]);
+  setBookingSummary([]);
+  setCustomerData({ 
+    name: "", 
+    email: "", 
+    gender: "", // Make sure this is included
+    lastName: "" 
+  });
+  setMobile("");
+  setAppointmentNote("");
+  setClientNote("");
+  setSelectedStaff([]);
+  setSelectedDate(moment().format("YYYY-MM-DD"));
+  setSelectedTime(moment().format("HH:mm"));
+  setCustomerType("walkin");
+  setStaffType("single");
+};
 
   const generateBill = () => {
     if (bookingSummary.length === 0) {
       toast.error("No services selected to generate a bill.");
       return;
     }
-
-    // Your bill generation logic here
     console.log("Generating bill for:", bookingSummary);
   };
 
@@ -434,7 +331,6 @@ const ServiceSection = ({ onServiceSelect }) => {
 
         <div className="w-full p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Column 1 - Booking Info */}
             <div className="flex flex-col space-y-4">
               <div className="flex flex-col">
                 <label className="font-semibold">Booking Date</label>
@@ -479,59 +375,15 @@ const ServiceSection = ({ onServiceSelect }) => {
               </div>
             </div>
 
-            {/* Column 2 - Customer Info */}
-            <div className="flex flex-col space-y-4">
-              <div className="flex flex-col">
-                <label className="font-semibold">Mobile Number</label>
-                <input
-                  type="text"
-                  value={mobile}
-                  onChange={handleMobileChange}
-                  className="border rounded p-2 w-full"
-                  placeholder="Enter Mobile Number"
-                  maxLength="10"
-                  required
-                />
-              </div>
+            <CustomerInfo
+              mobile={mobile}
+              handleMobileChange={handleMobileChange}
+              customerData={customerData}
+              setCustomerData={setCustomerData}
+              isNewCustomer={isNewCustomer}
+              customersList={customersList}
+            />
 
-              <div className="flex flex-col">
-                <label className="font-semibold">First Name</label>
-                <input
-                  type="text"
-                  value={customerData.name}
-                  onChange={(e) =>
-                    setCustomerData({ ...customerData, name: e.target.value })
-                  }
-                  className={`border rounded p-2 w-full ${
-                    !isNewCustomer ? "bg-gray-100" : ""
-                  }`}
-                  placeholder="Customer Name"
-                  readOnly={!isNewCustomer}
-                  required
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="font-semibold">Last Name</label>
-                <input
-                  type="text"
-                  value={customerData.lastName}
-                  onChange={(e) =>
-                    setCustomerData({
-                      ...customerData,
-                      lastName: e.target.value,
-                    })
-                  }
-                  className={`border rounded p-2 w-full ${
-                    !isNewCustomer ? "bg-gray-100" : ""
-                  }`}
-                  placeholder="Last Name"
-                  readOnly={!isNewCustomer}
-                />
-              </div>
-            </div>
-
-            {/* Column 3 - Additional Info */}
             <div className="flex flex-col space-y-4">
               <div className="flex flex-col">
                 <label className="font-semibold">Email</label>
@@ -573,110 +425,15 @@ const ServiceSection = ({ onServiceSelect }) => {
               </div>
             </div>
 
-            {/* Column 4 - Staff Info */}
-            <div className="flex flex-col space-y-4">
-              <div className="flex flex-col">
-                <label className="font-semibold">Gender</label>
-                <div className="flex space-x-4 mt-2">
-                  {["Male", "Female"].map((g) => (
-                    <label key={g} className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value={g}
-                        checked={customerData.gender === g}
-                        onChange={(e) =>
-                          setCustomerData({
-                            ...customerData,
-                            gender: e.target.value,
-                          })
-                        }
-                        disabled={!isNewCustomer}
-                        className="form-radio"
-                        required
-                      />
-                      <span>{g}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col">
-                <label className="font-semibold">Staff Type</label>
-                <div className="flex space-x-4 mt-2">
-                  {["single", "multiple"].map((type) => (
-                    <label key={type} className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name="staffType"
-                        value={type}
-                        checked={staffType === type}
-                        onChange={() => handleStaffTypeChange(type)}
-                        className="form-radio"
-                        required
-                      />
-                      <span className="capitalize">
-                        {type === "single" ? "Single Staff" : "Multiple Staff"}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Single Staff Selection */}
-              {staffType === "single" && (
-                <div className="flex flex-col mt-2">
-                  <label className="font-semibold">Select Staff</label>
-                  <select
-                    className="border rounded p-2 w-full"
-                    value={selectedStaff[0] || ""}
-                    onChange={(e) => setSelectedStaff([e.target.value])}
-                    required
-                  >
-                    <option value="">Select Staff</option>
-                    {staffList.map((staff) => (
-                      <option key={staff._id} value={staff._id}>
-                        {staff.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Multiple Staff Selection */}
-              {staffType === "multiple" && (
-                <div className="flex flex-col mt-2">
-                  <label className="font-semibold">Select Multiple Staff</label>
-                  <div
-                    className="border rounded p-2 w-full"
-                    style={{
-                      maxHeight: "100px",
-                      overflowY: "auto",
-                      border: "1px solid #ccc",
-                      padding: "8px",
-                    }}
-                  >
-                    {staffList.map((staff) => (
-                      <label
-                        key={staff._id}
-                        className="flex items-center space-x-2"
-                      >
-                        <input
-                          type="checkbox"
-                          value={staff._id}
-                          checked={selectedStaff.includes(staff._id)}
-                          onChange={(e) => handleStaffSelect(e.target.value)}
-                        />
-                        <span>{staff.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <StaffSelection
+              staffType={staffType}
+              handleStaffTypeChange={handleStaffTypeChange}
+              selectedStaff={selectedStaff}
+              handleStaffSelect={handleStaffSelect}
+              staffList={staffList}
+            />
           </div>
 
-          {/* Notes Section - Below the 4 columns */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
               <label className="font-semibold">Appointment Note</label>
@@ -699,137 +456,12 @@ const ServiceSection = ({ onServiceSelect }) => {
             </div>
           </div>
         </div>
+
         <ServiceSection onServiceSelect={handleServiceSelect} />
-
-        {/* Service List, Past History, and Frequent Services */}
-        {/* <div className="w-full p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
-            {/* Service List */}
-            {/* <div className="border p-3 rounded-md overflow-auto shadow-md">
-              <h3 className="text-lg font-semibold mb-2">Select Services</h3>
-              {loading.services ? (
-                <p>Loading services...</p>
-              ) : servicesList.length > 0 ? (
-                servicesList.map((service, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center p-2 border-b cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleServiceSelect(service)}
-                  >
-                    <span>{service.name}</span>
-                    <span>{service.price}</span>
-                    <span>{service.time}</span>
-                  </div>
-                ))
-              ) : (
-                <p>No services available</p>
-              )}
-            </div> */}
-
-            {/* Past History */}
-            {/* <div className="border p-3 rounded-md overflow-auto shadow-md">
-              <h3 className="text-lg font-semibold mb-2">
-                Client Past History
-              </h3>
-              {pastHistory.length > 0 ? (
-                pastHistory.map((history, index) => (
-                  <div key={index} className="p-2 border-b">
-                    <span>
-                      {history.name} - {history.date}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <p>No past services found.</p>
-              )}
-            </div> */}
-
-            {/* Frequent Services */}
-            {/* <div className="border p-3 rounded-md overflow-auto shadow-md">
-              <h3 className="text-lg font-semibold mb-2">Frequent Services</h3>
-              {frequentServices.length > 0 ? (
-                frequentServices.map((service, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center p-2 border-b cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleServiceSelect(service)}
-                  >
-                    <span>{service.name}</span>
-                    <span>{service.price}</span>
-                    <span>{service.time}</span>
-                  </div>
-                ))
-              ) : (
-                <p>No frequent services</p>
-              )}
-            </div> */}
-          {/* </div>
-        </div> */}
-
-
-        {/* Booking Summary */}
-        {bookingSummary.length > 0 ? (
-          <div className="w-full bg-gray-100 p-4 rounded-md shadow-md mb-4">
-            <h3 className="text-lg font-bold mb-2">Bookingg Summary</h3>
-            <table className="w-full border-collapse border border-gray-300">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="border border-gray-300 p-2">Service</th>
-                  <th className="border border-gray-300 p-2">Staff</th>
-                  <th className="border border-gray-300 p-2">Price</th>
-                  <th className="border border-gray-300 p-2">Date</th>
-                  <th className="border border-gray-300 p-2">Time</th>
-                  <th className="border border-gray-300 p-2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookingSummary.map((booking, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="border border-gray-300 p-2">
-                      {booking.service}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {booking.staff}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      ₹{booking.price}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {booking.date}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {booking.time}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      <button
-                        className="bg-red-500 text-white px-2 py-1 rounded"
-                        onClick={() => removeService(booking.service)}
-                      >
-                        ✖
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="mt-4 text-right">
-              <span className="font-semibold">Total Bill: </span>
-              <span className="font-bold">
-                ₹
-                {bookingSummary.reduce(
-                  (total, booking) => total + booking.price,
-                  0
-                )}
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div className="w-full bg-gray-100 p-4 rounded-md shadow-md mb-4">
-            <h3 className="text-lg font-bold mb-2">Booking Summary</h3>
-            <p className="text-center">No services selected.</p>
-          </div>
-        )}
+        <BookingSummary 
+          bookingSummary={bookingSummary} 
+          removeService={removeService} 
+        />
 
         <div className="w-full mt-4 flex flex-wrap justify-center gap-4">
           <button
