@@ -5,11 +5,11 @@ const connectDB = require('./config/db');
 const chalk = require('chalk');
 
 // Import Routes
-const adminAuthRoutes = require('./routes/authRoutes');
+const adminAuthRoutes = require('./routes/authRoutes'); 
 const salonAdminRoutes = require('./routes/salonAdminRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
-const branchRoutes = require('./routes/branchRoutes')
+const branchRoutes = require('./routes/branchRoutes') 
 const bookingRoutes = require('./routes/bookingRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const productRoutes = require('./routes/productRoutes');

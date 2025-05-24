@@ -403,7 +403,6 @@ const handleBookingSubmit = async (e) => {
                   readOnly={!isNewCustomer}
                 />
               </div>
-
               <div className="flex flex-col">
                 <label className="font-semibold">Date Of Birth</label>
                 <input

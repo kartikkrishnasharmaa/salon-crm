@@ -1,33 +1,5 @@
+const axios = require('axios');
 const Appointment = require("../models/appointment");
-
-// Create New Appointment
-// exports.createAppointment = async (req, res) => {
-//   try {
-//     const { customerId, employeeId, service, date, startTime, endTime, notes, price, branchId } = req.body;
-
-//     if (!branchId) {
-//       return res.status(400).json({ message: "Branch ID is required" });
-//     }
-
-//     const newAppointment = new Appointment({
-//       customerId,
-//       employeeId,
-//       service,
-//       date,
-//       startTime,
-//       endTime,
-//       notes,
-//       price,
-//       branchId,
-//     });
-
-//     await newAppointment.save();
-//     res.status(201).json({ message: "Appointment created successfully", appointment: newAppointment });
-//   } catch (error) {
-//     console.error("Error creating appointment:", error);
-//     res.status(500).json({ message: "Server Error", error: error.message });
-//   }
-// };
 exports.createAppointment = async (req, res) => {
   try {
     const {
@@ -43,7 +15,6 @@ exports.createAppointment = async (req, res) => {
       branchId,
     } = req.body;
 
-    // Enhanced validation
     const requiredFields = {
       branchId: "Branch ID",
       customer: "Customer details",
@@ -80,7 +51,6 @@ exports.createAppointment = async (req, res) => {
       });
     }
 
-    // Calculate total price and validate services
     let totalPrice = 0;
     try {
       totalPrice = services.reduce((total, service) => {
@@ -96,7 +66,6 @@ exports.createAppointment = async (req, res) => {
       });
     }
 
-    // Create and save appointment
     const newAppointment = new Appointment({
       customer,
       services,
@@ -109,28 +78,44 @@ exports.createAppointment = async (req, res) => {
       clientNote,
       branchId,
       totalPrice,
-      status: "Pending", // Explicitly set status
-      paymentStatus: "Pending" // Default payment status
+      status: "Pending",
+      paymentStatus: "Pending"
     });
 
     const savedAppointment = await newAppointment.save();
 
-    // Format the response data
-    const responseData = {
-      _id: savedAppointment._id,
-      customer: savedAppointment.customer,
-      services: savedAppointment.services,
-      staff: savedAppointment.staff,
-      date: savedAppointment.date,
-      time: savedAppointment.time,
-      status: savedAppointment.status,
-      totalPrice: savedAppointment.totalPrice
-    };
+    // ✅ Send WhatsApp Notification via Cunnekt (official format)
+    const whatsappPayload = JSON.stringify({
+      mobile:  "919057508560" || customer?.mobile , 
+      templateid: "710183098258086"
+    });
 
+    try {
+      await axios.post("https://app2.cunnekt.com/v1/sendnotification", whatsappPayload, {
+        headers: {
+          "Content-Type": "application/json",
+          "API-KEY": "33c0c252d80b77bce62342b08a6902d7774e9a8f"
+        },
+        maxBodyLength: Infinity
+      });
+    } catch (whatsappError) {
+      console.error("❌ Failed to send WhatsApp message:", whatsappError.response?.data || whatsappError.message);
+    }
+
+    // ✅ Final Response
     res.status(201).json({
       success: true,
       message: "Appointment created successfully",
-      appointment: responseData
+      appointment: {
+        _id: savedAppointment._id,
+        customer: savedAppointment.customer,
+        services: savedAppointment.services,
+        staff: savedAppointment.staff,
+        date: savedAppointment.date,
+        time: savedAppointment.time,
+        status: savedAppointment.status,
+        totalPrice: savedAppointment.totalPrice
+      }
     });
 
   } catch (error) {
@@ -142,6 +127,7 @@ exports.createAppointment = async (req, res) => {
     });
   }
 };
+
 
 
 // exports.getAppointments = async (req, res) => {
