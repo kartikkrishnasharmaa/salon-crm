@@ -14,9 +14,6 @@ const AssignEmployeeToBranch = () => {
   const salonAdminId = salonAdminData?._id; // Extract _id properly
 
   useEffect(() => {
-    console.log("SalonAdmin Data:", salonAdminData);
-    console.log("Extracted SalonAdminId:", salonAdminId);
-    console.log("Token:", token);
 
     if (!salonAdminId || !token) {
       console.error("🚨 SalonAdminId or Token missing! API calls will not proceed.");

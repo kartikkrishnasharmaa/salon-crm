@@ -7,8 +7,6 @@ const fs = require("fs");
 const path = require("path");
 
 
-
-//completed
 // 🏷️ CREATE SERVICE CATEGORY WITH IMAGE - Salon Admin Only
 exports.createServiceCategory = [
   upload.single("image"),
@@ -108,7 +106,6 @@ exports.createServiceCategory = [
 ];
 
 
-//completed
 // 🏷️ GET SERVICE CATEGORIES - Salon Admin Only
 exports.getServiceCategories = async (req, res) => {
   try {
@@ -301,7 +298,7 @@ exports.getServicesByBranch = async (req, res) => {
 };
 
 
-// 👥 GET ALL EMPLOYEES WITH SERVICES
+//  GET ALL EMPLOYEES WITH SERVICES
 exports.getAllEmployeesWithServices = async (req, res) => {
   try {
     const { branchId } = req.query;

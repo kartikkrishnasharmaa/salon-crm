@@ -1,5 +1,7 @@
 const axios = require('axios');
 const Appointment = require("../models/appointment");
+const Customer = require("../models/customer");
+
 exports.createAppointment = async (req, res) => {
   try {
     const {
@@ -128,33 +130,6 @@ exports.createAppointment = async (req, res) => {
   }
 };
 
-
-
-// exports.getAppointments = async (req, res) => {
-//   try {
-//     const { branchId } = req.query;
-
-//     // Validate branchId
-//     if (!branchId) {
-//       return res.status(400).json({ message: "Branch ID is required" });
-//     }
-
-//     // Fetch appointments for the given branchId
-//     const appointments = await Appointment.find({ branchId })
-//       .select(
-//         "customer services staff date time customerType staffType appointmentNote clientNote totalPrice status paymentStatus"
-//       )
-//       .exec();
-
-//     // Send the response
-//     res.status(200).json({ success: true, appointments });
-//   } catch (error) {
-//     console.error("Error fetching appointments:", error);
-//     res.status(500).json({ message: "Server Error", error: error.message });
-//   }
-// };
-
-// Update appointment status to Completed
 
 exports.getAppointments = async (req, res) => {
   try {

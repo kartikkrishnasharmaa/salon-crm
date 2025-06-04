@@ -7,18 +7,7 @@ const customerSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
     password: { type: String, required: true },
-    salonId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Salon",
-      default: null,
-    }, // ✅ Optional salonId
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" }, // Updated
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      refPath: "createdByModel",
-      default: null,
-    },
     createdByModel: {
       type: String,
       enum: ["SalonAdmin", "Manager", "Self"],
