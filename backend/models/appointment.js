@@ -2,16 +2,10 @@ const mongoose = require("mongoose");
 
 const AppointmentSchema = new mongoose.Schema(
   {
-    // Customer Details
-    customer: {
-      name: { type: String, required: true },
-      email: { type: String,},
-      mobile: { type: String, required: true },
-      gender: {
-        type: String,
-        enum: ["Male", "Female", "Other"],
-      },
-      lastName: { type: String },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
     },
     // Salon and Branch Details
     salonAdminId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin" }, // To track which salon booked this appointment

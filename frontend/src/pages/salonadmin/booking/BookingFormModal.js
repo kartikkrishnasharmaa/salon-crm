@@ -179,8 +179,12 @@ const BookingFormModal = ({
 
   const updateBookingSummary = (services) => {
     const summary = services.map((service) => ({
-      service: service.name,
-      price: parseFloat(service.price.replace(/[^0-9.-]+/g, "")),
+      service: service.serviceName || "", // Correct property name
+      price: parseFloat(
+        (service.nonMemberPrice !== undefined && service.nonMemberPrice !== null)
+          ? String(service.nonMemberPrice).replace(/[^0-9.-]+/g, "")
+          : "0"
+      ),
       date: selectedDate,
       time: selectedTime,
       customer: `${customerData.name} ${customerData.lastName}`,
@@ -194,109 +198,112 @@ const BookingFormModal = ({
     setBookingSummary(summary);
   };
 
+
   const handleServiceSelect = (service) => {
-    if (!selectedServices.some((s) => s.name === service.name)) {
+    if (!selectedServices.some((s) => s.serviceName === service.serviceName)) {
       const updatedServices = [...selectedServices, service];
       setSelectedServices(updatedServices);
       updateBookingSummary(updatedServices);
     }
   };
 
+
   const removeService = (serviceName) => {
     const updatedServices = selectedServices.filter(
-      (s) => s.name !== serviceName
+      (s) => s.serviceName !== serviceName
     );
     setSelectedServices(updatedServices);
     updateBookingSummary(updatedServices);
   };
 
-const handleBookingSubmit = async (e) => {
-  e.preventDefault();
 
-  // Add validation for gender
-  if (!customerData.gender) {
-    toast.error("Please select customer gender");
-    return;
-  }
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
 
-  if (
-    !selectedBranch ||
-    !mobile ||
-    !customerData.name ||
-    !selectedServices.length ||
-    !selectedStaff.length
-  ) {
-    toast.error(
-      "Please fill all required fields and select at least one service and staff member."
-    );
-    return;
-  }
+    // Add validation for gender
+    if (!customerData.gender) {
+      toast.error("Please select customer gender");
+      return;
+    }
 
-  const newBooking = {
-    customer: {
-      name: customerData.name,
-      email: customerData.email,
-      mobile: mobile,
-      gender: customerData.gender, // Make sure this is included
-      lastName: customerData.lastName,
-    },
-    services: selectedServices.map((service) => ({
-      name: service.name,
-      price: parseFloat(service.price.replace(/[^0-9.-]+/g, "")),
-      time: service.time,
-    })),
-    staff: selectedStaff,
-    date: selectedDate,
-    time: selectedTime,
-    customerType: customerType,
-    staffType: staffType,
-    appointmentNote: appointmentNote,
-    clientNote: clientNote,
-    branchId: selectedBranch,
+    if (
+      !selectedBranch ||
+      !mobile ||
+      !customerData.name ||
+      !selectedServices.length ||
+      !selectedStaff.length
+    ) {
+      toast.error(
+        "Please fill all required fields and select at least one service and staff member."
+      );
+      return;
+    }
+
+    const newBooking = {
+      customer: {
+        name: customerData.name,
+        email: customerData.email,
+        mobile: mobile,
+        gender: customerData.gender, // Make sure this is included
+        lastName: customerData.lastName,
+      },
+      services: selectedServices.map((service) => ({
+        name: service.name,
+        price: parseFloat(service.price.replace(/[^0-9.-]+/g, "")),
+        time: service.time,
+      })),
+      staff: selectedStaff,
+      date: selectedDate,
+      time: selectedTime,
+      customerType: customerType,
+      staffType: staffType,
+      appointmentNote: appointmentNote,
+      clientNote: clientNote,
+      branchId: selectedBranch,
+    };
+
+    try {
+      const response = await axios.post(`/booking/create-booking`, newBooking, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        toast.success("Booking created successfully!");
+        fetchAppointments();
+        resetBookingForm();
+        onClose();
+      }
+    } catch (error) {
+      console.error("Booking Error:", error);
+      const errorMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to create booking";
+      toast.error(errorMsg);
+    }
   };
 
-  try {
-    const response = await axios.post(`/booking/create-booking`, newBooking, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.data.success) {
-      toast.success("Booking created successfully!");
-      fetchAppointments();
-      resetBookingForm();
-      onClose();
-    }
-  } catch (error) {
-    console.error("Booking Error:", error);
-    const errorMsg =
-      error.response?.data?.message ||
-      error.message ||
-      "Failed to create booking";
-    toast.error(errorMsg);
-  }
-};
-
   const resetBookingForm = () => {
-  setSelectedServices([]);
-  setBookingSummary([]);
-  setCustomerData({ 
-    name: "", 
-    email: "", 
-    gender: "", // Make sure this is included
-    lastName: "" 
-  });
-  setMobile("");
-  setAppointmentNote("");
-  setClientNote("");
-  setSelectedStaff([]);
-  setSelectedDate(moment().format("YYYY-MM-DD"));
-  setSelectedTime(moment().format("HH:mm"));
-  setCustomerType("walkin");
-  setStaffType("single");
-};
+    setSelectedServices([]);
+    setBookingSummary([]);
+    setCustomerData({
+      name: "",
+      email: "",
+      gender: "", // Make sure this is included
+      lastName: ""
+    });
+    setMobile("");
+    setAppointmentNote("");
+    setClientNote("");
+    setSelectedStaff([]);
+    setSelectedDate(moment().format("YYYY-MM-DD"));
+    setSelectedTime(moment().format("HH:mm"));
+    setCustomerType("walkin");
+    setStaffType("single");
+  };
 
   const generateBill = () => {
     if (bookingSummary.length === 0) {
@@ -396,9 +403,8 @@ const handleBookingSubmit = async (e) => {
                       email: e.target.value,
                     })
                   }
-                  className={`border rounded p-2 w-full ${
-                    !isNewCustomer ? "bg-gray-100" : ""
-                  }`}
+                  className={`border rounded p-2 w-full ${!isNewCustomer ? "bg-gray-100" : ""
+                    }`}
                   placeholder="Customer Email"
                   readOnly={!isNewCustomer}
                 />
@@ -457,9 +463,9 @@ const handleBookingSubmit = async (e) => {
         </div>
 
         <ServiceSection onServiceSelect={handleServiceSelect} />
-        <BookingSummary 
-          bookingSummary={bookingSummary} 
-          removeService={removeService} 
+        <BookingSummary
+          bookingSummary={bookingSummary}
+          removeService={removeService}
         />
 
         <div className="w-full mt-4 flex flex-wrap justify-center gap-4">

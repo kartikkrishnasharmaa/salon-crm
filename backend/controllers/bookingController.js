@@ -103,8 +103,6 @@ exports.createAppointment = async (req, res) => {
     } catch (whatsappError) {
       console.error("❌ Failed to send WhatsApp message:", whatsappError.response?.data || whatsappError.message);
     }
-
-    // ✅ Final Response
     res.status(201).json({
       success: true,
       message: "Appointment created successfully",
