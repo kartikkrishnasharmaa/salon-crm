@@ -5,7 +5,7 @@ const Customer = require("../models/customer");
 exports.createAppointment = async (req, res) => {
   try {
     const {
-      customer,
+      customerId, // ✅ updated key
       services,
       staff,
       date,
@@ -19,7 +19,7 @@ exports.createAppointment = async (req, res) => {
 
     const requiredFields = {
       branchId: "Branch ID",
-      customer: "Customer details",
+      customerId: "Customer ID", // ✅ updated label
       services: "Services",
       staff: "Staff",
       date: "Date",
@@ -68,8 +68,9 @@ exports.createAppointment = async (req, res) => {
       });
     }
 
+    // ✅ Create Appointment
     const newAppointment = new Appointment({
-      customer,
+      customerId,
       services,
       staff,
       date,
@@ -86,29 +87,35 @@ exports.createAppointment = async (req, res) => {
 
     const savedAppointment = await newAppointment.save();
 
-    // ✅ Send WhatsApp Notification via Cunnekt (official format)
-    const whatsappPayload = JSON.stringify({
-      mobile:  "919057508560" || customer?.mobile , 
-      templateid: "710183098258086"
-    });
-
-    try {
-      await axios.post("https://app2.cunnekt.com/v1/sendnotification", whatsappPayload, {
-        headers: {
-          "Content-Type": "application/json",
-          "API-KEY": "33c0c252d80b77bce62342b08a6902d7774e9a8f"
-        },
-        maxBodyLength: Infinity
+    // ✅ Get Customer's Phone for WhatsApp
+    const customer = await Customer.findById(customerId);
+    if (!customer || !customer.phone) {
+      console.warn("⚠️ Could not find customer or phone number");
+    } else {
+      const whatsappPayload = JSON.stringify({
+        mobile: "919057508560" + customer.phone,
+        templateid: "710183098258086"
       });
-    } catch (whatsappError) {
-      console.error("❌ Failed to send WhatsApp message:", whatsappError.response?.data || whatsappError.message);
+
+      try {
+        await axios.post("https://app2.cunnekt.com/v1/sendnotification", whatsappPayload, {
+          headers: {
+            "Content-Type": "application/json",
+            "API-KEY": "33c0c252d80b77bce62342b08a6902d7774e9a8f"
+          },
+          maxBodyLength: Infinity
+        });
+      } catch (whatsappError) {
+        console.error("❌ Failed to send WhatsApp message:", whatsappError.response?.data || whatsappError.message);
+      }
     }
+
     res.status(201).json({
       success: true,
       message: "Appointment created successfully",
       appointment: {
         _id: savedAppointment._id,
-        customer: savedAppointment.customer,
+        customerId: savedAppointment.customerId,
         services: savedAppointment.services,
         staff: savedAppointment.staff,
         date: savedAppointment.date,
@@ -129,15 +136,16 @@ exports.createAppointment = async (req, res) => {
 };
 
 
+
 exports.getAppointments = async (req, res) => {
   try {
     const { branchId } = req.query;
 
     // Basic validation
     if (!branchId) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Branch ID is required" 
+        message: "Branch ID is required"
       });
     }
 
@@ -179,9 +187,9 @@ exports.checkInAppointment = async (req, res) => {
     const { appointmentId } = req.params;
 
     if (!appointmentId) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Appointment ID is required" 
+        message: "Appointment ID is required"
       });
     }
 
@@ -192,9 +200,9 @@ exports.checkInAppointment = async (req, res) => {
     );
 
     if (!updatedAppointment) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: "Appointment not found" 
+        message: "Appointment not found"
       });
     }
 
@@ -205,10 +213,10 @@ exports.checkInAppointment = async (req, res) => {
     });
   } catch (error) {
     console.error("Error checking in appointment:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: "Server Error",
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -221,26 +229,26 @@ exports.cancelAppointment = async (req, res) => {
     const { cancellationReason } = req.body;
 
     if (!appointmentId) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Appointment ID is required" 
+        message: "Appointment ID is required"
       });
     }
 
     // Find appointment and check if it exists
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: "Appointment not found" 
+        message: "Appointment not found"
       });
     }
 
     // Check if the appointment is already completed
     if (appointment.status === "Completed") {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Completed appointments cannot be canceled" 
+        message: "Completed appointments cannot be canceled"
       });
     }
 
@@ -268,10 +276,10 @@ exports.cancelAppointment = async (req, res) => {
     });
   } catch (error) {
     console.error("Error cancelling appointment:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: "Server Error",
-      error: error.message 
+      error: error.message
     });
   }
 };

@@ -177,26 +177,30 @@ const BookingFormModal = ({
     );
   };
 
-  const updateBookingSummary = (services) => {
-    const summary = services.map((service) => ({
-      service: service.serviceName || "", // Correct property name
-      price: parseFloat(
-        (service.nonMemberPrice !== undefined && service.nonMemberPrice !== null)
-          ? String(service.nonMemberPrice).replace(/[^0-9.-]+/g, "")
-          : "0"
-      ),
+ const updateBookingSummary = (services) => {
+  const summary = services.map((service) => {
+    // Safely handle potentially undefined service
+    if (!service) return null;
+    
+    // Safely extract price
+    const priceValue = service.nonMemberPrice ?? 0;
+    const cleanedPrice = String(priceValue).replace(/[^0-9.-]+/g, "");
+    
+    return {
+      service: service.serviceName || "",
+      price: parseFloat(cleanedPrice) || 0,
       date: selectedDate,
       time: selectedTime,
       customer: `${customerData.name} ${customerData.lastName}`,
       staff: selectedStaff
-        .map(
-          (staffId) => staffList.find((staff) => staff._id === staffId)?.name
-        )
+        .map(staffId => staffList.find(staff => staff._id === staffId)?.name)
         .filter(Boolean)
         .join(", "),
-    }));
-    setBookingSummary(summary);
-  };
+    };
+  }).filter(Boolean); // Remove any null entries
+  
+  setBookingSummary(summary);
+};
 
 
   const handleServiceSelect = (service) => {

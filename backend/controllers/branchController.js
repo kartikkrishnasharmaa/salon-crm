@@ -63,6 +63,7 @@ exports.updateBranch = async (req, res) => {
 };
 
 
+
 exports.assignEmployeeToBranch = async (req, res) => {
   try {
     const { employeeId, branchId } = req.body;

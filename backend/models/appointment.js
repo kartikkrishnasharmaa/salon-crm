@@ -8,21 +8,19 @@ const AppointmentSchema = new mongoose.Schema(
       required: true,
     },
     // Salon and Branch Details
-    salonAdminId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin" }, // To track which salon booked this appointment
+    salonAdminId: { type: mongoose.Schema.Types.ObjectId, ref: "SalonAdmin" },
     branchId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Branch",
       required: true,
     },
-    // Services Details
     services: [
       {
         name: { type: String, required: true },
-        price: { type: Number, required: true }, // Price of the service
-        time: { type: String, }, // Duration of the service
+        price: { type: Number, required: true },
+        time: { type: String, },
       },
     ],
-    // Staff Details
     staff: [
       {
         type: mongoose.Schema.Types.ObjectId,

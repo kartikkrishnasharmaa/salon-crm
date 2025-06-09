@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const customerSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, unique: true },
     phone: { type: String, required: true },
-    password: { type: String, required: true },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+    },
+    lastname: { type: String, },
+    password: { type: String },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" }, // Updated
     createdByModel: {
       type: String,
@@ -16,12 +20,5 @@ const customerSchema = new mongoose.Schema(
   },
   { timestamps: true } // ✅ Add timestamps (createdAt, updatedAt)
 );
-
-// ✅ Password Hashing Middleware (Before Saving)
-customerSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
 
 module.exports = mongoose.model("Customer", customerSchema);
