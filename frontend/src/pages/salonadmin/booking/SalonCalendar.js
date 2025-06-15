@@ -119,7 +119,7 @@ const CustomToolbar = ({ view, onView, viewMode, setViewMode, label }) => {
             transition: 'all 0.2s'
           }}
         >
-          {viewMode === "resources" ? "Staff" : "Rooms"}
+          {viewMode === "resources" ? "Staff" : "Resources"}
         </button>
       </div>
     </div>
